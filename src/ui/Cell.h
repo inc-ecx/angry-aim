@@ -10,7 +10,6 @@ enum class CellType {
 // A cell is the child of a column or a row.
 
 class Cell : public Ui {
-
 public:
   CellType type;
   int size;
@@ -18,8 +17,12 @@ public:
   Cell(CellType type, int size, std::shared_ptr<Ui> child)
     : Ui({child}),
       type(type),
-      size(size)
-  {
+      size(size) {
+  }
+
+  Cell(CellType type, int size)
+    : type(type),
+      size(size) {
   }
 
   ~Cell() override = default;
@@ -32,8 +35,14 @@ public:
     return std::make_shared<Cell>(CellType::RELATIVE, size, child);
   }
 
-};
+  static std::shared_ptr<Cell> abs(int size) {
+    return std::make_shared<Cell>(CellType::ABSOLUTE, size);
+  }
 
+  static std::shared_ptr<Cell> rel(int size = 1) {
+    return std::make_shared<Cell>(CellType::RELATIVE, size);
+  }
+};
 
 
 #endif //CELL_H

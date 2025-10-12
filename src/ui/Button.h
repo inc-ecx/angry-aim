@@ -3,8 +3,15 @@
 #include "Ui.h"
 
 class Button : public Ui {
+public:
+
+  static std::shared_ptr<Button> make() {
+    return std::make_shared<Button>();
+  }
+
+  Button() {}
+
   void render() override;
-  void layout() override;
 };
 
 #endif //BUTTON_H

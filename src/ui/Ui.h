@@ -17,6 +17,10 @@ public:
       width = std::numeric_limits<int>::min(),
       height = std::numeric_limits<int>::min();
 
+  static std::shared_ptr<Ui> make() {
+    return std::make_shared<Ui>();
+  }
+
   Ui() = default;
 
   virtual ~Ui() = default;
@@ -49,6 +53,10 @@ public:
 
   explicit Ui(std::vector<std::shared_ptr<Ui> >&& children)
     : children(children) {
+  }
+
+  void add(std::shared_ptr<Ui>&& child) {
+    children.push_back(std::move(child));
   }
 
   // recalculates bounds of this element and its children. order depends on ui element.

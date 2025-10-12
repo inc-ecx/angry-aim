@@ -1,5 +1,4 @@
 #include "Button.h"
-#include <iostream>
 
 void Button::render() {
   Application &app = Application::app;
@@ -10,8 +9,4 @@ void Button::render() {
 
   renderer.color(hovered() ? 0xffffff40 : 0xffffff20);
   renderer.rect(x,y, width, height);
-}
-
-void Button::layout() {
-  std::cout << "button layout: " << x << " " << y;
 }

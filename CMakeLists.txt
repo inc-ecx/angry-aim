@@ -36,6 +36,8 @@ set(angry-aim-src
         src/render/RenderUi.h
         src/ui/Column.cpp
         src/ui/Column.h
+        src/ui/Row.cpp
+        src/ui/Row.h
         src/ui/Cell.cpp
         src/ui/Cell.h
         src/ui/Button.cpp
