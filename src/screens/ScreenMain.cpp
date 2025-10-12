@@ -1,5 +1,6 @@
 #include "ScreenMain.h"
 
+#include "ScreenScene.h"
 #include "ScreenSettings.h"
 
 // @formatter:off
@@ -34,8 +35,10 @@ void ScreenMain::actionScene() {
 }
 
 void ScreenMain::actionPlay() {
+  Application::app.setScreen(std::make_shared<ScreenScene>());
+  Application::app.setScene(std::make_shared<Scene>());
 }
 
 void ScreenMain::actionSettings() {
-  Application::app.setScreen(std::make_unique<ScreenSettings>(Application::app.getScreen()));
+  Application::app.setScreen(std::make_shared<ScreenSettings>(Application::app.getScreen()));
 }

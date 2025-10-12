@@ -47,6 +47,12 @@ void Application::initApp() {
     }
   });
 
+  glfwSetKeyCallback(window, [](GLFWwindow *, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+      app.onEvent(UiEvent(UiEventType::KEY, action == GLFW_PRESS, key));
+    }
+  });
+
   glfwMakeContextCurrent(window);
 
   gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -64,17 +70,19 @@ void Application::initApp() {
   }
 
   renderUi.init();
+  renderScene.init();
   renderFont.init(freetype);
 
-  currentUi = std::make_unique<ScreenMain>();
-
   app.onResize();
+
+  app.setScreen(std::make_shared<ScreenMain>());
 }
 
 void Application::onResize() {
   glViewport(0, 0, width, height);
 
   renderUi.resize(width, height);
+  renderScene.resize(width, height);
   renderFont.resize(width, height);
 
   if (currentUi != nullptr) {
@@ -109,13 +117,12 @@ void Application::runApp() {
 
       glfwPollEvents();
 
-      std::vector<std::function<void()>> tasks;
-      {
+      std::vector<std::function<void()> > tasks; {
         std::lock_guard lk(this->mtx);
         tasks = this->laterVec;
         this->laterVec.clear();
       }
-      for (auto task : tasks) task();
+      for (auto task: tasks) task();
     }
   }
 }
@@ -126,18 +133,36 @@ void Application::later(const std::function<void()> &task) {
 }
 
 void Application::onEvent(UiEvent event) {
-  if (currentUi != nullptr) {
-    currentUi->handle(event);
-  }
+  if (currentScene != nullptr) currentScene->handle(event);
+  if (currentUi != nullptr) currentUi->handle(event);
 }
 
 void Application::setScreen(const std::shared_ptr<Ui> &screen) {
   currentUi = screen;
-  currentUi->setBounds(0,0,width,height);
-  currentUi->layout();
+
+  if (screen != nullptr) {
+    currentUi->setBounds(0, 0, width, height);
+    currentUi->layout();
+  }
+}
+
+void Application::setScene(const std::shared_ptr<Scene> &scene) {
+  if (currentScene != nullptr) {
+    currentScene->close();
+  }
+
+  currentScene = scene;
+  if (currentScene != nullptr) {
+    currentScene->open();
+    currentScene->resize(width,height);
+  }
 }
 
 void Application::renderApp() {
+  if (currentScene != nullptr) {
+    currentScene->render();
+  }
+
   if (currentUi != nullptr) {
     currentUi->render();
   }

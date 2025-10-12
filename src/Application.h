@@ -13,6 +13,8 @@
 
 #include "render/RenderUi.h"
 #include "render/RenderFont.h"
+#include "render/RenderScene.h"
+#include "scene/Scene.h"
 #include "ui/UiEvent.h"
 
 class Ui;
@@ -33,6 +35,8 @@ class Application {
 
   std::shared_ptr<Ui> currentUi = nullptr;
 
+  std::shared_ptr<Scene> currentScene = nullptr;
+
   void renderApp();
 
   void initApp();
@@ -44,12 +48,15 @@ public:
 
   RenderUi renderUi;
   RenderFont renderFont;
+  RenderScene renderScene;
 
   void runApp();
 
   void later(const std::function<void()> &task);
 
   void setScreen(const std::shared_ptr<Ui> &screen);
+
+  void setScene(const std::shared_ptr<Scene> &scene);
 
   int getMouseX() { return mouseX; }
   int getMouseY() { return mouseY; }

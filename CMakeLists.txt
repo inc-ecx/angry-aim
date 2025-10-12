@@ -56,8 +56,19 @@ set(angry-aim-src
         src/ui/components.h
         src/screens/ScreenSettings.cpp
         src/screens/ScreenSettings.h
-        src/screens/ScreenIngame.cpp
-        src/screens/ScreenIngame.h
+        src/screens/ScreenScene.cpp
+        src/screens/ScreenScene.h
+        src/scene/Scene.cpp
+        src/scene/Scene.h
+        src/world/World.cpp
+        src/world/World.h
+        src/world/Entity.cpp
+        src/world/Entity.h
+        src/inc/inc_glm.h
+        src/world/entities/Cube.cpp
+        src/world/entities/Cube.h
+        src/render/RenderScene.cpp
+        src/render/RenderScene.h
 )
 
 # fetch glm
