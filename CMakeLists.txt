@@ -1,25 +1,29 @@
 cmake_minimum_required(VERSION 3.6)
 
+include(FetchContent)
+
 project(angry-aim)
 
+# add opengl
 find_package(OpenGL REQUIRED)
-
 include_directories(${OPENGL_INCLUDE_DIRS})
 
+# add glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
-
 add_subdirectory(glfw)
-
 include_directories("${GLFW_SOURCE_DIR}/deps")
 
+# set startup project
 if (MSVC)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif ()
 
+# add glad
 set(GLAD_SRC "${CMAKE_SOURCE_DIR}/glad/src/glad.c")
 include_directories("${CMAKE_SOURCE_DIR}/glad/include")
 
+# add application sources
 set(angry-aim-src
         src/main.cpp
         src/Application.cpp
@@ -41,9 +45,18 @@ set(angry-aim-src
         src/inc/inc_glfw.h
 )
 
+# fetch glm
+FetchContent_Declare(
+        glm
+        GIT_REPOSITORY	https://github.com/g-truc/glm.git
+        GIT_TAG 	0af55ccecd98d4e5a8d1fad7de25ba429d60e863
+)
+FetchContent_MakeAvailable(glm)
+
+# add executable
 add_executable(angry-aim ${angry-aim-src} ${GLAD_SRC})
 
-target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw)
+target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw glm::glm)
 if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT angry-aim)
 endif ()

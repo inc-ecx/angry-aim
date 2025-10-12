@@ -9,6 +9,7 @@
 Application Application::app;
 
 void Application::initApp() {
+
   if (!glfwInit())
     return;
 
@@ -51,8 +52,9 @@ void Application::initApp() {
   std::cout << "OpenGL version: " << version << " Renderer: " << renderer << " Vendor: " << vendor << std::endl;
 
   renderUi.init();
-
   currentUi = std::make_unique<ScreenMain>();
+
+  app.onResize();
 }
 
 void Application::onResize() {

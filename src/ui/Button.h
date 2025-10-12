@@ -4,6 +4,7 @@
 
 class Button : public Ui {
   void render() override;
+  void layout() override;
 };
 
 #endif //BUTTON_H

@@ -18,6 +18,10 @@ public:
   explicit Column(std::vector<std::shared_ptr<Cell>>&& children) : Ui(toUiList(children)) {}
 
   void layout() override;
+
+  static std::shared_ptr<Column> make(std::vector<std::shared_ptr<Cell>>&& children) {
+    return std::make_shared<Column>(std::move(children));
+  }
 };
 
 #endif //COLUMN_H

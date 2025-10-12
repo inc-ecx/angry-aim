@@ -8,6 +8,8 @@ class RenderUi {
   GLuint shaderProgram = -1;
 
   GLuint u_baseColor = -1;
+  GLuint u_model = -1;
+  GLuint u_projection = -1;
 
 public:
   void initRectVao();
@@ -19,6 +21,8 @@ public:
   void start();
 
   void stop();
+
+  void color(int rgba);
 
   void rect(int x, int y, int w, int h);
 
