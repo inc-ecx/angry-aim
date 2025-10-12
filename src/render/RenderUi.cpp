@@ -4,41 +4,41 @@
 
 void RenderUi::init() {
 
-  // // Vertex data: x, y
-  // float vertices[] = {
-  //     -0.2f,  0.2f,
-  //      0.2f,  0.2f,
-  //      0.2f, -0.2f,
-  //     -0.2f, -0.2f
-  // };
-  // unsigned int indices[] = {
-  //     0, 1, 2,
-  //     2, 3, 0
-  // };
-  //
-  // // Create VAO
-  // GLuint vao;
-  // glGenVertexArrays(1, &vao);
-  // glBindVertexArray(vao);
-  //
-  // // Create VBO
-  // GLuint vbo;
-  // glGenBuffers(1, &vbo);
-  // glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  //
-  // // Create EBO
-  // GLuint ebo;
-  // glGenBuffers(1, &ebo);
-  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-  //
-  // // Vertex attribute: position (layout = 0)
-  // glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-  // glEnableVertexAttribArray(0);
-  //
-  // // Unbind
-  // glBindVertexArray(0);
+  // Vertex data: x, y
+  float vertices[] = {
+      -0.2f,  0.2f,
+       0.2f,  0.2f,
+       0.2f, -0.2f,
+      -0.2f, -0.2f
+  };
+  unsigned int indices[] = {
+      0, 1, 2,
+      2, 3, 0
+  };
+
+  // Create VAO
+  GLuint vao;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  // Create VBO
+  GLuint vbo;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  // Create EBO
+  GLuint ebo;
+  glGenBuffers(1, &ebo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+  // Vertex attribute: position (layout = 0)
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  // Unbind
+  glBindVertexArray(0);
 
 }
 

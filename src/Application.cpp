@@ -43,6 +43,8 @@ void Application::initApp() {
 
   glfwMakeContextCurrent(window);
 
+  gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+
   const GLubyte *version = glGetString(GL_VERSION);
   const GLubyte *renderer = glGetString(GL_RENDERER);
   const GLubyte *vendor = glGetString(GL_VENDOR);
