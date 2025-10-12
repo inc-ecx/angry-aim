@@ -51,6 +51,13 @@ set(angry-aim-src
         src/inc/inc_glfw.h
         src/render/RenderFont.cpp
         src/render/RenderFont.h
+        src/ui/Label.cpp
+        src/ui/Label.h
+        src/ui/components.h
+        src/screens/ScreenSettings.cpp
+        src/screens/ScreenSettings.h
+        src/screens/ScreenIngame.cpp
+        src/screens/ScreenIngame.h
 )
 
 # fetch glm

@@ -1,14 +1,15 @@
 #ifndef SCREEN_MAIN_H
 #define SCREEN_MAIN_H
 
-#include "../ui/Ui.h"
-#include "../ui/Row.h"
-#include "../ui/Button.h"
-#include "../ui/Column.h"
+#include "../ui/components.h"
 
 class ScreenMain : public Ui {
 public:
   ScreenMain();
+
+  void actionScene();
+  void actionPlay();
+  void actionSettings();
 };
 
 #endif //SCREEN_MAIN_H

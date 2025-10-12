@@ -5,11 +5,11 @@
 #include <algorithm>
 
 #include "screens/ScreenMain.h"
+#include "ui/UiEvent.h"
 
 Application Application::app;
 
 void Application::initApp() {
-
   if (!glfwInit())
     return;
 
@@ -41,6 +41,12 @@ void Application::initApp() {
     app.onResize();
   });
 
+  glfwSetMouseButtonCallback(window, [](GLFWwindow *, int button, int action, int mods) {
+    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+      app.onEvent(UiEvent(UiEventType::MOUSE_BUTTON, action == GLFW_PRESS, button));
+    }
+  });
+
   glfwMakeContextCurrent(window);
 
   gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -48,7 +54,8 @@ void Application::initApp() {
   const GLubyte *version = glGetString(GL_VERSION);
   const GLubyte *renderer = glGetString(GL_RENDERER);
   const GLubyte *vendor = glGetString(GL_VENDOR);
-  std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " << vendor << std::endl;
+  std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " <<
+      vendor << std::endl;
 
   FT_Error ftErr = FT_Init_FreeType(&freetype);
   if (ftErr) {
@@ -65,10 +72,10 @@ void Application::initApp() {
 }
 
 void Application::onResize() {
-  glViewport(0,0,width,height);
+  glViewport(0, 0, width, height);
 
   renderUi.resize(width, height);
-  renderFont.resize(width,height);
+  renderFont.resize(width, height);
 
   if (currentUi != nullptr) {
     currentUi->setBounds(0, 0, width, height);
@@ -101,8 +108,33 @@ void Application::runApp() {
       glfwSwapBuffers(window);
 
       glfwPollEvents();
+
+      std::vector<std::function<void()>> tasks;
+      {
+        std::lock_guard lk(this->mtx);
+        tasks = this->laterVec;
+        this->laterVec.clear();
+      }
+      for (auto task : tasks) task();
     }
   }
+}
+
+void Application::later(const std::function<void()> &task) {
+  std::lock_guard lk(this->mtx);
+  laterVec.push_back(task);
+}
+
+void Application::onEvent(UiEvent event) {
+  if (currentUi != nullptr) {
+    currentUi->handle(event);
+  }
+}
+
+void Application::setScreen(const std::shared_ptr<Ui> &screen) {
+  currentUi = screen;
+  currentUi->setBounds(0,0,width,height);
+  currentUi->layout();
 }
 
 void Application::renderApp() {

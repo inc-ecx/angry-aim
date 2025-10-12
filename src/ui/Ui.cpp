@@ -1,5 +1,15 @@
 #include "Ui.h"
 
+void Ui::handleChildren(UiEvent &event) {
+  for (const auto &child: children) {
+    child->handle(event);
+  }
+}
+
+void Ui::handle(UiEvent &event) {
+  handleChildren(event);
+}
+
 void Ui::layout() {
   doLayeredLayout();
   layoutChildren();
@@ -10,13 +20,13 @@ void Ui::render() {
 }
 
 void Ui::doLayeredLayout() const {
-  for (const auto& child : children) {
-    child->setBounds(x,y,width,height);
+  for (const auto &child: children) {
+    child->setBounds(x, y, width, height);
   }
 }
 
 void Ui::layoutChildren() {
-  for (const auto& child : children) {
+  for (const auto &child: children) {
     child->layout();
   }
 }

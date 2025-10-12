@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "../Application.h"
+#include "UiEvent.h"
 
 // the basic building block of any ui element.
 class Ui {
@@ -24,6 +25,10 @@ public:
   Ui() = default;
 
   virtual ~Ui() = default;
+
+  void handleChildren(UiEvent &event);
+
+  virtual void handle(UiEvent &event);
 
   Ui(const Ui &other) = delete;
 
@@ -51,11 +56,11 @@ public:
     return *this;
   }
 
-  explicit Ui(std::vector<std::shared_ptr<Ui> >&& children)
+  explicit Ui(std::vector<std::shared_ptr<Ui> > &&children)
     : children(children) {
   }
 
-  void add(std::shared_ptr<Ui>&& child) {
+  void add(std::shared_ptr<Ui> &&child) {
     children.push_back(std::move(child));
   }
 
