@@ -3,13 +3,15 @@
 #include "Ui.h"
 
 class Button : public Ui {
-public:
+  std::string text;
 
-  static std::shared_ptr<Button> make() {
-    return std::make_shared<Button>();
+  public:
+
+  static std::shared_ptr<Button> make(const std::string text) {
+    return std::make_shared<Button>(text);
   }
 
-  Button() {}
+  explicit Button(const std::string &text) :text(text) {}
 
   void render() override;
 };

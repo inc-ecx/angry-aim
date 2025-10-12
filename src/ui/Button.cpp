@@ -6,6 +6,7 @@ void Button::render() {
   RenderFont &fr = app.renderFont;
 
   renderer.start();
+
   renderer.color(0xffffff80);
   // renderer.rect(app.getMouseX(),app.getMouseY(), 100, 100);
 
@@ -13,4 +14,8 @@ void Button::render() {
   renderer.rect(x,y, width, height);
 
   renderer.stop();
+
+  fr.start();
+  fr.renderText(text, round(x + (width - fr.width(text)) / 2 + 0.5f), round(y + (height - fr.height() / 2) + 0.5f), 0xffffffff);
+  fr.stop();
 }

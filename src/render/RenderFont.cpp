@@ -8,7 +8,7 @@ void RenderFont::initCharMap(FT_Library ft) {
     std::cout << "ERROR: Failed to load font." << std::endl;
     return;
   }
-  FT_Set_Pixel_Sizes(face, 0, 24);
+  FT_Set_Pixel_Sizes(face, 0, 18);
 
   lineHeight = (face->size->metrics.height) >> 6;
 
@@ -138,11 +138,25 @@ void main()
   }
 }
 
-void RenderFont::renderText(std::string text, float x, float y, float scale, glm::vec4 color) {
-  glUniform4f(glGetUniformLocation(shaderProgram, "textColor"), color.x, color.y, color.z, color.w);
+int RenderFont::width(std::string text) {
+  float scale = 1.0;
+  int w = 0;
+  std::string::const_iterator c;
+  for (c = text.begin(); c != text.end(); c++) {
+    Character ch = charMap[*c];
+    w+=(ch.Advance >> 6) * scale;
+  }
+  return w;
+}
 
-  glm::mat4 projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f);
-  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
+void RenderFont::renderText(std::string text, float x, float y, int rgba) {
+  float scale = 1.0;
+
+  float r = ((rgba >> 24) & 0xFF) / 255.0f;
+  float g = ((rgba >> 16) & 0xFF) / 255.0f;
+  float b = ((rgba >> 8)  & 0xFF) / 255.0f;
+  float a = (rgba & 0xFF) / 255.0f;
+  glUniform4f(glGetUniformLocation(shaderProgram, "textColor"), r, g, b, a);
 
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(VAO);
@@ -152,8 +166,8 @@ void RenderFont::renderText(std::string text, float x, float y, float scale, glm
   for (c = text.begin(); c != text.end(); c++) {
     Character ch = charMap[*c];
 
-    float xPos = x + ch.Bearing.x * scale + 0.5;
-    float yPos = y - ch.Bearing.y * scale + 0.5;
+    float xPos = x + ch.Bearing.x * scale;
+    float yPos = y - ch.Bearing.y * scale;
 
     float w = ch.Size.x * scale;
     float h = ch.Size.y * scale;
@@ -200,4 +214,10 @@ void RenderFont::stop() {
 }
 
 void RenderFont::resize(int width, int height) {
+  glUseProgram(shaderProgram);
+
+  glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f);
+  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
+
+  glUseProgram(0);
 }

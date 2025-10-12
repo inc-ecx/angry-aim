@@ -31,7 +31,9 @@ class RenderFont {
   void initShader();
 
 public:
-  void renderText(std::string text, float x, float y, float scale, glm::vec4 color);
+  void renderText(std::string text, float x, float y, int rgba);
+  int height() { return lineHeight; }
+  int width(std::string text);
 
   void init(FT_Library ft);
   void start();

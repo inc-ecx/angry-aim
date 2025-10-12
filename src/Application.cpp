@@ -109,9 +109,4 @@ void Application::renderApp() {
   if (currentUi != nullptr) {
     currentUi->render();
   }
-
-
-  renderFont.start();
-  renderFont.renderText("When the imposter is sus. AY Ay T.", 40,40, 1.0f, glm::vec4(1,1,1,1));
-  renderFont.stop();
 }
