@@ -1,9 +1,0 @@
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/CMakeFiles/angry-aim.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/CMakeFiles/edit_cache.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/CMakeFiles/rebuild_cache.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/src/CMakeFiles/glfw.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/src/CMakeFiles/update_mappings.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/src/CMakeFiles/edit_cache.dir
-C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug/glfw/src/CMakeFiles/rebuild_cache.dir

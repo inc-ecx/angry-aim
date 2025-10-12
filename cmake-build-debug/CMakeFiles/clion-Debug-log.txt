@@ -1,5 +1,0 @@
-C:\Users\imint\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/imint/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe -G Ninja -S C:\Users\imint\Downloads\AngryAim\angry-aim -B C:\Users\imint\Downloads\AngryAim\angry-aim\cmake-build-debug
--- Including Win32 support
--- Configuring done (0.2s)
--- Generating done (0.1s)
--- Build files have been written to: C:/Users/imint/Downloads/AngryAim/angry-aim/cmake-build-debug
