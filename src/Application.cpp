@@ -50,6 +50,8 @@ void Application::initApp() {
   const GLubyte *vendor = glGetString(GL_VENDOR);
   std::cout << "OpenGL version: " << version << " Renderer: " << renderer << " Vendor: " << vendor << std::endl;
 
+  renderUi.init();
+
   currentUi = std::make_unique<ScreenMain>();
 }
 

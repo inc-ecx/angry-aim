@@ -4,7 +4,16 @@
 #include "../inc/inc_glfw.h"
 
 class RenderUi {
+  GLuint rectVao = -1;
+  GLuint shaderProgram = -1;
+
+  GLuint u_baseColor = -1;
+
 public:
+  void initRectVao();
+
+  void initShader();
+
   void init();
 
   void start();
