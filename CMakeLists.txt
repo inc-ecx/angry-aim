@@ -4,6 +4,10 @@ include(FetchContent)
 
 project(angry-aim)
 
+# add freetype
+add_subdirectory(freetype)
+include_directories("${CMAKE_SOURCE_DIR}/freetype/include")
+
 # add opengl
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
@@ -45,6 +49,8 @@ set(angry-aim-src
         src/screens/ScreenMain.cpp
         src/screens/ScreenMain.h
         src/inc/inc_glfw.h
+        src/render/RenderFont.cpp
+        src/render/RenderFont.h
 )
 
 # fetch glm
@@ -58,7 +64,11 @@ FetchContent_MakeAvailable(glm)
 # add executable
 add_executable(angry-aim ${angry-aim-src} ${GLAD_SRC})
 
-target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw glm::glm)
-if (MSVC)
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT angry-aim)
-endif ()
+target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw glm::glm freetype)
+
+# copy assets
+add_custom_command(TARGET angry-aim POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:angry-aim>/assets"
+)

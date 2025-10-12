@@ -9,10 +9,13 @@
 #include "inc/inc_glfw.h"
 
 #include "render/RenderUi.h"
+#include "render/RenderFont.h"
 
 class Ui;
 
 class Application {
+  FT_Library freetype = nullptr;
+
   GLFWwindow *window = nullptr;
   int targetFps = 120;
   int maxFpsQueue = 2;
@@ -33,6 +36,7 @@ public:
   static Application app;
 
   RenderUi renderUi;
+  RenderFont renderFont;
 
   void runApp();
 
@@ -40,7 +44,6 @@ public:
   int getMouseY() { return mouseY; }
   int getWidth() { return width; }
   int getHeight() { return height; }
-
 };
 
 #endif //APPLICATION_H

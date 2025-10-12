@@ -20,7 +20,6 @@ void Application::initApp() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-
   window = glfwCreateWindow(width = 640, height = 480, "AngryAim", nullptr, nullptr);
   if (!window) {
     glfwTerminate();
@@ -49,9 +48,17 @@ void Application::initApp() {
   const GLubyte *version = glGetString(GL_VERSION);
   const GLubyte *renderer = glGetString(GL_RENDERER);
   const GLubyte *vendor = glGetString(GL_VENDOR);
-  std::cout << "OpenGL version: " << version << " Renderer: " << renderer << " Vendor: " << vendor << std::endl;
+  std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " << vendor << std::endl;
+
+  FT_Error ftErr = FT_Init_FreeType(&freetype);
+  if (ftErr) {
+    std::cout << "Failed to initialize freetype." << std::endl;
+    return;
+  }
 
   renderUi.init();
+  renderFont.init(freetype);
+
   currentUi = std::make_unique<ScreenMain>();
 
   app.onResize();
@@ -61,6 +68,7 @@ void Application::onResize() {
   glViewport(0,0,width,height);
 
   renderUi.resize(width, height);
+  renderFont.resize(width,height);
 
   if (currentUi != nullptr) {
     currentUi->setBounds(0, 0, width, height);
@@ -99,8 +107,11 @@ void Application::runApp() {
 
 void Application::renderApp() {
   if (currentUi != nullptr) {
-    renderUi.start();
     currentUi->render();
-    renderUi.stop();
   }
+
+
+  renderFont.start();
+  renderFont.renderText("When the imposter is sus. AY Ay T.", 40,40, 1.0f, glm::vec4(1,1,1,1));
+  renderFont.stop();
 }
