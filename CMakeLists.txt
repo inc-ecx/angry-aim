@@ -4,9 +4,19 @@ include(FetchContent)
 
 project(angry-aim)
 
+if (MSVC)
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
+endif ()
+
+#if (MSVC)
+#    add_compile_options(/showIncludes)
+#else ()
+#    add_compile_options(-H)
+#endif()
+
 # add freetype
-add_subdirectory(freetype)
-include_directories("${CMAKE_SOURCE_DIR}/freetype/include")
+add_subdirectory("deps/freetype")
+include_directories("deps/freetype/include")
 
 # add opengl
 find_package(OpenGL REQUIRED)
@@ -15,17 +25,26 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 # add glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
-add_subdirectory(glfw)
+add_subdirectory("deps/glfw")
 include_directories("${GLFW_SOURCE_DIR}/deps")
 
-# set startup project
-if (MSVC)
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
-endif ()
-
 # add glad
-set(GLAD_SRC "${CMAKE_SOURCE_DIR}/glad/src/glad.c")
-include_directories("${CMAKE_SOURCE_DIR}/glad/include")
+set(GLAD_SRC "deps/glad/src/glad.c")
+include_directories("deps/glad/include")
+
+# add glm
+set(GLM_BUILD_TESTS OFF CACHE BOOL "Disable GLM tests")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libs")
+add_subdirectory("deps/glm")
+include_directories("deps/glm")
+
+# add assimp
+set(ASSIMP_BUILD_GLTF_EXPORTER OFF CACHE BOOL "Disable GLTF Exporter" FORCE)
+add_subdirectory("deps/assimp/")
+
+#set(assimp_DIR "deps/assimp/installdir/lib/cmake/assimp-6.0")
+#set(ASSIMP_USE_STATIC_LIBS ON CACHE BOOL "Use static Assimp" FORCE)
+#find_package(assimp REQUIRED)
 
 # add application sources
 set(angry-aim-src
@@ -69,20 +88,18 @@ set(angry-aim-src
         src/world/entities/Cube.h
         src/render/RenderScene.cpp
         src/render/RenderScene.h
+        src/render/Mesh.cpp
+        src/render/Mesh.h
+        src/render/Model.cpp
+        src/render/Model.h
+        src/lib/stb_image.h
+        src/lib/stb_impl.cpp
 )
-
-# fetch glm
-FetchContent_Declare(
-        glm
-        GIT_REPOSITORY	https://github.com/g-truc/glm.git
-        GIT_TAG 	0af55ccecd98d4e5a8d1fad7de25ba429d60e863
-)
-FetchContent_MakeAvailable(glm)
 
 # add executable
 add_executable(angry-aim ${angry-aim-src} ${GLAD_SRC})
 
-target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw glm::glm freetype)
+target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw freetype assimp::assimp)
 
 # copy assets
 add_custom_command(TARGET angry-aim POST_BUILD

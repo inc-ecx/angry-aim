@@ -1,5 +1,7 @@
 #include "Ui.h"
 
+#include "../Application.h"
+
 void Ui::handleChildren(UiEvent &event) {
   for (const auto &child: children) {
     child->handle(event);

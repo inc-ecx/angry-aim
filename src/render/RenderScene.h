@@ -1,14 +1,15 @@
 #ifndef RENDER_SCENE_H
 #define RENDER_SCENE_H
 
+#include "Mesh.h"
+#include "Model.h"
 #include "../inc/inc_glfw.h"
 
 class RenderScene {
-  GLuint rectVao = -1;
   GLuint shaderProgram = -1;
 
-  GLuint u_baseColor = -1;
   GLuint u_model = -1;
+  GLuint u_view = -1;
   GLuint u_projection = -1;
 
   void initRectVao();
@@ -23,9 +24,9 @@ public:
 
   void stop();
 
-  void color(int rgba);
+  void mesh(const Mesh& mesh);
 
-  void rect(int x, int y, int w, int h);
+  void model(const Model& model);
 
   void resize(int width, int height);
 };

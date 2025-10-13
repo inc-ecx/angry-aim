@@ -3,9 +3,9 @@
 void RenderFont::initCharMap(FT_Library ft) {
   FT_Face face;
 
-  FT_Error ftErr = FT_New_Face(ft, "RobotoMono-Regular.ttf", 0, &face);
+  FT_Error ftErr = FT_New_Face(ft, "assets/RobotoMono-Regular.ttf", 0, &face);
   if (ftErr) {
-    std::cout << "ERROR: Failed to load font." << std::endl;
+    std::cout << "ERROR: Failed to load font. " << ftErr << std::endl;
     return;
   }
   FT_Set_Pixel_Sizes(face, 0, 18);

@@ -11,4 +11,6 @@
 
 #include "inc_glm.h"
 
+#include "../lib/stb_image.h"
+
 #endif //INC_GLFW_H

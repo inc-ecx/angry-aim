@@ -3,6 +3,8 @@
 #include "ScreenScene.h"
 #include "ScreenSettings.h"
 
+#include "../Application.h"
+
 // @formatter:off
 ScreenMain::ScreenMain() {
   add(Row::make({

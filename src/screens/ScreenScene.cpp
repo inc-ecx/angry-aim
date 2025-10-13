@@ -1,13 +1,14 @@
 #include "ScreenScene.h"
-
 #include "ScreenMain.h"
+
+#include "../Application.h"
 
 // @formatter:off
 ScreenScene::ScreenScene() {
   add(Column::make({
     Cell::abs(Row::make({
       Cell::rel(),
-      Cell::abs(Label::make("Time: 1:00"), 200),
+      Cell::abs(Label::make("Time: 2:00"), 200),
       Cell::rel(),
     }), 30),
     Cell::rel(),
@@ -22,6 +23,5 @@ void ScreenScene::handle(UiEvent &event) {
       Application::app.setScene(nullptr);
     });
   }
-
   Ui::handle(event);
 }

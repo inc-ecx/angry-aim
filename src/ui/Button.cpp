@@ -1,5 +1,7 @@
 #include "Button.h"
 
+#include "../Application.h"
+
 void Button::render() {
   Application &app = Application::app;
   RenderUi &renderer = app.renderUi;

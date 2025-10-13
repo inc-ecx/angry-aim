@@ -1,10 +1,11 @@
 #ifndef UI_H
 #define UI_H
+
 #include <limits>
 #include <memory>
 #include <vector>
+#include <string>
 
-#include "../Application.h"
 #include "UiEvent.h"
 
 // the basic building block of any ui element.

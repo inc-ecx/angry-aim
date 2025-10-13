@@ -1,5 +1,7 @@
 #include "Label.h"
 
+#include "../Application.h"
+
 void Label::render() {
   Application &app = Application::app;
   RenderFont &fr = app.renderFont;

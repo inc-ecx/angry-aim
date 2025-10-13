@@ -3,6 +3,7 @@
 #include "../Application.h"
 
 Scene::Scene() {
+  // model = std::make_shared<Model>("Model");
 }
 
 void Scene::render() {
@@ -10,8 +11,6 @@ void Scene::render() {
   RenderScene &renderScene = app.renderScene;
 
   renderScene.start();
-  renderScene.color(0x00ffffff);
-  renderScene.rect(0,0,50,50);
   renderScene.stop();
 }
 

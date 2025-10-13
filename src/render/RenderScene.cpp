@@ -1,47 +1,6 @@
 #include "RenderScene.h"
 
 void RenderScene::initRectVao() {
-  // Vertex data: x, y
-  float vertices[] = {
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-    1.0f, 0.0f,
-    0.0f, 0.0f
-  };
-  unsigned int indices[] = {
-    0, 1, 2,
-    2, 3, 0
-  };
-
-  GLuint vao;
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-
-  GLuint vbo;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  GLuint ebo;
-  glGenBuffers(1, &ebo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-  // position attribute
-  glVertexAttribPointer(
-    0, // attribute index (matches your vertex shader)
-    2, // number of components (x, y)
-    GL_FLOAT, // data type
-    GL_FALSE, // should OpenGL normalize values?
-    2 * sizeof(float), // stride: total size of one vertex
-    nullptr // offset: where this attribute starts
-  );
-  glEnableVertexAttribArray(0);
-
-  // Unbind
-  glBindVertexArray(0);
-
-  rectVao = vao;
 }
 
 void RenderScene::initShader() {
@@ -50,6 +9,7 @@ void RenderScene::initShader() {
 layout (location = 0) in vec2 aPos;
 
 uniform mat4 u_model;
+uniform mat4 u_view;
 uniform mat4 u_projection;
 
 void main()
@@ -74,11 +34,9 @@ void main()
 #version 330 core
 out vec4 FragColor;
 
-uniform vec4 u_baseColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-
 void main()
 {
-    FragColor = u_baseColor;
+    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 }
 )";
   GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -106,8 +64,8 @@ void main()
     std::cout << "SHADER COMPILATION FAILED:\n" << infoLog << std::endl;
   }
 
-  u_baseColor = glGetUniformLocation(shaderProgram, "u_baseColor");
   u_model = glGetUniformLocation(shaderProgram, "u_model");
+  u_view = glGetUniformLocation(shaderProgram, "u_view");
   u_projection = glGetUniformLocation(shaderProgram, "u_projection");
 }
 
@@ -130,30 +88,34 @@ void RenderScene::stop() {
   glUseProgram(0);
 }
 
-void RenderScene::color(int rgba) {
-  float r = ((rgba >> 24) & 0xFF) / 255.0f;
-  float g = ((rgba >> 16) & 0xFF) / 255.0f;
-  float b = ((rgba >> 8) & 0xFF) / 255.0f;
-  float a = (rgba & 0xFF) / 255.0f;
-  glUniform4f(u_baseColor, r, g, b, a);
+void RenderScene::mesh(const Mesh &mesh) {
+  unsigned int diffuseNr = 1;
+  unsigned int specularNr = 1;
+  for(unsigned int i = 0; i < mesh.textures.size(); i++)
+  {
+    glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+    // retrieve texture number (the N in diffuse_textureN)
+    std::string number;
+    std::string name = mesh.textures[i].type;
+    if(name == "texture_diffuse")
+      number = std::to_string(diffuseNr++);
+    else if(name == "texture_specular")
+      number = std::to_string(specularNr++);
+
+    glUniform1i(glGetUniformLocation(shaderProgram, ("material." + name + number).c_str()), i);
+    glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+  }
+  glActiveTexture(GL_TEXTURE0);
+
+  // draw mesh
+  glBindVertexArray(mesh.VAO);
+  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
 }
 
-void RenderScene::rect(int x, int y, int w, int h) {
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(x + 0.5f, y + 0.5f, 0.0f));
-  model = glm::scale(model, glm::vec3(w, h, 1.0f));
-
-  glUniformMatrix4fv(u_model, 1, GL_FALSE, &model[0][0]);
-
-  glBindVertexArray(rectVao);
-
-  glDrawElements(
-    GL_TRIANGLES, // draw type
-    6, // number of indices
-    GL_UNSIGNED_INT, // type of indices
-    nullptr // offset
-  );
-  glBindVertexArray(0);
+void RenderScene::model(const Model &model) {
+  for(unsigned int i = 0; i < model.meshes.size(); i++)
+        mesh(model.meshes[i]);
 }
 
 void RenderScene::resize(int width, int height) {

@@ -1,5 +1,7 @@
 #include "ScreenSettings.h"
 
+#include "../Application.h"
+
 // @formatter:off
 ScreenSettings::ScreenSettings(const std::shared_ptr<Ui> &prev) : prev(prev)  {
   add(Column::make({
