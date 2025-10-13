@@ -95,6 +95,12 @@ set(angry-aim-src
         src/lib/stb_impl.cpp
         src/world/entities/MainPlayer.cpp
         src/world/entities/MainPlayer.h
+        src/scene/SceneBackpack.cpp
+        src/scene/SceneBackpack.h
+        src/scene/SceneDefault.cpp
+        src/scene/SceneDefault.h
+        src/render/RenderSceneDefault.cpp
+        src/render/RenderSceneDefault.h
 )
 
 # add executable

@@ -3,7 +3,7 @@
 void RenderFont::initCharMap(FT_Library ft) {
   FT_Face face;
 
-  FT_Error ftErr = FT_New_Face(ft, "assets/RobotoMono-Regular.ttf", 0, &face);
+  FT_Error ftErr = FT_New_Face(ft, "assets/fonts/RobotoMono-Regular.ttf", 0, &face);
   if (ftErr) {
     std::cout << "ERROR: Failed to load font. " << ftErr << std::endl;
     return;

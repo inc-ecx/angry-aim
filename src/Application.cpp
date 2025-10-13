@@ -77,6 +77,7 @@ void Application::initApp() {
 
   renderUi.init();
   renderScene.init();
+  renderSceneDef.init();
   renderFont.init(freetype);
 
   app.onResize();
@@ -91,6 +92,7 @@ void Application::onResize() {
 
   renderUi.resize(width, height);
   renderScene.resize(width, height);
+  renderSceneDef.resize(width, height);
   renderFont.resize(width, height);
 
   if (currentUi != nullptr) {

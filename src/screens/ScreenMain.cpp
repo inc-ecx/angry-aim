@@ -4,6 +4,8 @@
 #include "ScreenSettings.h"
 
 #include "../Application.h"
+#include "../scene/SceneBackpack.h"
+#include "../scene/SceneDefault.h"
 
 // @formatter:off
 ScreenMain::ScreenMain() {
@@ -38,7 +40,7 @@ void ScreenMain::actionScene() {
 
 void ScreenMain::actionPlay() {
   Application::app.setScreen(std::make_shared<ScreenScene>());
-  Application::app.setScene(std::make_shared<Scene>());
+  Application::app.setScene(std::make_shared<SceneDefault>());
 }
 
 void ScreenMain::actionSettings() {

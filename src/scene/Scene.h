@@ -1,27 +1,19 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <memory>
-
 #include "../ui/UiEvent.h"
-#include "../render/Model.h"
-
-#include "../world/World.h"
 
 class Scene {
 public:
-  Scene();
+  Scene() {}
 
-  ~Scene();
+  virtual ~Scene() {}
 
-  std::shared_ptr<World> world;
-  std::shared_ptr<Model> model;
-
-  void render(double dt);
-  void open();
-  void close();
-  void resize(int width, int height);
-  void handle(const UiEvent& event);
+  virtual void render(double dt) = 0;
+  virtual void open() = 0;
+  virtual void close() = 0;
+  virtual void resize(int width, int height) = 0;
+  virtual void handle(const UiEvent& event) = 0;
 
 };
 

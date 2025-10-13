@@ -14,6 +14,7 @@
 #include "render/RenderUi.h"
 #include "render/RenderFont.h"
 #include "render/RenderScene.h"
+#include "render/RenderSceneDefault.h"
 #include "scene/Scene.h"
 #include "ui/UiEvent.h"
 
@@ -56,6 +57,7 @@ public:
   RenderUi renderUi;
   RenderFont renderFont;
   RenderScene renderScene;
+  RenderSceneDefault renderSceneDef;
 
   void runApp();
 
