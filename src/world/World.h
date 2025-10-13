@@ -1,12 +1,12 @@
 #ifndef WORLD_H
 #define WORLD_H
-#include <vector>
-
-#include "Entity.h"
+#include "entities/MainPlayer.h"
 
 class World {
+
 public:
-  std::vector<Entity> entities;
+  MainPlayer player;
+
 };
 
 #endif //WORLD_H

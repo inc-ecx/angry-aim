@@ -6,15 +6,20 @@ void RenderScene::initRectVao() {
 void RenderScene::initShader() {
   auto vertexShaderSource = R"(
 #version 330 core
-layout (location = 0) in vec2 aPos;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
 
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-    gl_Position = u_projection * u_model * vec4(aPos.x, aPos.y, 0, 1.0);
+    TexCoords = aTexCoords;
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 )";
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -34,9 +39,13 @@ void main()
 #version 330 core
 out vec4 FragColor;
 
+in vec2 TexCoords;
+
+uniform sampler2D texture_diffuse1;
+
 void main()
 {
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    FragColor = texture(texture_diffuse1, TexCoords);
 }
 )";
   GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -63,10 +72,6 @@ void main()
     glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
     std::cout << "SHADER COMPILATION FAILED:\n" << infoLog << std::endl;
   }
-
-  u_model = glGetUniformLocation(shaderProgram, "u_model");
-  u_view = glGetUniformLocation(shaderProgram, "u_view");
-  u_projection = glGetUniformLocation(shaderProgram, "u_projection");
 }
 
 void RenderScene::init() {
@@ -75,6 +80,7 @@ void RenderScene::init() {
 }
 
 void RenderScene::start() {
+  glEnable(GL_DEPTH_TEST);
   glEnable(GL_ALPHA);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -82,6 +88,7 @@ void RenderScene::start() {
 }
 
 void RenderScene::stop() {
+  glDisable(GL_DEPTH_TEST);
   glDisable(GL_ALPHA);
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ZERO);
@@ -118,9 +125,26 @@ void RenderScene::model(const Model &model) {
         mesh(model.meshes[i]);
 }
 
+// note: should only be called when renderer is active. angles are deg.
+void RenderScene::updateView(glm::vec3 pos, float pitch, float yaw) {
+
+  glm::mat4 view = glm::identity<glm::mat4>();
+  view = glm::rotate(view, glm::radians(pitch), glm::vec3(1,0,0));
+  view = glm::rotate(view, glm::radians(yaw), glm::vec3(0,1,0));
+  view = glm::translate(view, -pos);
+  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
+}
+
 void RenderScene::resize(int width, int height) {
   glUseProgram(shaderProgram);
-  glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f, -1.0f, 1.0f);
-  glUniformMatrix4fv(u_projection, 1, GL_FALSE, &projection[0][0]);
+
+  glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
+
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+  model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
+
   glUseProgram(0);
 }

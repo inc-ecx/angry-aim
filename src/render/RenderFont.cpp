@@ -167,7 +167,7 @@ void RenderFont::renderText(std::string text, float x, float y, int rgba) {
     Character ch = charMap[*c];
 
     float xPos = x + ch.Bearing.x * scale;
-    float yPos = y - ch.Bearing.y * scale;
+    float yPos = y - ch.Bearing.y * scale + lineHeight;
 
     float w = ch.Size.x * scale;
     float h = ch.Size.y * scale;

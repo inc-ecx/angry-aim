@@ -8,10 +8,6 @@
 class RenderScene {
   GLuint shaderProgram = -1;
 
-  GLuint u_model = -1;
-  GLuint u_view = -1;
-  GLuint u_projection = -1;
-
   void initRectVao();
 
   void initShader();
@@ -29,6 +25,8 @@ public:
   void model(const Model& model);
 
   void resize(int width, int height);
+
+  void updateView(glm::vec3 pos, float pitch, float yaw);
 };
 
 #endif //RENDER_SCENE_H

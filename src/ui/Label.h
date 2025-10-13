@@ -14,7 +14,7 @@ public:
 
   explicit Label(const std::string &text) :text(text) {}
 
-  void render() override;
+  void render(double dt) override;
 };
 
 #endif //LABEL_H

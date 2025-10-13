@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include <iostream>
+#include <sstream>
 #include <chrono>
 #include <algorithm>
 
@@ -27,8 +28,11 @@ void Application::initApp() {
   }
 
   glfwSetCursorPosCallback(window, [](GLFWwindow *, double x, double y) {
+    int dx = app.mouseX == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(x) - app.mouseX);
+    int dy = app.mouseY == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(y) - app.mouseY);
     app.mouseX = static_cast<int>(x);
     app.mouseY = static_cast<int>(y);
+    app.onEvent(UiEvent(app.mouseX, app.mouseY, dx, dy));
   });
   double mx, my;
   glfwGetCursorPos(window, &mx, &my);
@@ -69,6 +73,8 @@ void Application::initApp() {
     return;
   }
 
+  stbi_set_flip_vertically_on_load(true);
+
   renderUi.init();
   renderScene.init();
   renderFont.init(freetype);
@@ -79,6 +85,8 @@ void Application::initApp() {
 }
 
 void Application::onResize() {
+  if (width == 0 || height == 0) return;
+
   glViewport(0, 0, width, height);
 
   renderUi.resize(width, height);
@@ -99,19 +107,42 @@ void Application::runApp() {
   double fpsQueue = 1;
 
   auto lastIteration = std::chrono::high_resolution_clock::now();
+  auto lastFrame = std::chrono::high_resolution_clock::now();
+  auto lastFpsUpdate = std::chrono::high_resolution_clock::now();
 
   while (!glfwWindowShouldClose(window)) {
     auto currentIteration = std::chrono::high_resolution_clock::now();
-    double dt = std::chrono::duration<double>(currentIteration - lastIteration).count();
+    double loopDt = std::chrono::duration<double>(currentIteration - lastIteration).count();
     lastIteration = currentIteration;
-    fpsQueue = std::min(fpsQueue + dt * targetFps, static_cast<double>(maxFpsQueue));
+    fpsQueue = std::min(fpsQueue + loopDt * targetFps, static_cast<double>(maxFpsQueue));
 
     while (fpsQueue > 1) {
       fpsQueue--;
 
-      glClear(GL_COLOR_BUFFER_BIT);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      auto currentFrame = std::chrono::high_resolution_clock::now();
 
-      renderApp();
+      // get dt for frame
+      double frameDt = std::chrono::duration<double>(currentFrame - lastFrame).count();
+      lastFrame = currentFrame;
+      frameDt = std::min(frameDt, 0.1);
+
+      // calc fps
+      frameHistory.push_back(currentFrame);
+
+      // remove old frames from the front
+      while (!frameHistory.empty() && std::chrono::duration<double>(currentFrame - frameHistory.front()).count() > frameHistoryDuration) {
+        frameHistory.erase(frameHistory.begin());
+      }
+
+      if (frameHistory.size() > 2) {
+        if (std::chrono::duration<double>(currentFrame - lastFpsUpdate).count() > currentFpsUpdate) {
+          currentFps = (frameHistory.size() - 1) / std::chrono::duration<double>(currentFrame - frameHistory.front()).count();
+          lastFpsUpdate = currentFrame;
+        }
+      }
+
+      renderApp(frameDt);
 
       glfwSwapBuffers(window);
 
@@ -135,6 +166,21 @@ void Application::later(const std::function<void()> &task) {
 void Application::onEvent(UiEvent event) {
   if (currentScene != nullptr) currentScene->handle(event);
   if (currentUi != nullptr) currentUi->handle(event);
+
+  if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_F11) {
+    GLFWmonitor *mon = glfwGetWindowMonitor(window);
+    if (mon == nullptr) {
+      GLFWmonitor* primary = glfwGetPrimaryMonitor();
+      const GLFWvidmode* mode = glfwGetVideoMode(primary);
+      glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
+    } else {
+      int width = 1280;
+      int height = 720;
+      int xPos = 100;
+      int yPos = 100;
+      glfwSetWindowMonitor(window, nullptr, xPos, yPos, width, height, GLFW_DONT_CARE);
+    }
+  }
 }
 
 void Application::setScreen(const std::shared_ptr<Ui> &screen) {
@@ -154,16 +200,22 @@ void Application::setScene(const std::shared_ptr<Scene> &scene) {
   currentScene = scene;
   if (currentScene != nullptr) {
     currentScene->open();
-    currentScene->resize(width,height);
+    currentScene->resize(width, height);
   }
 }
 
-void Application::renderApp() {
+void Application::renderApp(double dt) {
   if (currentScene != nullptr) {
-    currentScene->render();
+    currentScene->render(dt);
   }
 
   if (currentUi != nullptr) {
-    currentUi->render();
+    currentUi->render(dt);
   }
+
+  renderFont.start();
+  std::stringstream ss;
+  ss << "FPS: " << static_cast<int>(round(currentFps));
+  renderFont.renderText(ss.str(), 2, height - renderFont.height() - 2, 0xffffff80);
+  renderFont.stop();
 }

@@ -70,7 +70,7 @@ public:
   virtual void layout();
 
   // renders this element using the ui renderer
-  virtual void render();
+  virtual void render(double dt);
 
   void setBounds(const int x, const int y, const int width, const int height) {
     this->x = x;
@@ -86,7 +86,7 @@ public:
   void layoutChildren();
 
   // calls render for every child
-  void renderChildren();
+  void renderChildren(double dt);
 
   // return true, if the mouse hovers this element
   bool hovered() const;

@@ -18,7 +18,7 @@ class Button : public Ui {
 
   explicit Button(const std::string &text) :text(text) {}
 
-  void render() override;
+  void render(double dt) override;
 
   void onClicked();
 

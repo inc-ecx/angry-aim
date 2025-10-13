@@ -40,6 +40,7 @@ include_directories("deps/glm")
 
 # add assimp
 set(ASSIMP_BUILD_GLTF_EXPORTER OFF CACHE BOOL "Disable GLTF Exporter" FORCE)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "Enable OBJ importer" FORCE)
 add_subdirectory("deps/assimp/")
 
 #set(assimp_DIR "deps/assimp/installdir/lib/cmake/assimp-6.0")
@@ -81,8 +82,6 @@ set(angry-aim-src
         src/scene/Scene.h
         src/world/World.cpp
         src/world/World.h
-        src/world/Entity.cpp
-        src/world/Entity.h
         src/inc/inc_glm.h
         src/world/entities/Cube.cpp
         src/world/entities/Cube.h
@@ -94,6 +93,8 @@ set(angry-aim-src
         src/render/Model.h
         src/lib/stb_image.h
         src/lib/stb_impl.cpp
+        src/world/entities/MainPlayer.cpp
+        src/world/entities/MainPlayer.h
 )
 
 # add executable

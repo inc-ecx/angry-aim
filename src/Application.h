@@ -25,25 +25,32 @@ class Application {
 
   FT_Library freetype = nullptr;
 
-  GLFWwindow *window = nullptr;
-  int targetFps = 120;
+  int targetFps = 432;
   int maxFpsQueue = 2;
   int mouseX = std::numeric_limits<int>::min();
   int mouseY = std::numeric_limits<int>::min();
   int width = std::numeric_limits<int>::min();
   int height = std::numeric_limits<int>::min();
 
+  // fps measure
+  std::vector<std::chrono::time_point<std::chrono::system_clock> > frameHistory;
+  double frameHistoryDuration = 1.0;
+  double currentFpsUpdate = 0.5;
+  double currentFps = 0;
+
   std::shared_ptr<Ui> currentUi = nullptr;
 
   std::shared_ptr<Scene> currentScene = nullptr;
 
-  void renderApp();
+  void renderApp(double dt);
 
   void initApp();
 
   void onResize();
 
 public:
+  GLFWwindow *window = nullptr;
+
   static Application app;
 
   RenderUi renderUi;
