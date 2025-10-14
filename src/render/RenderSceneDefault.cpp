@@ -100,7 +100,7 @@ void RenderSceneDefault::stop() {
 void RenderSceneDefault::color(int rgba) {
   float r = ((rgba >> 24) & 0xFF) / 255.0f;
   float g = ((rgba >> 16) & 0xFF) / 255.0f;
-  float b = ((rgba >> 8)  & 0xFF) / 255.0f;
+  float b = ((rgba >> 8) & 0xFF) / 255.0f;
   float a = (rgba & 0xFF) / 255.0f;
   glUniform4f(glGetUniformLocation(shaderProgram, "u_baseColor"), r, g, b, a);
 }
@@ -108,15 +108,14 @@ void RenderSceneDefault::color(int rgba) {
 void RenderSceneDefault::mesh(const Mesh &mesh) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
-  for(unsigned int i = 0; i < mesh.textures.size(); i++)
-  {
+  for (unsigned int i = 0; i < mesh.textures.size(); i++) {
     glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
     // retrieve texture number (the N in diffuse_textureN)
     std::string number;
     std::string name = mesh.textures[i].type;
-    if(name == "texture_diffuse")
+    if (name == "texture_diffuse")
       number = std::to_string(diffuseNr++);
-    else if(name == "texture_specular")
+    else if (name == "texture_specular")
       number = std::to_string(specularNr++);
 
     glUniform1i(glGetUniformLocation(shaderProgram, ("material." + name + number).c_str()), i);
@@ -130,31 +129,33 @@ void RenderSceneDefault::mesh(const Mesh &mesh) {
   glBindVertexArray(0);
 }
 
-void RenderSceneDefault::model(const Model &model) {
-  for(unsigned int i = 0; i < model.meshes.size(); i++)
-        mesh(model.meshes[i]);
+void RenderSceneDefault::draw(const Model &model) {
+  for (unsigned int i = 0; i < model.meshes.size(); i++)
+    mesh(model.meshes[i]);
 }
 
 // note: should only be called when renderer is active. angles are deg.
 void RenderSceneDefault::updateView(glm::vec3 pos, float pitch, float yaw) {
-
   glm::mat4 view = glm::identity<glm::mat4>();
-  view = glm::rotate(view, glm::radians(pitch), glm::vec3(1,0,0));
-  view = glm::rotate(view, glm::radians(yaw), glm::vec3(0,1,0));
+  view = glm::rotate(view, glm::radians(pitch), glm::vec3(1, 0, 0));
+  view = glm::rotate(view, glm::radians(yaw), glm::vec3(0, 1, 0));
   view = glm::translate(view, -pos);
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
+}
+
+void RenderSceneDefault::updateModel(glm::vec3 pos, float scale) {
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::translate(model, pos);
+  model = glm::scale(model, glm::vec3(scale));
+  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
 }
 
 void RenderSceneDefault::resize(int width, int height) {
   glUseProgram(shaderProgram);
 
-  glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+  glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / static_cast<float>(height),
+                                          0.1f, 100.0f);
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
-
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-  model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
 
   glUseProgram(0);
 }

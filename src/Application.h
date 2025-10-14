@@ -3,8 +3,6 @@
 
 #include <functional>
 
-#include "ui/Ui.h"
-
 #include <limits>
 #include <memory>
 #include <mutex>
@@ -15,8 +13,13 @@
 #include "render/RenderFont.h"
 #include "render/RenderScene.h"
 #include "render/RenderSceneDefault.h"
+
 #include "scene/Scene.h"
+
+#include "ui/Ui.h"
 #include "ui/UiEvent.h"
+
+#include "DebugInfo.h"
 
 class Ui;
 

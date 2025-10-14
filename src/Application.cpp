@@ -133,13 +133,15 @@ void Application::runApp() {
       frameHistory.push_back(currentFrame);
 
       // remove old frames from the front
-      while (!frameHistory.empty() && std::chrono::duration<double>(currentFrame - frameHistory.front()).count() > frameHistoryDuration) {
+      while (!frameHistory.empty() && std::chrono::duration<double>(currentFrame - frameHistory.front()).count() >
+             frameHistoryDuration) {
         frameHistory.erase(frameHistory.begin());
       }
 
       if (frameHistory.size() > 2) {
         if (std::chrono::duration<double>(currentFrame - lastFpsUpdate).count() > currentFpsUpdate) {
-          currentFps = (frameHistory.size() - 1) / std::chrono::duration<double>(currentFrame - frameHistory.front()).count();
+          currentFps = (frameHistory.size() - 1) / std::chrono::duration<double>(currentFrame - frameHistory.front()).
+                       count();
           lastFpsUpdate = currentFrame;
         }
       }
@@ -172,8 +174,8 @@ void Application::onEvent(UiEvent event) {
   if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_F11) {
     GLFWmonitor *mon = glfwGetWindowMonitor(window);
     if (mon == nullptr) {
-      GLFWmonitor* primary = glfwGetPrimaryMonitor();
-      const GLFWvidmode* mode = glfwGetVideoMode(primary);
+      GLFWmonitor *primary = glfwGetPrimaryMonitor();
+      const GLFWvidmode *mode = glfwGetVideoMode(primary);
       glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
       int width = 1280;
@@ -215,9 +217,28 @@ void Application::renderApp(double dt) {
     currentUi->render(dt);
   }
 
-  renderFont.start();
+  DebugInfo::update();
   std::stringstream ss;
-  ss << "FPS: " << static_cast<int>(round(currentFps));
-  renderFont.renderText(ss.str(), 2, height - renderFont.height() - 2, 0xffffff80);
+  ss << static_cast<int>(round(currentFps));
+  DebugInfo::put("FPS", ss.str());
+
+  renderFont.start();
+
+  int gap = 2;
+  int mb = 2;
+  int ml = 2;
+  int y = height - renderFont.height() * DebugInfo::info.size() - gap * (DebugInfo::info.size() - 1) - mb;
+  int x = ml;
+
+  for (auto info: DebugInfo::info) {
+    int nx = x;
+    renderFont.renderText(info.first, nx, y, 0xffffff80);
+
+    int vx = renderFont.width(info.first) + static_cast<int>(renderFont.height() * 0.7);
+    renderFont.renderText(info.second.value, vx, y, 0xffffff80);
+
+    y += renderFont.height() + gap;
+  }
+
   renderFont.stop();
 }

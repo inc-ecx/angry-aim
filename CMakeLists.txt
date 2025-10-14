@@ -4,6 +4,8 @@ include(FetchContent)
 
 project(angry-aim)
 
+set(CMAKE_CXX_STANDARD 20)
+
 if (MSVC)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif ()
@@ -83,8 +85,6 @@ set(angry-aim-src
         src/world/World.cpp
         src/world/World.h
         src/inc/inc_glm.h
-        src/world/entities/Cube.cpp
-        src/world/entities/Cube.h
         src/render/RenderScene.cpp
         src/render/RenderScene.h
         src/render/Mesh.cpp
@@ -97,15 +97,23 @@ set(angry-aim-src
         src/world/entities/MainPlayer.h
         src/scene/SceneBackpack.cpp
         src/scene/SceneBackpack.h
-        src/scene/SceneDefault.cpp
-        src/scene/SceneDefault.h
+        src/scene/default/SceneDefault.cpp
+        src/scene/default/SceneDefault.h
         src/render/RenderSceneDefault.cpp
         src/render/RenderSceneDefault.h
+        src/world/entities/StrafingTarget.cpp
+        src/world/entities/StrafingTarget.h
+        src/util/time_util.h
+        src/util/math_util.h
+        src/DebugInfo.cpp
+        src/DebugInfo.h
 )
 
 # add executable
 add_executable(angry-aim ${angry-aim-src} ${GLAD_SRC})
 
+
+target_include_directories(angry-aim PRIVATE src)
 target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw freetype assimp::assimp)
 
 # copy assets

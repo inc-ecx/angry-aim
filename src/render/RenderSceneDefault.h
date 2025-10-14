@@ -2,7 +2,6 @@
 #define RENDER_SCENE_DEFAULT_H
 
 
-
 #include "Mesh.h"
 #include "Model.h"
 #include "../inc/inc_glfw.h"
@@ -15,7 +14,6 @@ class RenderSceneDefault {
   void initShader();
 
 public:
-
   void init();
 
   void start();
@@ -24,15 +22,16 @@ public:
 
   void color(int rgba);
 
-  void mesh(const Mesh& mesh);
+  void mesh(const Mesh &mesh);
 
-  void model(const Model& model);
+  void draw(const Model &model);
 
   void resize(int width, int height);
 
   void updateView(glm::vec3 pos, float pitch, float yaw);
-};
 
+  void updateModel(glm::vec3 pos, float scale);
+};
 
 
 #endif //RENDER_SCENE_DEFAULT_H
