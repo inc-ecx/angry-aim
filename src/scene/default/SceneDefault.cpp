@@ -6,14 +6,16 @@
 
 SceneDefault::SceneDefault() {
   world = std::make_shared<World>();
-  model = std::make_shared<Model>("assets/models/target1/Target1.obj");
+  targetModel = std::make_shared<Model>("assets/models/target1/Target1.obj");
+  worldModel = std::make_shared<Model>("assets/models/map1/Map1.obj");
 
-  world->player.pos.z = 10;
+  world->player.pos = glm::vec3(0, 1.60, 0);
 
   std::shared_ptr<StrafingTarget> t1;
   world->targets.push_back(t1 = std::make_shared<StrafingTarget>());
-  t1->min = glm::vec3(-4.0f, 0.0f, 0.0f);
-  t1->max = glm::vec3(4.0f, 0.0f, 0.0f);
+  t1->min = glm::vec3(-4.0f, 1.5f, -20.0f);
+  t1->max = glm::vec3(4.0f, 1.5f, -20.0f);
+  t1->pos = glm::vec3(0.0f, 1.5f, -20.0f);
 }
 
 SceneDefault::~SceneDefault() {
@@ -51,10 +53,14 @@ void SceneDefault::drawWorld() {
   renderScene.start();
   renderScene.updateView(world->player.pos, world->player.pitch, world->player.yaw);
 
+  renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
+  renderScene.color(0x606060ff);
+  renderScene.draw(*worldModel);
+
   for (auto target: world->targets) {
     renderScene.updateModel(target->pos, 0.5 * target->size);
     renderScene.color(0xd03030ff);
-    renderScene.draw(*model);
+    renderScene.draw(*targetModel);
   }
 
   renderScene.stop();
@@ -80,14 +86,14 @@ void SceneDefault::updateMovement(double dt) {
 }
 
 void SceneDefault::updateWorld(double dt) {
-
   uint64_t msNow = msCurrent();
 
   bool doForceDirection = false;
   float input = 0;
 
-  for (auto target : world->targets) {
-    target->velocity = std::clamp(target->velocity + strafeAcceleration * target->input * dt, -strafeMaxSpeed, strafeMaxSpeed);
+  for (auto target: world->targets) {
+    target->velocity = std::clamp(target->velocity + strafeAcceleration * target->input * dt, -strafeMaxSpeed,
+                                  strafeMaxSpeed);
 
     bool decelerating = std::abs(target->input) < 0.1 && std::abs(target->velocity) > 0.1;
     if (decelerating) {
@@ -96,7 +102,7 @@ void SceneDefault::updateWorld(double dt) {
     }
   }
 
-  for (auto target : world->targets) {
+  for (auto target: world->targets) {
     glm::vec3 direction = glm::normalize(target->max - target->min);
     target->pos += target->velocity * direction * static_cast<float>(dt);
 

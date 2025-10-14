@@ -14,8 +14,8 @@
 class SceneDefault : public Scene {
 
   // timestamp by when the strafe direction needs to be switched
-  int strafeMinDurationMs = 230;
-  int strafeMaxDurationMs = 1300;
+  int strafeMinDurationMs = 150;
+  int strafeMaxDurationMs = 600;
   double strafeAcceleration = 30;
   double strafeMaxSpeed = 6;
   double strafeDeceleration = 40;
@@ -32,7 +32,8 @@ class SceneDefault : public Scene {
 
 public:
   std::shared_ptr<World> world;
-  std::shared_ptr<Model> model;
+  std::shared_ptr<Model> targetModel;
+  std::shared_ptr<Model> worldModel;
 
   SceneDefault();
 
