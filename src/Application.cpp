@@ -36,8 +36,8 @@ void Application::initApp() {
   });
   double mx, my;
   glfwGetCursorPos(window, &mx, &my);
-  mouseX = mx;
-  mouseY = my;
+  mouseX = static_cast<int>(mx);
+  mouseY = static_cast<int>(my);
 
   glfwSetWindowSizeCallback(window, [](GLFWwindow *, int w, int h) {
     app.width = w;

@@ -13,9 +13,9 @@ ScreenMain::ScreenMain() {
     Cell::rel(1),
     Cell::abs(Column::make({
       Cell::rel(1),
-      Cell::abs(Button::make("[Default]", std::bind(actionScene, this)), 30),
+      Cell::abs(Button::make("[Default]", std::bind(&ScreenMain::actionScene, this)), 30),
       Cell::abs(10),
-      Cell::abs(Button::make("Play", std::bind(actionPlay, this)), 30),
+      Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 30),
       Cell::rel(1),
     }), 200),
     Cell::rel(1),
@@ -27,7 +27,7 @@ ScreenMain::ScreenMain() {
       Cell::abs(Label::make("AngryAim"), 150),
       Cell::rel(Row::make({
         Cell::rel(1),
-        Cell::abs(Button::make("Settings", std::bind(actionSettings, this)), 120),
+        Cell::abs(Button::make("Settings", std::bind(&ScreenMain::actionSettings, this)), 120),
       }), 1),
     }), 30),
     Cell::rel(),

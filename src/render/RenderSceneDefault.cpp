@@ -42,10 +42,18 @@ out vec4 FragColor;
 in vec2 TexCoords;
 uniform sampler2D texture_diffuse1;
 uniform vec4 u_baseColor = vec4(1,1,1,1);
+uniform int u_doTexture = 0;
 
 void main()
 {
-    FragColor = u_baseColor;//texture(texture_diffuse1, TexCoords);
+  if (u_doTexture == 1)
+  {
+    FragColor = texture(texture_diffuse1, vec2(TexCoords.x,1 - TexCoords.y));
+  }
+  else
+  {
+    FragColor = u_baseColor;
+  }
 }
 )";
   GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -95,6 +103,10 @@ void RenderSceneDefault::stop() {
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ZERO);
   glUseProgram(0);
+}
+
+void RenderSceneDefault::texture(bool value) {
+  glUniform1i(glGetUniformLocation(shaderProgram, "u_doTexture"), value ? 1 : 0);
 }
 
 void RenderSceneDefault::color(int rgba) {

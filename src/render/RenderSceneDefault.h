@@ -20,6 +20,8 @@ public:
 
   void stop();
 
+  void texture(bool value);
+
   void color(int rgba);
 
   void mesh(const Mesh &mesh);

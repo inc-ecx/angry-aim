@@ -55,7 +55,9 @@ void SceneDefault::drawWorld() {
 
   renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
   renderScene.color(0x606060ff);
+  renderScene.texture(true);
   renderScene.draw(*worldModel);
+  renderScene.texture(false);
 
   for (auto target: world->targets) {
     renderScene.updateModel(target->pos, 0.5 * target->size);

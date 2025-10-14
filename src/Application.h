@@ -37,7 +37,7 @@ class Application {
   int height = std::numeric_limits<int>::min();
 
   // fps measure
-  std::vector<std::chrono::time_point<std::chrono::system_clock> > frameHistory;
+  std::vector<std::chrono::time_point<std::chrono::steady_clock> > frameHistory;
   double frameHistoryDuration = 1.0;
   double currentFpsUpdate = 0.5;
   double currentFps = 0;

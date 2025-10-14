@@ -10,7 +10,7 @@ public:
   glm::vec3 max = {};
   float velocity = 0;
   float input = 1;
-  float size = 0.3;
+  float size = 0.3f;
 };
 
 #endif //STRAFING_TARGET_H

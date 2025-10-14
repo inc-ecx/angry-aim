@@ -6,15 +6,7 @@ project(angry-aim)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if (MSVC)
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
-endif ()
-
-#if (MSVC)
-#    add_compile_options(/showIncludes)
-#else ()
-#    add_compile_options(-H)
-#endif()
+# add_compile_options(-H)
 
 # add freetype
 add_subdirectory("deps/freetype")
@@ -112,9 +104,8 @@ set(angry-aim-src
 # add executable
 add_executable(angry-aim ${angry-aim-src} ${GLAD_SRC})
 
-
 target_include_directories(angry-aim PRIVATE src)
-target_link_libraries(angry-aim ${OPENGL_LIBRARIES} glfw freetype assimp::assimp)
+target_link_libraries(angry-aim PRIVATE ${OPENGL_LIBRARIES} glfw freetype assimp::assimp)
 
 # copy assets
 add_custom_command(TARGET angry-aim POST_BUILD
