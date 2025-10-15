@@ -46,3 +46,11 @@ void ScreenMain::actionPlay() {
 void ScreenMain::actionSettings() {
   Application::app.setScreen(std::make_shared<ScreenSettings>(Application::app.getScreen()));
 }
+
+void ScreenMain::handle(UiEvent &event) {
+  if (event.type == UiEventType::KEY && event.down && (event.button == GLFW_KEY_SPACE || event.button == GLFW_KEY_ENTER)) {
+    Application::app.later(std::bind(&ScreenMain::actionPlay, this));
+  }
+
+  Ui::handle(event);
+}

@@ -5,12 +5,16 @@
 
 class StrafingTarget {
 public:
-  glm::vec3 pos = {};
-  glm::vec3 min = {};
-  glm::vec3 max = {};
-  float velocity = 0;
-  float input = 1;
-  float size = 0.3f;
+  float size = 0.2f;
+
+  glm::vec3 pos = {}; // updated as pos = strafeStart + vec3(strafePos,0,0)
+
+  glm::vec3 strafeStart = {}; // initial position
+  float strafeWidth = 0; // width the strafe pos can deviate from strafe start
+
+  float strafeInput = 0; // raw input (0, -1 or 1)
+  float strafeVelocity = 0;
+  float strafePos = 0;
 };
 
 #endif //STRAFING_TARGET_H

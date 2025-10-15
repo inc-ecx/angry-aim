@@ -5,6 +5,8 @@
 
 class ScreenScene : public Ui {
 public:
+  std::shared_ptr<Label> lblMainStat;
+
   ScreenScene();
 
   void handle(UiEvent &event) override;

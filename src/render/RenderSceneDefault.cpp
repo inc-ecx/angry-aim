@@ -48,7 +48,7 @@ void main()
 {
   if (u_doTexture == 1)
   {
-    FragColor = texture(texture_diffuse1, vec2(TexCoords.x,1 - TexCoords.y));
+    FragColor = u_baseColor * texture(texture_diffuse1, vec2(TexCoords.x, 1 - TexCoords.y));
   }
   else
   {
@@ -137,7 +137,7 @@ void RenderSceneDefault::mesh(const Mesh &mesh) {
 
   // draw mesh
   glBindVertexArray(mesh.VAO);
-  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.indices.size()), GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0);
 }
 
@@ -149,8 +149,8 @@ void RenderSceneDefault::draw(const Model &model) {
 // note: should only be called when renderer is active. angles are deg.
 void RenderSceneDefault::updateView(glm::vec3 pos, float pitch, float yaw) {
   glm::mat4 view = glm::identity<glm::mat4>();
-  view = glm::rotate(view, glm::radians(pitch), glm::vec3(1, 0, 0));
-  view = glm::rotate(view, glm::radians(yaw), glm::vec3(0, 1, 0));
+  view = glm::rotate(view, glm::radians(-pitch), glm::vec3(1, 0, 0));
+  view = glm::rotate(view, glm::radians(-yaw), glm::vec3(0, 1, 0));
   view = glm::translate(view, -pos);
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
 }
@@ -165,7 +165,7 @@ void RenderSceneDefault::updateModel(glm::vec3 pos, float scale) {
 void RenderSceneDefault::resize(int width, int height) {
   glUseProgram(shaderProgram);
 
-  glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(width) / static_cast<float>(height),
+  glm::mat4 projection = glm::perspective(glm::radians(101.0f), static_cast<float>(width) / static_cast<float>(height),
                                           0.1f, 100.0f);
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
 

@@ -8,7 +8,7 @@ ScreenScene::ScreenScene() {
   add(Column::make({
     Cell::abs(Row::make({
       Cell::rel(),
-      Cell::abs(Label::make("Time: 2:00"), 200),
+      Cell::abs(lblMainStat = Label::make("Time: 2:00"), 200),
       Cell::rel(),
     }), 30),
     Cell::rel(),

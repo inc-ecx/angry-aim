@@ -26,14 +26,14 @@ void SceneBackpack::render(double dt) {
   if (glfwGetKey(app.window, GLFW_KEY_SPACE) == GLFW_PRESS) movement.y++;
   double l = glm::length(movement);
   if (l > 0.1) {
-    float yaw = world->player.yaw;
+    float yaw = static_cast<float>(world->player.yaw);
     glm::mat4 rot = glm::rotate(glm::mat4(1.0f), -glm::radians(yaw), glm::vec3(0, 1, 0));
     glm::vec3 rotated = glm::vec3(rot * glm::vec4(movement, 1.0f));
     world->player.pos += rotated * static_cast<float>(dt * speed / l);
   }
 
   renderScene.start();
-  renderScene.updateView(world->player.pos, world->player.pitch, world->player.yaw);
+  renderScene.updateView(world->player.pos, static_cast<float>(world->player.pitch), static_cast<float>(world->player.yaw));
   renderScene.model(*model);
   renderScene.stop();
 }

@@ -1,7 +1,6 @@
 #ifndef RENDER_SCENE_DEFAULT_H
 #define RENDER_SCENE_DEFAULT_H
 
-
 #include "Mesh.h"
 #include "Model.h"
 #include "../inc/inc_glfw.h"

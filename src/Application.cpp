@@ -61,11 +61,11 @@ void Application::initApp() {
 
   gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 
-  const GLubyte *version = glGetString(GL_VERSION);
-  const GLubyte *renderer = glGetString(GL_RENDERER);
-  const GLubyte *vendor = glGetString(GL_VENDOR);
-  std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " <<
-      vendor << std::endl;
+  // const GLubyte *version = glGetString(GL_VERSION);
+  // const GLubyte *renderer = glGetString(GL_RENDERER);
+  // const GLubyte *vendor = glGetString(GL_VENDOR);
+  // std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " <<
+  //     vendor << std::endl;
 
   FT_Error ftErr = FT_Init_FreeType(&freetype);
   if (ftErr) {
@@ -224,18 +224,19 @@ void Application::renderApp(double dt) {
 
   renderFont.start();
 
+  int infoCount = static_cast<int>(DebugInfo::info.size());
   int gap = 2;
-  int mb = 2;
-  int ml = 2;
-  int y = height - renderFont.height() * DebugInfo::info.size() - gap * (DebugInfo::info.size() - 1) - mb;
+  int mb = 5;
+  int ml = 4;
+  int y = height - renderFont.height() * infoCount - gap * (infoCount - 1) - mb;
   int x = ml;
 
   for (auto info: DebugInfo::info) {
     int nx = x;
-    renderFont.renderText(info.first, nx, y, 0xffffff80);
+    renderFont.renderText(info.first, static_cast<float>(nx), static_cast<float>(y), 0xffffff80);
 
-    int vx = renderFont.width(info.first) + static_cast<int>(renderFont.height() * 0.7);
-    renderFont.renderText(info.second.value, vx, y, 0xffffff80);
+    int vx = renderFont.width(info.first) + static_cast<int>(renderFont.height() * 0.7f);
+    renderFont.renderText(info.second.value, static_cast<float>(vx), static_cast<float>(y), 0xffffff80);
 
     y += renderFont.height() + gap;
   }
