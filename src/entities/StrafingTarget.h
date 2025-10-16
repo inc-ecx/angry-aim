@@ -1,9 +1,10 @@
 #ifndef STRAFING_TARGET_H
 #define STRAFING_TARGET_H
 
-#include "../../inc/inc_glm.h"
+#include "inc/inc_glm.h"
+#include "world/Entity.h"
 
-class StrafingTarget {
+class StrafingTarget : public Entity {
 public:
   float size = 0.2f;
 

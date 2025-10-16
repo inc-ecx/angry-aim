@@ -129,8 +129,8 @@ void RenderScene::model(const Model &model) {
 void RenderScene::updateView(glm::vec3 pos, float pitch, float yaw) {
 
   glm::mat4 view = glm::identity<glm::mat4>();
-  view = glm::rotate(view, glm::radians(pitch), glm::vec3(1,0,0));
-  view = glm::rotate(view, glm::radians(yaw), glm::vec3(0,1,0));
+  view = glm::rotate(view, -glm::radians(pitch), glm::vec3(1,0,0));
+  view = glm::rotate(view, -glm::radians(yaw), glm::vec3(0,1,0));
   view = glm::translate(view, -pos);
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
 }

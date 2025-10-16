@@ -85,20 +85,38 @@ set(angry-aim-src
         src/render/Model.h
         src/lib/stb_image.h
         src/lib/stb_impl.cpp
-        src/world/entities/MainPlayer.cpp
-        src/world/entities/MainPlayer.h
+        src/entities/MainPlayer.cpp
+        src/entities/MainPlayer.h
         src/scene/SceneBackpack.cpp
         src/scene/SceneBackpack.h
-        src/scene/default/SceneDefault.cpp
-        src/scene/default/SceneDefault.h
+        src/scene/SceneDefault.cpp
+        src/scene/SceneDefault.h
         src/render/RenderSceneDefault.cpp
         src/render/RenderSceneDefault.h
-        src/world/entities/StrafingTarget.cpp
-        src/world/entities/StrafingTarget.h
+        src/entities/StrafingTarget.cpp
+        src/entities/StrafingTarget.h
         src/util/time_util.h
         src/util/math_util.h
         src/DebugInfo.cpp
         src/DebugInfo.h
+        src/screens/ScreenResult.cpp
+        src/screens/ScreenResult.h
+        src/controller/Controller.cpp
+        src/controller/Controller.h
+        src/world/Entity.cpp
+        src/world/Entity.h
+        src/controller/EntityController.cpp
+        src/controller/EntityController.h
+        src/controllers/CameraController.cpp
+        src/controllers/CameraController.h
+        src/entities/components/Looking.cpp
+        src/entities/components/Looking.h
+        src/controllers/MoveController.cpp
+        src/controllers/MoveController.h
+        src/entities/components/Positioned.cpp
+        src/entities/components/Positioned.h
+        src/controllers/components/Toggelable.cpp
+        src/controllers/components/Toggelable.h
 )
 
 # add executable

@@ -5,7 +5,7 @@
 
 #include "../Application.h"
 #include "../scene/SceneBackpack.h"
-#include "../scene/default/SceneDefault.h"
+#include "../scene/SceneDefault.h"
 
 // @formatter:off
 ScreenMain::ScreenMain() {

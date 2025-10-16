@@ -6,11 +6,15 @@
 #include <memory>
 
 #include "../render/Model.h"
-#include "../world/World.h"
+#include "controller/Controller.h"
+#include "entities/MainPlayer.h"
 
 class SceneBackpack : public Scene {
 public:
-  std::shared_ptr<World> world;
+  std::shared_ptr<Controller> controller;
+  std::shared_ptr<MainPlayer> player;
+
+  // std::shared_ptr<World> world;
   std::shared_ptr<Model> model;
 
   SceneBackpack();
