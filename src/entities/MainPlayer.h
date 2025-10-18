@@ -3,7 +3,7 @@
 
 #include "components/Looking.h"
 #include "components/Positioned.h"
-#include "world/Entity.h"
+#include "world/model/Entity.h"
 
 class MainPlayer :
     public Entity,

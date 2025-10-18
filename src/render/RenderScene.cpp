@@ -116,13 +116,13 @@ void RenderScene::mesh(const Mesh &mesh) {
 
   // draw mesh
   glBindVertexArray(mesh.VAO);
-  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0);
 }
 
 void RenderScene::model(const Model &model) {
   for(unsigned int i = 0; i < model.meshes.size(); i++)
-        mesh(model.meshes[i]);
+        mesh(*model.meshes[i]);
 }
 
 // note: should only be called when renderer is active. angles are deg.

@@ -143,7 +143,7 @@ void RenderSceneDefault::mesh(const Mesh &mesh) {
 
 void RenderSceneDefault::draw(const Model &model) {
   for (unsigned int i = 0; i < model.meshes.size(); i++)
-    mesh(model.meshes[i]);
+    mesh(*model.meshes[i]);
 }
 
 // note: should only be called when renderer is active. angles are deg.

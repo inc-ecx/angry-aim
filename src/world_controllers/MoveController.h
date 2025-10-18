@@ -7,9 +7,9 @@
 #include "entities/components/Positioned.h"
 #include "entities/components/Looking.h"
 
-#include "controller/EntityController.h"
+#include "world/controller/Controller.h"
 
-class MoveController : public EntityController, public Toggelable {
+class MoveController : public Controller, public Toggelable {
 public:
   MoveController(const std::shared_ptr<Positioned> &positioned, const std::shared_ptr<Looking> &looking);
 

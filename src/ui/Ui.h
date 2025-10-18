@@ -65,6 +65,10 @@ public:
     children.push_back(std::move(child));
   }
 
+  void clear() {
+    children.clear();
+  }
+
   // recalculates bounds of this element and its children. order depends on ui element.
   // setBounds was used before to set the maximum bounds possible
   virtual void layout();

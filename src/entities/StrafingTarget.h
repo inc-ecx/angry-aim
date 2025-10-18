@@ -2,7 +2,7 @@
 #define STRAFING_TARGET_H
 
 #include "inc/inc_glm.h"
-#include "world/Entity.h"
+#include "world/model/Entity.h"
 
 class StrafingTarget : public Entity {
 public:

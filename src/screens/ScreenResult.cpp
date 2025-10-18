@@ -2,8 +2,6 @@
 
 #include "Application.h"
 #include "ScreenMain.h"
-#include "ScreenScene.h"
-#include "scene/SceneDefault.h"
 
 ScreenResult::ScreenResult(const std::vector<std::string> &results) {
   std::vector<std::shared_ptr<Cell>> cells;
@@ -48,15 +46,14 @@ void ScreenResult::render(double dt) {
 }
 
 void ScreenResult::handlePlay() {
-  Application::app.setScreen(std::make_shared<ScreenScene>());
-  Application::app.setScene(std::make_shared<SceneDefault>());
+  Application::app.getScene()->replay();
 }
 
 void ScreenResult::handle(UiEvent &event) {
   if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_ESCAPE) {
     Application::app.later([] {
+      Application::app.updateScene(nullptr);
       Application::app.setScreen(std::make_shared<ScreenMain>());
-      Application::app.setScene(nullptr);
     });
   }
 

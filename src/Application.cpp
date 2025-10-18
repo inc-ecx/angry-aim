@@ -196,13 +196,14 @@ void Application::setScreen(const std::shared_ptr<Ui> &screen) {
   }
 }
 
-void Application::setScene(const std::shared_ptr<Scene> &scene) {
+void Application::updateScene(const std::shared_ptr<Scene> &scene) {
   if (currentScene != nullptr) {
     currentScene->close();
   }
 
   currentScene = scene;
   if (currentScene != nullptr) {
+    setScreen(nullptr);
     currentScene->open();
     currentScene->resize(width, height);
   }
@@ -242,4 +243,24 @@ void Application::renderApp(double dt) {
   }
 
   renderFont.stop();
+}
+
+void Application::pushScissors(int x, int y, int w, int h) {
+  y = height - y - h; // we use 0,0 as top left around here, but scissors uses 0,0 as bottom left
+
+  glScissor(x, y, w, h);
+  if (scissors.empty()) glEnable(GL_SCISSOR_TEST);
+  scissors.push_back({x, y, w, h});
+
+  if (scissors.size() > 10'000) throw std::runtime_error("scissor stack overflow");
+}
+
+void Application::popScissors() {
+  scissors.pop_back();
+  if (scissors.empty()) {
+    glDisable(GL_SCISSOR_TEST);
+  } else {
+    auto &last = scissors.back();
+    glScissor(last.x, last.y, last.w, last.h);
+  }
 }

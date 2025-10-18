@@ -1,10 +1,10 @@
-#include "ScreenScene.h"
+#include "ScreenDrill.h"
 #include "ScreenMain.h"
 
 #include "../Application.h"
 
 // @formatter:off
-ScreenScene::ScreenScene() {
+ScreenDrill::ScreenDrill() {
   add(Column::make({
     Cell::abs(Row::make({
       Cell::rel(),
@@ -16,11 +16,11 @@ ScreenScene::ScreenScene() {
 }
 // @formatter:on
 
-void ScreenScene::handle(UiEvent &event) {
+void ScreenDrill::handle(UiEvent &event) {
   if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_ESCAPE) {
     Application::app.later([] {
       Application::app.setScreen(std::make_shared<ScreenMain>());
-      Application::app.setScene(nullptr);
+      Application::app.updateScene(nullptr);
     });
   }
   Ui::handle(event);

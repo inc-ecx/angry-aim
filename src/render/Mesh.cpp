@@ -8,6 +8,12 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> 
   setupMesh();
 }
 
+Mesh::~Mesh() {
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &EBO);
+  glDeleteVertexArrays(1, &VAO);
+}
+
 void Mesh::setupMesh() {
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);

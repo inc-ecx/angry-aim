@@ -8,21 +8,23 @@ class Button : public Ui {
   std::string text;
   std::function<void()> listener = nullptr;
 
-  public:
-
-  static std::shared_ptr<Button> make(const std::string& text, const std::function<void()> &listener = nullptr) {
+public:
+  static std::shared_ptr<Button> make(const std::string &text, const std::function<void()> &listener = nullptr) {
     auto r = std::make_shared<Button>(text);
     r->listener = listener;
     return r;
   }
 
-  explicit Button(const std::string &text) :text(text) {}
+  explicit Button(const std::string &text) : text(text) {
+  }
 
   void render(double dt) override;
 
   void onClicked();
 
   void handle(UiEvent &event) override;
+
+  void setText(const std::string &text) { this->text = text; }
 };
 
 #endif //BUTTON_H

@@ -14,23 +14,30 @@
 #include "render/RenderScene.h"
 #include "render/RenderSceneDefault.h"
 
-#include "scene/Scene.h"
+#include "scenes/Scene.h"
 
 #include "ui/Ui.h"
 #include "ui/UiEvent.h"
 
 #include "DebugInfo.h"
 
-class Ui;
+struct Scissors {
+  int x;
+  int y;
+  int w;
+  int h;
+};
 
 class Application {
+  // tasks
   std::mutex mtx;
   std::vector<std::function<void()> > laterVec;
 
-  FT_Library freetype = nullptr;
-
+  // loop configuration
   int targetFps = 432;
   int maxFpsQueue = 2;
+
+  // window props
   int mouseX = std::numeric_limits<int>::min();
   int mouseY = std::numeric_limits<int>::min();
   int width = std::numeric_limits<int>::min();
@@ -42,8 +49,8 @@ class Application {
   double currentFpsUpdate = 0.5;
   double currentFps = 0;
 
+  // controllers
   std::shared_ptr<Ui> currentUi = nullptr;
-
   std::shared_ptr<Scene> currentScene = nullptr;
 
   void renderApp(double dt);
@@ -53,14 +60,20 @@ class Application {
   void onResize();
 
 public:
+  // resources
   GLFWwindow *window = nullptr;
+  FT_Library freetype = nullptr;
 
   static Application app;
 
+  // renderers
   RenderUi renderUi;
   RenderFont renderFont;
   RenderScene renderScene;
   RenderSceneDefault renderSceneDef;
+
+  // scissors state
+  std::vector<Scissors> scissors;
 
   void runApp();
 
@@ -68,7 +81,11 @@ public:
 
   void setScreen(const std::shared_ptr<Ui> &screen);
 
-  void setScene(const std::shared_ptr<Scene> &scene);
+  void updateScene(const std::shared_ptr<Scene> &scene);
+
+  void pushScissors(int x, int y, int w, int h);
+
+  void popScissors();
 
   int getMouseX() { return mouseX; }
   int getMouseY() { return mouseY; }
@@ -78,6 +95,8 @@ public:
   void onEvent(UiEvent event);
 
   std::shared_ptr<Ui> getScreen() { return currentUi; }
+
+  std::shared_ptr<Scene> getScene() { return currentScene; }
 };
 
 #endif //APPLICATION_H

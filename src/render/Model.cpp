@@ -4,7 +4,13 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-void Model::loadModel(std::string path) {
+Model::~Model() {
+  for (auto loaded : textures_loaded) {
+    glDeleteTextures(1, &loaded.id);
+  }
+}
+
+void Model::loadModel(const std::string &path) {
   Assimp::Importer import;
   const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -29,7 +35,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
   }
 }
 
-Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+std::shared_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
   std::vector<Texture> textures;
@@ -63,8 +69,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
       indices.push_back(face.mIndices[j]);
   }
   // process material
-  if (mesh->mMaterialIndex >= 0) {
-    if (mesh->mMaterialIndex >= 0) {
+  if (static_cast<int>(mesh->mMaterialIndex) >= 0) {
+    if (static_cast<int>(mesh->mMaterialIndex) >= 0) {
       aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
       std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
                                                               aiTextureType_DIFFUSE, "texture_diffuse");
@@ -75,7 +81,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     }
   }
 
-  return Mesh(vertices, indices, textures);
+  return Mesh::make(vertices, indices, textures);
 }
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma) {
@@ -119,7 +125,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
   return textureID;
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName)
 {
   std::vector<Texture> textures;
   for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)

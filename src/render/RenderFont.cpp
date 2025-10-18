@@ -11,6 +11,7 @@ void RenderFont::initCharMap(FT_Library ft) {
   FT_Set_Pixel_Sizes(face, 0, 18);
 
   lineHeight = (face->size->metrics.height) >> 6;
+  descender = (face->size->metrics.descender) >> 6;
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
@@ -167,7 +168,7 @@ void RenderFont::renderText(std::string text, float x, float y, int rgba) {
     Character ch = charMap[*c];
 
     float xPos = x + ch.Bearing.x * scale;
-    float yPos = y - ch.Bearing.y * scale + lineHeight;
+    float yPos = y - ch.Bearing.y * scale + descender + lineHeight;
 
     float w = ch.Size.x * scale;
     float h = ch.Size.y * scale;

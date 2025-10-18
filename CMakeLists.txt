@@ -70,12 +70,12 @@ set(angry-aim-src
         src/ui/components.h
         src/screens/ScreenSettings.cpp
         src/screens/ScreenSettings.h
-        src/screens/ScreenScene.cpp
-        src/screens/ScreenScene.h
-        src/scene/Scene.cpp
-        src/scene/Scene.h
-        src/world/World.cpp
-        src/world/World.h
+        src/screens/ScreenDrill.cpp
+        src/screens/ScreenDrill.h
+        src/scenes/Scene.cpp
+        src/scenes/Scene.h
+        src/world/model/World.cpp
+        src/world/model/World.h
         src/inc/inc_glm.h
         src/render/RenderScene.cpp
         src/render/RenderScene.h
@@ -87,10 +87,8 @@ set(angry-aim-src
         src/lib/stb_impl.cpp
         src/entities/MainPlayer.cpp
         src/entities/MainPlayer.h
-        src/scene/SceneBackpack.cpp
-        src/scene/SceneBackpack.h
-        src/scene/SceneDefault.cpp
-        src/scene/SceneDefault.h
+        src/scenes/SceneBackpack.cpp
+        src/scenes/SceneBackpack.h
         src/render/RenderSceneDefault.cpp
         src/render/RenderSceneDefault.h
         src/entities/StrafingTarget.cpp
@@ -101,22 +99,41 @@ set(angry-aim-src
         src/DebugInfo.h
         src/screens/ScreenResult.cpp
         src/screens/ScreenResult.h
-        src/controller/Controller.cpp
-        src/controller/Controller.h
-        src/world/Entity.cpp
-        src/world/Entity.h
-        src/controller/EntityController.cpp
-        src/controller/EntityController.h
-        src/controllers/CameraController.cpp
-        src/controllers/CameraController.h
+        src/world/controller/WorldController.cpp
+        src/world/controller/WorldController.h
+        src/world/model/Entity.cpp
+        src/world/model/Entity.h
+        src/world/controller/Controller.cpp
+        src/world/controller/Controller.h
+        src/world_controllers/CameraController.cpp
+        src/world_controllers/CameraController.h
         src/entities/components/Looking.cpp
         src/entities/components/Looking.h
-        src/controllers/MoveController.cpp
-        src/controllers/MoveController.h
+        src/world_controllers/MoveController.cpp
+        src/world_controllers/MoveController.h
         src/entities/components/Positioned.cpp
         src/entities/components/Positioned.h
-        src/controllers/components/Toggelable.cpp
-        src/controllers/components/Toggelable.h
+        src/world_controllers/components/Toggelable.cpp
+        src/world_controllers/components/Toggelable.h
+        src/drill/model/Drill.cpp
+        src/drill/model/Drill.h
+        src/drill/model/DrillManager.h
+        src/scenes/SceneDrill.cpp
+        src/scenes/SceneDrill.h
+        src/drill/controller/DrillController.cpp
+        src/drill/controller/DrillController.h
+        src/drill_controllers/DrillSimple.cpp
+        src/drill_controllers/DrillSimple.h
+        src/entities/SimpleTarget.cpp
+        src/entities/SimpleTarget.h
+        src/world/WorldUtil.cpp
+        src/world/WorldUtil.h
+        src/drill_controllers/DrillDefault.cpp
+        src/drill_controllers/DrillDefault.h
+        src/ui/PanelY.cpp
+        src/ui/PanelY.h
+        src/drill_controllers/FactoryDrill.cpp
+        src/drill_controllers/FactoryDrill.h
 )
 
 # add executable

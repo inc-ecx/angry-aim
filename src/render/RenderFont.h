@@ -22,6 +22,7 @@ class RenderFont {
   };
   std::map<char, Character> charMap;
   int lineHeight = -1;
+  int descender = 0;
 
   GLuint shaderProgram = -1;
   GLuint VAO = -1, VBO = -1;

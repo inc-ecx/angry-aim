@@ -1,12 +1,12 @@
 #include "SceneBackpack.h"
 
 #include "../Application.h"
-#include "controllers/CameraController.h"
-#include "controllers/MoveController.h"
+#include "world_controllers/CameraController.h"
+#include "world_controllers/MoveController.h"
 #include "entities/MainPlayer.h"
 
 SceneBackpack::SceneBackpack() {
-  controller = std::make_shared<Controller>();
+  controller = std::make_shared<WorldController>();
   model = std::make_shared<Model>("assets/models/backpack/backpack.obj");
 
   controller->add(player = std::make_shared<MainPlayer>());
@@ -19,6 +19,8 @@ SceneBackpack::~SceneBackpack() {
 }
 
 void SceneBackpack::render(double dt) {
+  Application::app.setScreen(nullptr);
+
   controller->update(dt);
 
   Application &app = Application::app;

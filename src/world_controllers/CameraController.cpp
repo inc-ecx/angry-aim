@@ -9,7 +9,7 @@ void CameraController::handle(const UiEvent &event) {
   if (!isEnabled()) return;
 
   if (event.type == UiEventType::MOUSE_MOVE) {
-    double sensitivity = 0.38;
+    double sensitivity = baseSensitivity;
     double degYaw = -event.mdx * sensitivity * 0.07;
     double degPitch = -event.mdy * sensitivity * 0.07;
 

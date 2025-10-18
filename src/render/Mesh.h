@@ -28,6 +28,12 @@ public:
 
   Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures);
 
+  static std::shared_ptr<Mesh> make(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures) {
+    return std::make_shared<Mesh>(vertices, indices, textures);
+  }
+
+  ~Mesh();
+
   //  render data
   unsigned int VAO, VBO, EBO;
 

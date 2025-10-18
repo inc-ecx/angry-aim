@@ -12,6 +12,8 @@ MoveController::MoveController(
 }
 
 void MoveController::update(double dt) {
+  if (!isEnabled()) return;
+
   Application &app = Application::app;
 
   double speed = 6;
@@ -25,7 +27,7 @@ void MoveController::update(double dt) {
   double l = glm::length(movement);
   if (l > 0.1) {
     float yaw = static_cast<float>(looking->yaw);
-    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), -glm::radians(yaw), glm::vec3(0, 1, 0));
+    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0, 1, 0));
     glm::vec3 rotated = glm::vec3(rot * glm::vec4(movement, 1.0f));
     positioned->pos += rotated * static_cast<float>(dt * speed / l);
   }

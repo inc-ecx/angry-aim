@@ -5,9 +5,11 @@
 
 #include "components/Toggelable.h"
 #include "entities/components/Looking.h"
-#include "controller/EntityController.h"
+#include "world/controller/Controller.h"
 
-class CameraController : public EntityController, public Toggelable {
+class CameraController : public Controller, public Toggelable {
+  double baseSensitivity = 0.38;
+
 public:
   std::shared_ptr<Looking> looking;
 

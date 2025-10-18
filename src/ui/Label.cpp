@@ -3,10 +3,14 @@
 #include "../Application.h"
 
 void Label::render(double dt) {
-  Application &app = Application::app;
-  RenderFont &fr = app.renderFont;
+  auto &app = Application::app;
+  auto &fr = app.renderFont;
 
   fr.start();
-  fr.renderText(text, round(x + (width - fr.width(text)) / 2 + 0.5f), round(y - fr.height() + (height - fr.height() / 2) + 0.5f), rgba);
+  float tw = static_cast<float>(fr.width(text));
+  float tx = round(x + (width - tw) / 2 + 0.5f);
+  float ty = round(y + (height - fr.height()) / 2 + 0.5f);
+  fr.renderText(text, tx, ty, rgba);
+
   fr.stop();
 }

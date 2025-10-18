@@ -3,9 +3,9 @@
 
 #include "ui/UiEvent.h"
 
-class EntityController {
+class Controller {
 public:
-  virtual ~EntityController() = default;
+  virtual ~Controller() = default;
 
   virtual void update(double dt) {
   }
