@@ -1,22 +1,36 @@
-#include "ScreenSettings.h"
+#include "ScreenTest.h"
 
 #include "../Application.h"
-#include "state/State.h"
 #include "ui/Field.h"
 #include "ui/PanelY.h"
 #include "ui/Range.h"
 #include "ui/Slider.h"
 
 // @formatter:off
-std::shared_ptr<Ui> constructSettingsList() {
+std::shared_ptr<Ui> constructTestList() {
   std::vector<std::shared_ptr<ItemY> > items;
 
-  auto &settings = State::state.settings;
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(5),
+    Cell::rel(Button::make("Test")),
+    Cell::abs(5)
+  }), 25));
 
   items.push_back(ItemY::make(Row::make({
-    Cell::rel(Label::make("FOV", LabelAlign::RIGHT)),
     Cell::abs(5),
-    Cell::rel(Range::make(settings.fov, 10, 170, 0.01, [&settings](double value){settings.fov = value;})),
+    Cell::rel(Field::make("Test", nullptr, nullptr)),
+    Cell::abs(5)
+  }), 25));
+
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(5),
+    Cell::rel(Slider::make([]{})),
+    Cell::abs(5)
+  }), 25));
+
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(5),
+    Cell::rel(Range::make(0.0, 30.0, 160.0, 0.01, [](double value) {})),
     Cell::abs(5)
   }), 25));
 
@@ -29,11 +43,11 @@ std::shared_ptr<Ui> constructSettingsList() {
 // @formatter:on
 
 // @formatter:off
-ScreenSettings::ScreenSettings(const std::shared_ptr<Ui> &prev) : prev(prev)  {
+ScreenTest::ScreenTest(const std::shared_ptr<Ui> &prev) : prev(prev)  {
   add(Column::make({
     Cell::abs(Row::make({
       Cell::rel(Row::make({
-        Cell::abs(Button::make("Back", std::bind(&ScreenSettings::actionBack, this)), 120),
+        Cell::abs(Button::make("Back", std::bind(&ScreenTest::actionBack, this)), 120),
         Cell::rel(1),
       }), 1),
       Cell::abs(Label::make("AngryAim"), 150),
@@ -42,14 +56,14 @@ ScreenSettings::ScreenSettings(const std::shared_ptr<Ui> &prev) : prev(prev)  {
     Cell::abs(40),
     Cell::rel(Row::make({
       Cell::rel(),
-      Cell::abs(constructSettingsList(), 400),
+      Cell::abs(constructTestList(), 400),
       Cell::rel()
     })),
     Cell::abs(40),
   }));
 }
 
-void ScreenSettings::handle(UiEvent &event) {
+void ScreenTest::handle(UiEvent &event) {
   if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_ESCAPE) {
     std::shared_ptr<Ui> prev = this->prev;
     Application::app.later([prev] {
@@ -62,6 +76,6 @@ void ScreenSettings::handle(UiEvent &event) {
 
 // @formatter:on
 
-void ScreenSettings::actionBack() {
+void ScreenTest::actionBack() {
   Application::app.setScreen(prev);
 }

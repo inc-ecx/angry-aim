@@ -1,7 +1,9 @@
 #include "RenderSceneDefault.h"
 
-void RenderSceneDefault::initRectVao() {
-}
+#include "Application.h"
+#include "state/State.h"
+
+void RenderSceneDefault::initRectVao() {}
 
 void RenderSceneDefault::initShader() {
   auto vertexShaderSource = R"(
@@ -163,10 +165,22 @@ void RenderSceneDefault::updateModel(glm::vec3 pos, float scale) {
 }
 
 void RenderSceneDefault::resize(int width, int height) {
+  updateProjection();
+}
+
+void RenderSceneDefault::updateProjection() {
   glUseProgram(shaderProgram);
 
-  glm::mat4 projection = glm::perspective(glm::radians(101.0f), static_cast<float>(width) / static_cast<float>(height),
-                                          0.1f, 100.0f);
+  auto &settings = State::state.settings;
+
+  auto &app = Application::app;
+  int width = app.getWidth();
+  int height = app.getHeight();
+  glm::mat4 projection = glm::perspective(
+    glm::radians(static_cast<float>(settings.fov)),
+    static_cast<float>(width) / static_cast<float>(height),
+    0.01f, 1000.0f
+  );
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
 
   glUseProgram(0);

@@ -29,9 +29,11 @@ public:
 
   void resize(int width, int height);
 
+  void updateModel(glm::vec3 pos, float scale);
+
   void updateView(glm::vec3 pos, float pitch, float yaw);
 
-  void updateModel(glm::vec3 pos, float scale);
+  void updateProjection();
 };
 
 

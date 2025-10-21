@@ -7,8 +7,10 @@ void Button::render(double dt) {
   RenderUi &renderer = app.renderUi;
   RenderFont &fr = app.renderFont;
 
+  bool isHovered = hovered();
+
   renderer.start();
-  renderer.color(hovered() ? 0xffffff40 : 0xffffff20);
+  renderer.color(isHovered ? 0xffffff40 : 0xffffff20);
   renderer.rect(x, y, width, height);
   renderer.stop();
 

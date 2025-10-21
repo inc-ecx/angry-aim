@@ -75,6 +75,8 @@ public:
   // scissors state
   std::vector<Scissors> scissors;
 
+  void onClose();
+
   void runApp();
 
   void later(const std::function<void()> &task);
@@ -82,6 +84,10 @@ public:
   void setScreen(const std::shared_ptr<Ui> &screen);
 
   void updateScene(const std::shared_ptr<Scene> &scene);
+
+  void setClipboardText(const std::string &str);
+
+  bool getClipboardText(std::string& str);
 
   void pushScissors(int x, int y, int w, int h);
 

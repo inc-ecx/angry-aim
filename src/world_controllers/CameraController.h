@@ -8,7 +8,6 @@
 #include "world/controller/Controller.h"
 
 class CameraController : public Controller, public Toggelable {
-  double baseSensitivity = 0.38;
 
 public:
   std::shared_ptr<Looking> looking;

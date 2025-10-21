@@ -7,7 +7,7 @@ class SimpleTarget :
     public Entity,
     public Positioned {
 public:
-  float size = 0.4f;
+  float size = 0.3f;
 };
 
 #endif //TARGET_H

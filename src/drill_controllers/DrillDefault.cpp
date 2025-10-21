@@ -8,18 +8,18 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillDefault::DrillDefault()
-  : DrillController("default") {
-}
+DrillDefault::DrillDefault() :
+  DrillController("default") {}
 
 void DrillDefault::setup(
   std::shared_ptr<WorldController> world,
   std::shared_ptr<MainPlayer> player,
-  std::shared_ptr<ScreenDrill> screen) {
+  std::shared_ptr<ScreenDrill> screen
+) {
   this->player = player;
   this->world = world;
   this->screen = screen;
-  world->control(shared_from_this()); // TODO: this probably leads to memory leaks. (circular references)
+  world->control(shared_from_this());
   world->control(player, cameraController = std::make_shared<CameraController>(player));
   // world->control(player, std::make_shared<MoveController>(player, player));
 
@@ -43,15 +43,17 @@ void DrillDefault::handle(const UiEvent &event) {
   if (started && !over) {
     if (event.type == UiEventType::MOUSE_BUTTON && event.button == GLFW_MOUSE_BUTTON_LEFT && event.down) {
       bool hit = false;
-      std::vector<std::shared_ptr<StrafingTarget>> targetsIg;
+      std::vector<std::shared_ptr<StrafingTarget> > targetsIg;
       for (auto e: world->world.entities) {
         auto strafingTarget = std::dynamic_pointer_cast<StrafingTarget>(e);
         if (strafingTarget) targetsIg.push_back(strafingTarget);
       }
-      for (auto target : targetsIg) {
+      for (auto target: targetsIg) {
         float tHit = 0;
-        bool didHit = WorldUtil::hitSphere(player->pos, static_cast<float>(player->pitch),
-                                static_cast<float>(player->yaw), target->pos, target->size * 0.5f, tHit);
+        bool didHit = WorldUtil::hitSphere(
+          player->pos, static_cast<float>(player->pitch),
+          static_cast<float>(player->yaw), target->pos, target->size * 0.5f, tHit
+        );
         if (didHit) {
           world->remove(target);
           // ++it;
@@ -91,9 +93,11 @@ void DrillDefault::triggerOver() {
     std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / (statsHit + statsMiss) * 100.0f),
   };
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  app.later([stats] {
-    Application::app.setScreen(std::make_shared<ScreenResult>(stats));
-  });
+  app.later(
+    [stats] {
+      Application::app.setScreen(std::make_shared<ScreenResult>(stats));
+    }
+  );
 }
 
 void DrillDefault::updateTimer() {
@@ -152,13 +156,16 @@ void DrillDefault::updateWorld(double dt) {
 
     target->strafeVelocity = static_cast<float>(std::clamp(
       target->strafeVelocity + strafeAcceleration * target->strafeInput * dt, -strafeMaxSpeed,
-      strafeMaxSpeed));
+      strafeMaxSpeed
+    ));
 
     bool decelerating = std::abs(target->strafeInput) < 0.1 && std::abs(target->strafeVelocity) > 0.01;
     if (decelerating) {
       float velocityDir = target->strafeVelocity < 0 ? -1.0f : 1.0f;
-      target->strafeVelocity = sub_nzc(target->strafeVelocity,
-                                       static_cast<float>(velocityDir * dt * strafeDeceleration));
+      target->strafeVelocity = sub_nzc(
+        target->strafeVelocity,
+        static_cast<float>(velocityDir * dt * strafeDeceleration)
+      );
     }
   }
 

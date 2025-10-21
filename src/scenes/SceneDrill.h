@@ -23,6 +23,12 @@ class SceneDrill : public Scene {
   std::shared_ptr<ScreenDrill> screen;
 
 public:
+  struct CrossHair {
+    int thickness = 1;
+    int length = 3;
+    int gap = 3;
+  } ch;
+
   explicit SceneDrill(const Drill& drill);
 
   void setup();

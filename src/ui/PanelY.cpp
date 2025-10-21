@@ -8,8 +8,8 @@
 // Bar Class
 //
 
-BarY::BarY(const std::function<void(float value)> &listener) : listener(listener) {
-}
+BarY::BarY(const std::function<void(float value)> &listener) :
+  listener(listener) {}
 
 void BarY::layout() {
   sliderHeight = static_cast<int>(height * 0.2f);
@@ -32,7 +32,7 @@ void BarY::render(double dt) {
 
   render.start();
 
-  render.color(0x30000000);
+  render.color(0x00000030);
   render.rect(x, y, width, height);
 
   render.color(hovered() || dragging ? 0xc0ffffff : 0xc0d0d0d0);
@@ -92,10 +92,16 @@ void BarY::approachValueOvercorrected(float value, int durationMs) {
 
 void PanelYContainer::layout() {
   int currentY = y + yOff;
-  for (auto &child : children) {
+  for (auto &child: children) {
     auto item = std::dynamic_pointer_cast<ItemY>(child);
     if (item == nullptr) continue;
     item->setBounds(x, currentY, width, item->itemHeight);
+    item->setViewport(
+      std::max(this->x, this->vpx1),
+      std::max(this->y, this->vpy1),
+      std::min(this->x + this->width, this->vpx2),
+      std::min(this->y + this->height, this->vpy2)
+    );
     currentY += item->itemHeight;
   }
   layoutChildren();
@@ -104,7 +110,7 @@ void PanelYContainer::layout() {
 void PanelYContainer::render(double dt) {
   auto &app = Application::app;
 
-  app.pushScissors(x,y,width,height);
+  app.pushScissors(x, y, width, height);
   renderChildren(dt);
   app.popScissors();
 }
@@ -124,7 +130,7 @@ int PanelYContainer::getScrollDistance() {
 
 int PanelYContainer::getContentHeight() {
   int h = 0;
-  for (auto &child : children) {
+  for (auto &child: children) {
     auto item = std::dynamic_pointer_cast<ItemY>(child);
     if (item == nullptr) continue;
     h += item->itemHeight;
@@ -137,11 +143,31 @@ int PanelYContainer::getContentHeight() {
 // Panel Class
 //
 
-PanelY::PanelY(const std::vector<std::shared_ptr<ItemY>>& children) {
-  this->children.push_back(Row::make({
-    Cell::rel(_container = std::make_unique<PanelYContainer>(children)),
-    Cell::abs(bar = std::make_shared<BarY>(std::bind(&PanelY::actionScrollBar, this, std::placeholders::_1)), 8)
-  }));
+PanelY::PanelY(const std::vector<std::shared_ptr<ItemY> > &children) {
+  this->children.push_back(
+    Row::make(
+      {
+        Cell::rel(_container = std::make_unique<PanelYContainer>(children)),
+        Cell::abs(bar = std::make_shared<BarY>(std::bind(&PanelY::actionScrollBar, this, std::placeholders::_1)), 8)
+      }
+    )
+  );
+}
+
+void PanelY::handle(UiEvent &event) {
+  if (event.type == UiEventType::SCROLL) {
+    int maxScrollAbs = 300;
+    double maxScrollRel = 0.4;
+    int scrollSmoothMs = 150;
+    int scrollDistance = _container->getScrollDistance();
+
+    int step = std::min(static_cast<int>(height * maxScrollRel + 1), maxScrollAbs);
+    bar->approachValueOvercorrected(
+      bar->getValue() + static_cast<float>(event.sy * step) / scrollDistance, scrollSmoothMs
+    );
+  }
+
+  Ui::handle(event);
 }
 
 void PanelY::actionScrollBar(float value) {

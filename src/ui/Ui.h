@@ -11,13 +11,17 @@
 // the basic building block of any ui element.
 class Ui {
 public:
-  // std::weak_ptr<Ui> parent;
   std::vector<std::shared_ptr<Ui> > children;
 
   int x = std::numeric_limits<int>::min(),
       y = std::numeric_limits<int>::min(),
       width = std::numeric_limits<int>::min(),
       height = std::numeric_limits<int>::min();
+
+  int vpx1 = std::numeric_limits<int>::min(),
+      vpy1 = std::numeric_limits<int>::min(),
+      vpx2 = std::numeric_limits<int>::max(),
+      vpy2 = std::numeric_limits<int>::max();
 
   static std::shared_ptr<Ui> make() {
     return std::make_shared<Ui>();
@@ -76,11 +80,20 @@ public:
   // renders this element using the ui renderer
   virtual void render(double dt);
 
+  // sets dimensions of this ui element
   void setBounds(const int x, const int y, const int width, const int height) {
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
+  }
+
+  // sets the viewport of this element. used by scroll panels.
+  void setViewport(const int x1, const int y1, const int x2, const int y2) {
+    this->vpx1 = x1;
+    this->vpy1 = y1;
+    this->vpx2 = x2;
+    this->vpy2 = y2;
   }
 
   // gives every child the same size as this element

@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "ScreenSettings.h"
+#include "ScreenTest.h"
 #include "drill/model/Drill.h"
 #include "drill/model/DrillManager.h"
 
@@ -10,29 +11,37 @@
 #include "drill_controllers/DrillDefault.h"
 #include "drill_controllers/FactoryDrill.h"
 #include "scenes/SceneDrill.h"
+#include "state/State.h"
 #include "ui/PanelY.h"
 
+static std::string _sceneButtonText() {
+  const Drill& drill = State::state.drill.currentDrill;
+  return std::format("[{}]", drill.name);
+}
+
+// @formatter:off
 std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   std::vector<std::shared_ptr<ItemY> > items;
   for (auto &drill: DrillManager::inst.drills) {
     items.push_back(ItemY::make(Row::make({
-                                  Cell::abs(8/*scrollbar width*/ + 5),
-                                  Cell::rel(Button::make(drill.name, [this, drill] {
-                                    this->drill = drill;
-                                    sceneButton->setText(std::format("[{}]", drill.name));
-                                    drillListContainer->clear();
-                                  })),
-                                  Cell::abs(5)
-                                }), 25));
+      Cell::abs(8/*scrollbar width*/ + 5),
+      Cell::rel(Button::make(drill.name, [this, drill] {
+        State::state.drill.currentDrill = drill;
+        sceneButton->setText(_sceneButtonText());
+        drillListContainer->clear();
+      })),
+      Cell::abs(5)
+    }), 25));
     items.push_back(ItemY::make(10));
   }
   // items.push_back(ItemY::make(Label::make("Scene selector panel"), 25));
   // items.push_back(ItemY::make(10));
   return PanelY::make(items);
 }
+// @formatter:on
 
 // @formatter:off
-ScreenMain::ScreenMain() : drill(DrillManager::inst.def) {
+ScreenMain::ScreenMain() {
   add(Row::make({
     Cell::rel(1),
     Cell::abs(Column::make({
@@ -41,7 +50,7 @@ ScreenMain::ScreenMain() : drill(DrillManager::inst.def) {
       Cell::abs(10),
       Cell::abs(Row::make({
         Cell::rel(1),
-        Cell::abs(sceneButton = Button::make("[Default]", std::bind(&ScreenMain::actionSelectDrill, this)), 150),
+        Cell::abs(sceneButton = Button::make(_sceneButtonText(), std::bind(&ScreenMain::actionSelectDrill, this)), 150),
         Cell::rel(1)
       }), 30),
       Cell::abs(10),
@@ -67,7 +76,6 @@ ScreenMain::ScreenMain() : drill(DrillManager::inst.def) {
     Cell::rel(),
   }));
 }
-// @formatter:on
 
 void ScreenMain::actionSelectDrill() {
   if (drillListContainer->children.empty()) {
@@ -77,6 +85,7 @@ void ScreenMain::actionSelectDrill() {
 }
 
 void ScreenMain::actionPlay() {
+  const Drill& drill = State::state.drill.currentDrill;
   Application::app.updateScene(std::make_shared<SceneDrill>(drill));
 }
 
@@ -92,6 +101,8 @@ void ScreenMain::handle(UiEvent &event) {
       Application::app.later(std::bind(&ScreenMain::actionSelectDrill, this));
     if (event.button == GLFW_KEY_1)
       Application::app.updateScene(std::make_shared<SceneBackpack>());
+    if (event.button == GLFW_KEY_T)
+      Application::app.setScreen(std::make_shared<ScreenTest>(Application::app.getScreen()));
   }
 
   Ui::handle(event);

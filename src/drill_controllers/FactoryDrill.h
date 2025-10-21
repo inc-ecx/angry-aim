@@ -7,7 +7,7 @@
 #include "drill/model/Drill.h"
 
 struct Entry {
-  std::function<std::shared_ptr<DrillController>()> creator;
+  std::function<std::shared_ptr<DrillController>(std::string args)> creator;
 };
 
 class FactoryDrill {

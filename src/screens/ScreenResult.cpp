@@ -17,7 +17,7 @@ ScreenResult::ScreenResult(const std::vector<std::string> &results) {
   cells.push_back(Cell::abs(Row::make({
       Cell::rel(),
       // Cell::abs(Button::make("Play", std::bind(&ScreenResult::handlePlay, this)), 200),
-      Cell::abs(Label::make("(Space) Play", 0xffffff80), 200),
+      Cell::abs(Label::make("(Space) Replay", 0xffffff80), 200),
       Cell::rel(),
   }), 30));
   cells.push_back(Cell::abs(Row::make({

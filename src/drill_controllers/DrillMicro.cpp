@@ -1,4 +1,4 @@
-#include "DrillSimple.h"
+#include "DrillMicro.h"
 
 #include "Application.h"
 #include "screens/ScreenResult.h"
@@ -7,14 +7,21 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillSimple::DrillSimple() :
-  DrillController("simple") {
+DrillMicro::DrillMicro(const std::string &args) :
+  DrillController("micro") {
+  float size;
+  auto [ptr,ec] = std::from_chars(args.data(), args.data() + args.size(), size);
+  if (ec == std::errc()) {
+    params.targetSpawnWidth = size;
+    params.targetMinHeight = 1.5f - size * 0.5f;
+    params.targetMaxHeight = 1.5f + size * 0.5f;
+  } // else error
+
   rngEngine.seed(static_cast<uint32_t>(msCurrent()));
 }
 
-void DrillSimple::setup(
-  std::shared_ptr<WorldController> world,
-  std::shared_ptr<MainPlayer> player,
+void DrillMicro::setup(
+  std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
   std::shared_ptr<ScreenDrill> screen
 ) {
   this->world = world;
@@ -31,12 +38,12 @@ void DrillSimple::setup(
   screen->lblMainStat->setText("Click to start");
 }
 
-void DrillSimple::update(double dt) {
+void DrillMicro::update(double dt) {
   updateCheckSpawn(dt);
   updateClock(dt);
 }
 
-void DrillSimple::updateCheckSpawn(double dt) {
+void DrillMicro::updateCheckSpawn(double dt) {
   auto msNow = msCurrent();
 
   if (started && target == nullptr && msNow >= msToSpawn) {
@@ -50,7 +57,7 @@ void DrillSimple::updateCheckSpawn(double dt) {
   }
 }
 
-void DrillSimple::updateClock(double dt) {
+void DrillMicro::updateClock(double dt) {
   if (!started) return;
   if (stopped) return;
 
@@ -66,14 +73,14 @@ void DrillSimple::updateClock(double dt) {
   }
 }
 
-void DrillSimple::actionStart() {
+void DrillMicro::actionStart() {
   started = true;
   msStart = msCurrent();
 
   msToSpawn = msCurrent() + static_cast<uint64_t>(params.initialSpawnDelay * 1000);
 }
 
-void DrillSimple::triggerStop() {
+void DrillMicro::triggerStop() {
   stopped = true;
 
   auto &app = Application::app;
@@ -95,7 +102,7 @@ void DrillSimple::triggerStop() {
   cameraController->setEnabled(false);
 }
 
-void DrillSimple::actionShoot() {
+void DrillMicro::actionShoot() {
   if (target == nullptr) return;
 
   float tHit = 0;
@@ -120,13 +127,13 @@ void DrillSimple::actionShoot() {
   msToSpawn = msCurrent() + static_cast<uint64_t>(params.spawnDelay * 1000);
 }
 
-void DrillSimple::handle(const UiEvent &event) {
+void DrillMicro::handle(const UiEvent &event) {
   if (event.type == UiEventType::MOUSE_BUTTON && event.down && event.button == GLFW_MOUSE_BUTTON_LEFT) {
     handleLeftClick();
   }
 }
 
-void DrillSimple::handleLeftClick() {
+void DrillMicro::handleLeftClick() {
   if (!started && !stopped) {
     actionStart();
   } else {

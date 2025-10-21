@@ -47,6 +47,7 @@ void Row::layout() {
 
     // layout cell
     pCell->setBounds(x + off, y, size, height);
+    pCell->setViewport(vpx1, vpy1, vpx2, vpy2);
     pCell->layout();
 
     off += size;

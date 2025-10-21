@@ -5,12 +5,16 @@
 #include <chrono>
 #include <algorithm>
 
+#include "Log.h"
 #include "screens/ScreenMain.h"
+#include "state/State.h"
 #include "ui/UiEvent.h"
 
 Application Application::app;
 
 void Application::initApp() {
+  State::state.loadAll();
+
   if (!glfwInit())
     return;
 
@@ -52,9 +56,17 @@ void Application::initApp() {
   });
 
   glfwSetKeyCallback(window, [](GLFWwindow *, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
-      app.onEvent(UiEvent(UiEventType::KEY, action == GLFW_PRESS, key));
+    if (action == GLFW_PRESS || action == GLFW_RELEASE || action == GLFW_REPEAT) {
+      app.onEvent(UiEvent(UiEventType::KEY, action != GLFW_RELEASE, key));
     }
+  });
+
+  glfwSetCharCallback(window, [](GLFWwindow*, uint32_t codepoint) {
+      app.onEvent(UiEvent(codepoint));
+  });
+
+  glfwSetScrollCallback(window, [](GLFWwindow*, double dx, double dy) {
+    app.onEvent(UiEvent(dx,-dy));
   });
 
   glfwMakeContextCurrent(window);
@@ -69,7 +81,7 @@ void Application::initApp() {
 
   FT_Error ftErr = FT_Init_FreeType(&freetype);
   if (ftErr) {
-    std::cout << "Failed to initialize freetype." << std::endl;
+    Log::fatal("Failed to initialize freetype.");
     return;
   }
 
@@ -108,12 +120,12 @@ void Application::runApp() {
 
   double fpsQueue = 1;
 
-  auto lastIteration = std::chrono::high_resolution_clock::now();
-  auto lastFrame = std::chrono::high_resolution_clock::now();
-  auto lastFpsUpdate = std::chrono::high_resolution_clock::now();
+  auto lastIteration = std::chrono::steady_clock::now();
+  auto lastFrame = std::chrono::steady_clock::now();
+  auto lastFpsUpdate = std::chrono::steady_clock::now();
 
   while (!glfwWindowShouldClose(window)) {
-    auto currentIteration = std::chrono::high_resolution_clock::now();
+    auto currentIteration = std::chrono::steady_clock::now();
     double loopDt = std::chrono::duration<double>(currentIteration - lastIteration).count();
     lastIteration = currentIteration;
     fpsQueue = std::min(fpsQueue + loopDt * targetFps, static_cast<double>(maxFpsQueue));
@@ -122,7 +134,7 @@ void Application::runApp() {
       fpsQueue--;
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      auto currentFrame = std::chrono::high_resolution_clock::now();
+      auto currentFrame = std::chrono::steady_clock::now();
 
       // get dt for frame
       double frameDt = std::chrono::duration<double>(currentFrame - lastFrame).count();
@@ -160,6 +172,13 @@ void Application::runApp() {
       for (auto task: tasks) task();
     }
   }
+
+  onClose();
+}
+
+void Application::onClose() {
+  // note: no cleaning here, because the app is assumed to be cleaned up by the os.
+  State::state.saveAll();
 }
 
 void Application::later(const std::function<void()> &task) {
@@ -207,6 +226,16 @@ void Application::updateScene(const std::shared_ptr<Scene> &scene) {
     currentScene->open();
     currentScene->resize(width, height);
   }
+}
+void Application::setClipboardText(const std::string &str) {
+  glfwSetClipboardString(window, str.c_str());
+}
+
+bool Application::getClipboardText(std::string &str) {
+  const char* text = glfwGetClipboardString(window);
+  if (text == nullptr) return false;
+  str = text;
+  return true;
 }
 
 void Application::renderApp(double dt) {

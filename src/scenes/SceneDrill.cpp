@@ -6,8 +6,10 @@
 #include "entities/SimpleTarget.h"
 #include "entities/StrafingTarget.h"
 #include "screens/ScreenDrill.h"
+#include "world_controllers/cam_consts.h"
 
-SceneDrill::SceneDrill(const Drill& drill) : drill(drill) {
+SceneDrill::SceneDrill(const Drill &drill) :
+  drill(drill) {
   targetModel = std::make_shared<Model>("assets/models/target1/Target1.obj");
   worldModel = std::make_shared<Model>("assets/models/map1/Map1.obj");
 }
@@ -31,6 +33,10 @@ void SceneDrill::replay() {
 void SceneDrill::open() {
   drillController = FactoryDrill::create(drill);
   setup();
+
+  auto &app = Application::app;
+  auto &renderScene = app.renderSceneDef;
+  renderScene.updateProjection();
 }
 
 void SceneDrill::close() {
@@ -57,8 +63,25 @@ void SceneDrill::drawWorld() {
   Application &app = Application::app;
   RenderSceneDefault &renderScene = app.renderSceneDef;
   renderScene.start();
-  renderScene.updateView(player->pos, static_cast<float>(player->pitch),
-                         static_cast<float>(player->yaw));
+
+  double camPitch = player->pitch;
+  double camYaw = player->yaw;
+
+  // when a crosshair has an odd total width, the crosshair is not aligned in the center of the screen.
+  // it is offset 0.5 pixels to the top left. as the crosshair position is rounded down.
+  // to make the crosshair accurate and pixel true the view is shifted by that amount.
+  // note: this assumes the screen resolution is even.
+  int chSize = ch.length + ch.gap + ch.length;
+  if (chSize % 2 == 1) {
+    camPitch += camSens * camPxToDeg;
+    camYaw += camSens * camPxToDeg;
+  }
+
+  renderScene.updateView(
+    player->pos,
+    static_cast<float>(camPitch),
+    static_cast<float>(camYaw)
+  );
 
   renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
   renderScene.color(0xffffffff);
@@ -70,7 +93,7 @@ void SceneDrill::drawWorld() {
     if (target == nullptr) continue;
     renderScene.updateModel(target->pos, static_cast<float>(0.5 * (target->size)));
     renderScene.color(0xf04040ff);
-    renderScene.draw(*targetModel);
+    renderScene.draw(*targetModel); // note: target model is of radius 1
   }
 
   for (auto e: world->world.entities) {
@@ -91,9 +114,9 @@ void SceneDrill::drawCrosshair() {
   RenderUi &renderUi = app.renderUi;
   renderUi.start();
   renderUi.color(0x00ffffff);
-  int thickness = 2;
-  int length = 4;
-  int gap = 4;
+  int thickness = ch.thickness;
+  int length = ch.length;
+  int gap = ch.gap;
 
   // top left coords
   int chSize = length + gap + length;

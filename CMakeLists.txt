@@ -70,6 +70,8 @@ set(angry-aim-src
         src/ui/components.h
         src/screens/ScreenSettings.cpp
         src/screens/ScreenSettings.h
+        src/screens/ScreenTest.cpp
+        src/screens/ScreenTest.h
         src/screens/ScreenDrill.cpp
         src/screens/ScreenDrill.h
         src/scenes/Scene.cpp
@@ -95,6 +97,7 @@ set(angry-aim-src
         src/entities/StrafingTarget.h
         src/util/time_util.h
         src/util/math_util.h
+        src/util/file_util.h
         src/DebugInfo.cpp
         src/DebugInfo.h
         src/screens/ScreenResult.cpp
@@ -134,6 +137,28 @@ set(angry-aim-src
         src/ui/PanelY.h
         src/drill_controllers/FactoryDrill.cpp
         src/drill_controllers/FactoryDrill.h
+        src/drill_controllers/DrillMicro.cpp
+        src/drill_controllers/DrillMicro.h
+        src/world_controllers/cam_consts.h
+        src/state/State.cpp
+        src/state/State.h
+        src/state/StateDrill.cpp
+        src/state/StateDrill.h
+        src/lib/json.h
+        src/inc/inc_json.h
+        src/state/ManagerState.cpp
+        src/state/ManagerState.h
+        src/drill/model/DrillManager.cpp
+        src/Log.cpp
+        src/Log.h
+        src/state/StateSettings.cpp
+        src/state/StateSettings.h
+        src/ui/Field.h
+        src/ui/Field.cpp
+        src/ui/Slider.cpp
+        src/ui/Slider.h
+        src/ui/Range.cpp
+        src/ui/Range.h
 )
 
 # add executable

@@ -1,5 +1,5 @@
-#ifndef DRILL_CONTROLLER_SIMPLE_H
-#define DRILL_CONTROLLER_SIMPLE_H
+#ifndef DRILL_MICRO_H
+#define DRILL_MICRO_H
 
 #include <random>
 
@@ -8,10 +8,10 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-class DrillSimple :
+class DrillMicro :
     public DrillController,
     public Controller,
-    public std::enable_shared_from_this<DrillSimple> {
+    public std::enable_shared_from_this<DrillMicro> {
   std::shared_ptr<ScreenDrill> screen;
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
@@ -27,9 +27,9 @@ class DrillSimple :
 
     float targetMinHeight = 1.0;
     float targetMaxHeight = 3.5;
-    float targetMinDist = 5;
-    float targetMaxDist = 45;
-    float targetSpawnWidth = 20;
+    float targetMinDist = 30;
+    float targetMaxDist = 40;
+    float targetSpawnWidth = 4;
   } params;
 
   // Drill game state
@@ -62,7 +62,7 @@ class DrillSimple :
   void handleLeftClick();
 
 public:
-  explicit DrillSimple();
+  explicit DrillMicro(const std::string &args);
 
   void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
              std::shared_ptr<ScreenDrill> screen) override;
@@ -73,4 +73,4 @@ public:
 };
 
 
-#endif //DRILL_CONTROLLER_SIMPLE_H
+#endif //DRILL_MICRO_H

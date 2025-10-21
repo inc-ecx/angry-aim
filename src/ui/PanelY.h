@@ -22,6 +22,8 @@ class BarY : public Ui {
   int durationMs = 0;
   uint64_t msApproached = 0;
 
+  bool enabled = true;
+
   void onScroll();
 
 public:
@@ -38,6 +40,11 @@ public:
   float getValue() { return value; }
 
   void approachValueOvercorrected(float value, int durationMs);
+
+  void setEnabled(bool enabled) {this->enabled = enabled;}
+
+  bool isEnabled() {return this->enabled;}
+
 };
 
 // The scroll panel item is the element added to the scroll panel container. It takes in the height it will have.
@@ -100,6 +107,8 @@ public:
   static std::shared_ptr<PanelY> make(const std::vector<std::shared_ptr<ItemY> > &children) {
     return std::make_shared<PanelY>(children);
   }
+
+  void handle(UiEvent &event) override;
 
   PanelYContainer &container() { return *_container; }
 };
