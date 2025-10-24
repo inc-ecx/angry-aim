@@ -71,6 +71,10 @@ public:
   void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
              std::shared_ptr<UiDrill> screen) override;
 
+  void pause() override;
+
+  void resume() override;
+
   void update(double dt) override;
 
   void handle(const UiEvent &event) override;

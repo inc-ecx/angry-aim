@@ -1,11 +1,11 @@
-#include "RenderSceneDefault.h"
+#include "RenderSceneDrill.h"
 
 #include "Application.h"
 #include "state/State.h"
 
-void RenderSceneDefault::initRectVao() {}
+void RenderSceneDrill::initRectVao() {}
 
-void RenderSceneDefault::initShader() {
+void RenderSceneDrill::initShader() {
   auto vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -84,12 +84,12 @@ void main()
   }
 }
 
-void RenderSceneDefault::init() {
+void RenderSceneDrill::init() {
   initRectVao();
   initShader();
 }
 
-void RenderSceneDefault::start() {
+void RenderSceneDrill::start() {
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_ALPHA);
@@ -98,7 +98,7 @@ void RenderSceneDefault::start() {
   glUseProgram(shaderProgram);
 }
 
-void RenderSceneDefault::stop() {
+void RenderSceneDrill::stop() {
   glDisable(GL_CULL_FACE);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_ALPHA);
@@ -107,11 +107,11 @@ void RenderSceneDefault::stop() {
   glUseProgram(0);
 }
 
-void RenderSceneDefault::texture(bool value) {
+void RenderSceneDrill::texture(bool value) {
   glUniform1i(glGetUniformLocation(shaderProgram, "u_doTexture"), value ? 1 : 0);
 }
 
-void RenderSceneDefault::color(int rgba) {
+void RenderSceneDrill::color(int rgba) {
   float r = ((rgba >> 24) & 0xFF) / 255.0f;
   float g = ((rgba >> 16) & 0xFF) / 255.0f;
   float b = ((rgba >> 8) & 0xFF) / 255.0f;
@@ -119,7 +119,7 @@ void RenderSceneDefault::color(int rgba) {
   glUniform4f(glGetUniformLocation(shaderProgram, "u_baseColor"), r, g, b, a);
 }
 
-void RenderSceneDefault::mesh(const Mesh &mesh) {
+void RenderSceneDrill::mesh(const Mesh &mesh) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
   for (unsigned int i = 0; i < mesh.textures.size(); i++) {
@@ -143,13 +143,13 @@ void RenderSceneDefault::mesh(const Mesh &mesh) {
   glBindVertexArray(0);
 }
 
-void RenderSceneDefault::draw(const Model &model) {
+void RenderSceneDrill::draw(const Model &model) {
   for (unsigned int i = 0; i < model.meshes.size(); i++)
     mesh(*model.meshes[i]);
 }
 
 // note: should only be called when renderer is active. angles are deg.
-void RenderSceneDefault::updateView(glm::vec3 pos, float pitch, float yaw) {
+void RenderSceneDrill::updateView(glm::vec3 pos, float pitch, float yaw) {
   glm::mat4 view = glm::identity<glm::mat4>();
   view = glm::rotate(view, glm::radians(-pitch), glm::vec3(1, 0, 0));
   view = glm::rotate(view, glm::radians(-yaw), glm::vec3(0, 1, 0));
@@ -157,18 +157,18 @@ void RenderSceneDefault::updateView(glm::vec3 pos, float pitch, float yaw) {
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
 }
 
-void RenderSceneDefault::updateModel(glm::vec3 pos, float scale) {
+void RenderSceneDrill::updateModel(glm::vec3 pos, float scale) {
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, pos);
   model = glm::scale(model, glm::vec3(scale));
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
 }
 
-void RenderSceneDefault::resize(int width, int height) {
+void RenderSceneDrill::resize(int width, int height) {
   updateProjection();
 }
 
-void RenderSceneDefault::updateProjection() {
+void RenderSceneDrill::updateProjection() {
   glUseProgram(shaderProgram);
 
   auto &settings = State::state.settings;

@@ -27,6 +27,14 @@ void DrillDefault::setup(
   screen->lblMainStat->setText("Click to start");
 }
 
+void DrillDefault::pause() {
+  cameraController->setEnabled(false);
+}
+
+void DrillDefault::resume() {
+  cameraController->setEnabled(true);
+}
+
 void DrillDefault::update(double dt) {
   updateTimer();
   updateWorld(dt);
@@ -112,7 +120,7 @@ void DrillDefault::updateTimer() {
     int s = timeLeft % 60;
     screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
   } else {
-    screen->lblMainStat->setText("00:00");
+    screen->lblMainStat->setText("");
     if (!over) triggerOver();
   }
 }

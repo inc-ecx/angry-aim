@@ -12,7 +12,7 @@
 #include "render/RenderUi.h"
 #include "render/RenderFont.h"
 #include "render/RenderScene.h"
-#include "render/RenderSceneDefault.h"
+#include "render/RenderSceneDrill.h"
 
 #include "scenes/Scene.h"
 
@@ -70,7 +70,7 @@ public:
   RenderUi renderUi;
   RenderFont renderFont;
   RenderScene renderScene;
-  RenderSceneDefault renderSceneDef;
+  RenderSceneDrill renderSceneDrill;
 
   // scissors state
   std::vector<Scissors> scissors;

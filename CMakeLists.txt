@@ -91,8 +91,8 @@ set(angry-aim-src
         src/entities/MainPlayer.h
         src/scenes/SceneBackpack.cpp
         src/scenes/SceneBackpack.h
-        src/render/RenderSceneDefault.cpp
-        src/render/RenderSceneDefault.h
+        src/render/RenderSceneDrill.cpp
+        src/render/RenderSceneDrill.h
         src/entities/StrafingTarget.cpp
         src/entities/StrafingTarget.h
         src/util/time_util.h

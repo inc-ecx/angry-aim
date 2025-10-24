@@ -143,7 +143,7 @@ ScreenSettings::ScreenSettings(const std::shared_ptr<Ui> &prev) : prev(prev)  {
         Cell::abs(Button::make("Back", std::bind(&ScreenSettings::actionBack, this)), 120),
         Cell::rel(1),
       }), 1),
-      Cell::abs(Label::make("AngryAim"), 150),
+      // Cell::abs(Label::make("AngryAim"), 150),
       Cell::rel(1),
     }), 30),
     Cell::abs(40),

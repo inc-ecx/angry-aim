@@ -11,6 +11,10 @@ class ScreenPause : public Ui, public std::enable_shared_from_this<ScreenPause> 
 public:
   explicit ScreenPause(std::weak_ptr<SceneDrill>&& scene);
 
+  void handle(UiEvent &event) override;
+
+  void render(double dt) override;
+
   void actionResume();
   void actionQuit();
   void actionSettings();

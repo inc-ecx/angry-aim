@@ -38,6 +38,14 @@ void DrillMicro::setup(
   screen->lblMainStat->setText("Click to start");
 }
 
+void DrillMicro::pause() {
+  cameraController->setEnabled(false);
+}
+
+void DrillMicro::resume() {
+  cameraController->setEnabled(true);
+}
+
 void DrillMicro::update(double dt) {
   updateCheckSpawn(dt);
   updateClock(dt);
@@ -68,7 +76,7 @@ void DrillMicro::updateClock(double dt) {
     int s = timeLeft % 60;
     screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
   } else {
-    screen->lblMainStat->setText("00:00");
+    screen->lblMainStat->setText("");
     triggerStop();
   }
 }

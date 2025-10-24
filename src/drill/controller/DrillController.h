@@ -12,17 +12,20 @@ class DrillController {
 public:
   std::string id;
 
-  explicit DrillController(const std::string &id)
-    : id(id) {
-  }
+  explicit DrillController(const std::string &id) :
+    id(id) {}
 
   virtual ~DrillController() = default;
 
   virtual void setup(
     std::shared_ptr<WorldController> world,
     std::shared_ptr<MainPlayer> player,
-    std::shared_ptr<UiDrill> screen) {
-  }
+    std::shared_ptr<UiDrill> screen
+  ) {}
+
+  virtual void pause() {}
+
+  virtual void resume() {}
 };
 
 #endif // DRILL_CONTROLLER_H

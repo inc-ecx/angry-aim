@@ -64,6 +64,10 @@ class DrillMicro :
 public:
   explicit DrillMicro(const std::string &args);
 
+  void pause() override;
+
+  void resume() override;
+
   void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
              std::shared_ptr<UiDrill> screen) override;
 

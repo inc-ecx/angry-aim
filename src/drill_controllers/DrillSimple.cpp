@@ -31,6 +31,14 @@ void DrillSimple::setup(
   screen->lblMainStat->setText("Click to start");
 }
 
+void DrillSimple::pause() {
+  cameraController->setEnabled(false);
+}
+
+void DrillSimple::resume() {
+  cameraController->setEnabled(true);
+}
+
 void DrillSimple::update(double dt) {
   updateCheckSpawn(dt);
   updateClock(dt);
@@ -61,7 +69,7 @@ void DrillSimple::updateClock(double dt) {
     int s = timeLeft % 60;
     screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
   } else {
-    screen->lblMainStat->setText("00:00");
+    screen->lblMainStat->setText("");
     triggerStop();
   }
 }

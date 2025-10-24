@@ -1,6 +1,7 @@
 #include "SceneDrill.h"
 
 #include "Application.h"
+#include "Log.h"
 #include "drill_controllers/FactoryDrill.h"
 #include "entities/MainPlayer.h"
 #include "entities/SimpleTarget.h"
@@ -28,29 +29,65 @@ void SceneDrill::setup() {
   ui->setBounds(0, 0, app.getWidth(), app.getHeight());
   ui->layout();
 
-  // hide cursor
-  glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+  // create controller
+  drillController = FactoryDrill::create(drill);
   drillController->setup(world, player, ui);
 }
 
+//
+// drill code
+//
+
 void SceneDrill::replay() {
-  drillController = FactoryDrill::create(drill);
+  auto &app = Application::app;
+
+  glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
   setup();
+}
+
+void SceneDrill::pause() {
+  if (!isInGame()) {
+    Log::warn("Tried to pause game, but we are not in fact in-game.");
+    return;
+  }
+
+  auto &app = Application::app;
+
+  glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+  drillController->pause();
+
+  app.later(
+    [&app] {
+      auto scene = dynamic_pointer_cast<SceneDrill>(app.getScene());
+      if (!scene) return;
+      app.setScreen(std::make_shared<ScreenPause>(scene));
+    }
+  );
 }
 
 void SceneDrill::resume() {
   auto &app = Application::app;
+  auto &renderScene = app.renderSceneDrill;
 
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+  drillController->resume();
+
+  renderScene.updateProjection();
 }
+
+//
+// scene code
+//
 
 void SceneDrill::open() {
   auto &app = Application::app;
-  auto &renderScene = app.renderSceneDef;
+  auto &renderScene = app.renderSceneDrill;
 
-  // setup controller
-  drillController = FactoryDrill::create(drill);
+  glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
   setup();
 
   renderScene.updateProjection();
@@ -58,26 +95,24 @@ void SceneDrill::open() {
 
 void SceneDrill::close() {
   auto &app = Application::app;
+
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void SceneDrill::handle(const UiEvent &event) {
   auto &app = Application::app;
 
-  world->handle(event);
+  if (isInGame()) {
+    world->handle(event);
 
-  UiEvent e = event;
-  ui->handle(e);
+    UiEvent e = event;
+    ui->handle(e);
 
-  if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_ESCAPE) {
-    app.later(
-      [&app] {
-        auto scene = dynamic_pointer_cast<SceneDrill>(app.getScene());
-        if (!scene) return;
-        glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        app.setScreen(std::make_shared<ScreenPause>(scene));
+    if (event.type == UiEventType::KEY && event.down) {
+      if (event.button == GLFW_KEY_ESCAPE) {
+        pause();
       }
-    );
+    }
   }
 }
 
@@ -97,11 +132,23 @@ void SceneDrill::render(double dt) {
   drawCrosshair();
 
   ui->render(dt);
+
+  if (!isInGame()) renderBackground(dt);
+}
+
+void SceneDrill::renderBackground(double dt) {
+  auto &app = Application::app;
+  auto &render = app.renderUi;
+
+  render.start();
+  render.color(0x30303060);
+  render.rect(0, 0, app.getWidth(), app.getHeight());
+  render.stop();
 }
 
 void SceneDrill::drawWorld() {
   Application &app = Application::app;
-  RenderSceneDefault &renderScene = app.renderSceneDef;
+  RenderSceneDrill &renderScene = app.renderSceneDrill;
   renderScene.start();
 
   double camPitch = player->pitch;

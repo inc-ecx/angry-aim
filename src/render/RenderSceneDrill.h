@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "../inc/inc_glfw.h"
 
-class RenderSceneDefault {
+class RenderSceneDrill {
   GLuint shaderProgram = -1;
 
   void initRectVao();

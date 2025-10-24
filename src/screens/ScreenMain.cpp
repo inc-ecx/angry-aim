@@ -53,7 +53,7 @@ ScreenMain::ScreenMain() {
         Cell::abs(sceneButton = Button::make(_sceneButtonText(), std::bind(&ScreenMain::actionSelectDrill, this)), 150),
         Cell::rel(1)
       }), 30),
-      Cell::abs(10),
+      Cell::abs(30),
       Cell::abs(Row::make({
         Cell::rel(1),
         Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 150),

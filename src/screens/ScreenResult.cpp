@@ -47,6 +47,7 @@ void ScreenResult::render(double dt) {
 
 void ScreenResult::handlePlay() {
   Application::app.getScene()->replay();
+  Application::app.setScreen(nullptr);
 }
 
 void ScreenResult::handle(UiEvent &event) {
@@ -57,7 +58,7 @@ void ScreenResult::handle(UiEvent &event) {
     });
   }
 
-  if (event.type == UiEventType::KEY && event.down && (event.button == GLFW_KEY_SPACE || event.button == GLFW_KEY_ENTER)) {
+  if (event.type == UiEventType::KEY && event.down && (event.button == GLFW_KEY_SPACE)) {
     Application::app.later(std::bind(&ScreenResult::handlePlay, this));
   }
 
