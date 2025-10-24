@@ -3,11 +3,11 @@
 
 #include "ui/components.h"
 
-class ScreenDrill : public Ui {
+class UiDrill : public Ui {
 public:
   std::shared_ptr<Label> lblMainStat;
 
-  ScreenDrill();
+  UiDrill();
 
   void handle(UiEvent &event) override;
 };

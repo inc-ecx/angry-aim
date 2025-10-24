@@ -12,7 +12,7 @@ class DrillSimple :
     public DrillController,
     public Controller,
     public std::enable_shared_from_this<DrillSimple> {
-  std::shared_ptr<ScreenDrill> screen;
+  std::shared_ptr<UiDrill> screen;
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
   std::shared_ptr<CameraController> cameraController;
@@ -65,7 +65,7 @@ public:
   explicit DrillSimple();
 
   void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-             std::shared_ptr<ScreenDrill> screen) override;
+             std::shared_ptr<UiDrill> screen) override;
 
   void update(double dt) override;
 

@@ -22,7 +22,7 @@ DrillMicro::DrillMicro(const std::string &args) :
 
 void DrillMicro::setup(
   std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-  std::shared_ptr<ScreenDrill> screen
+  std::shared_ptr<UiDrill> screen
 ) {
   this->world = world;
   this->player = player;

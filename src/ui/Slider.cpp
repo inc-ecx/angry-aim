@@ -24,8 +24,8 @@ void Slider::updateDrag(double dt) {
 
   auto &app = Application::app;
 
-  double bef = value;
-  int sledX = static_cast<int>(x + floor(width - sledWidth) * value);
+  double bef = getValue();
+  int sledX = static_cast<int>(x + floor(width - sledWidth) * getValue());
   double delta = (app.getMouseX() - sledWidth / 2.0 - sledX) / (width - sledWidth);
 
   bool creeping = glfwGetKey(app.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
@@ -39,10 +39,8 @@ void Slider::updateDrag(double dt) {
   }
 
   if (!std::isnan(delta)) {
-    value += delta;
-    if (value < 0) value = 0;
-    if (value > 1) value = 1;
-    if (bef != value) onSlide();
+    setValue(getValue() + delta);
+    if (bef != getValue()) onSlide();
   }
 }
 
@@ -59,7 +57,7 @@ void Slider::render(double dt) {
   render.rect(x, railY, width, railHeight);
 
   render.color(isHovered || dragging ? 0xffffffff : 0xc0c0c0ff);
-  int sledX = static_cast<int>(x + floor(width - sledWidth) * value);
+  int sledX = static_cast<int>(x + floor(width - sledWidth) * getValue());
   render.rect(sledX, y, sledWidth, height);
 
   render.stop();

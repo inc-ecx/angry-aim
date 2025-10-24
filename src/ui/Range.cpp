@@ -26,11 +26,10 @@ void Range::onChange() {
 }
 
 void Range::actionSlider() {
-  double epsilon = 0.000'000'1;
-  int decimalPlaces = -static_cast<int>(floor(std::log10(step) + epsilon));
+  int decimalPlaces = -static_cast<int>(floor(std::log10(step)));
   if (decimalPlaces < 0) decimalPlaces = 0;
 
-  double value = get() + epsilon;
+  double value = get();
 
   std::stringstream ss;
   ss << std::setprecision(decimalPlaces) << std::fixed << value;

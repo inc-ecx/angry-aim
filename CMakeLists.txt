@@ -72,8 +72,8 @@ set(angry-aim-src
         src/screens/ScreenSettings.h
         src/screens/ScreenTest.cpp
         src/screens/ScreenTest.h
-        src/screens/ScreenDrill.cpp
-        src/screens/ScreenDrill.h
+        src/scenes/UiDrill.cpp
+        src/scenes/UiDrill.h
         src/scenes/Scene.cpp
         src/scenes/Scene.h
         src/world/model/World.cpp
@@ -159,6 +159,10 @@ set(angry-aim-src
         src/ui/Slider.h
         src/ui/Range.cpp
         src/ui/Range.h
+        src/renderers/RenderCrosshair.cpp
+        src/renderers/RenderCrosshair.h
+        src/screens/ScreenPause.cpp
+        src/screens/ScreenPause.h
 )
 
 # add executable

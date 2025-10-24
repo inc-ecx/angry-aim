@@ -10,7 +10,7 @@
 #include "entities/MainPlayer.h"
 
 #include "render/Model.h"
-#include "screens/ScreenDrill.h"
+#include "scenes/UiDrill.h"
 
 class SceneDrill : public Scene {
   Drill drill;
@@ -20,18 +20,16 @@ class SceneDrill : public Scene {
 
   std::shared_ptr<Model> targetModel;
   std::shared_ptr<Model> worldModel;
-  std::shared_ptr<ScreenDrill> screen;
+
+  // note: this ui is completely managed by the scene, as this allows for the application screen to overlay it.
+  std::shared_ptr<UiDrill> ui;
 
 public:
-  struct CrossHair {
-    int thickness = 1;
-    int length = 3;
-    int gap = 3;
-  } ch;
-
   explicit SceneDrill(const Drill& drill);
 
   void setup();
+
+  void resume();
 
   void replay() override;
 
@@ -40,6 +38,8 @@ public:
   void close() override;
 
   void handle(const UiEvent &event) override;
+
+  void resize(int width, int height) override;
 
   //
   // rendering code

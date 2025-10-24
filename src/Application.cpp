@@ -25,7 +25,7 @@ void Application::initApp() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-  window = glfwCreateWindow(width = 640, height = 480, "AngryAim", nullptr, nullptr);
+  window = glfwCreateWindow(width = 960, height = 540, "AngryAim", nullptr, nullptr);
   if (!window) {
     glfwTerminate();
     return;
@@ -110,6 +110,10 @@ void Application::onResize() {
   if (currentUi != nullptr) {
     currentUi->setBounds(0, 0, width, height);
     currentUi->layout();
+  }
+
+  if (currentScene != nullptr) {
+    currentScene->resize(width, height);
   }
 }
 
@@ -227,6 +231,7 @@ void Application::updateScene(const std::shared_ptr<Scene> &scene) {
     currentScene->resize(width, height);
   }
 }
+
 void Application::setClipboardText(const std::string &str) {
   glfwSetClipboardString(window, str.c_str());
 }
@@ -275,7 +280,21 @@ void Application::renderApp(double dt) {
 }
 
 void Application::pushScissors(int x, int y, int w, int h) {
-  y = height - y - h; // we use 0,0 as top left around here, but scissors uses 0,0 as bottom left
+  // we use 0,0 as top left around here, but scissors uses 0,0 as bottom left
+  y = height - y - h;
+
+  // limit to scissors object before
+  if (!scissors.empty()) {
+    auto &back = scissors.back();
+    int x1 = std::max(x, back.x);
+    int y1 = std::max(y, back.y);
+    int x2 = std::min(x + width, back.x + back.w);
+    int y2 = std::min(y + height, back.y + back.h);
+    x = x1;
+    y = y1;
+    w = x2 - x1;
+    h = y2 - x1;
+  }
 
   glScissor(x, y, w, h);
   if (scissors.empty()) glEnable(GL_SCISSOR_TEST);

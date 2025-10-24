@@ -5,8 +5,9 @@
 #include "entities/MainPlayer.h"
 #include "entities/SimpleTarget.h"
 #include "entities/StrafingTarget.h"
-#include "screens/ScreenDrill.h"
-#include "world_controllers/cam_consts.h"
+#include "renderers/RenderCrosshair.h"
+#include "scenes/UiDrill.h"
+#include "screens/ScreenPause.h"
 
 SceneDrill::SceneDrill(const Drill &drill) :
   drill(drill) {
@@ -15,14 +16,22 @@ SceneDrill::SceneDrill(const Drill &drill) :
 }
 
 void SceneDrill::setup() {
+  auto &app = Application::app;
+
+  // create world
   world = std::make_shared<WorldController>();
   world->add(player = std::make_shared<MainPlayer>());
   player->pos = glm::vec3(0.0f, 1.6f, 0.0f);
-  screen = std::make_shared<ScreenDrill>();
-  auto &app = Application::app;
-  app.setScreen(screen);
+
+  // create ui
+  ui = std::make_shared<UiDrill>();
+  ui->setBounds(0, 0, app.getWidth(), app.getHeight());
+  ui->layout();
+
+  // hide cursor
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  drillController->setup(world, player, screen);
+
+  drillController->setup(world, player, ui);
 }
 
 void SceneDrill::replay() {
@@ -30,12 +39,20 @@ void SceneDrill::replay() {
   setup();
 }
 
+void SceneDrill::resume() {
+  auto &app = Application::app;
+
+  glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 void SceneDrill::open() {
+  auto &app = Application::app;
+  auto &renderScene = app.renderSceneDef;
+
+  // setup controller
   drillController = FactoryDrill::create(drill);
   setup();
 
-  auto &app = Application::app;
-  auto &renderScene = app.renderSceneDef;
   renderScene.updateProjection();
 }
 
@@ -45,7 +62,28 @@ void SceneDrill::close() {
 }
 
 void SceneDrill::handle(const UiEvent &event) {
+  auto &app = Application::app;
+
   world->handle(event);
+
+  UiEvent e = event;
+  ui->handle(e);
+
+  if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_ESCAPE) {
+    app.later(
+      [&app] {
+        auto scene = dynamic_pointer_cast<SceneDrill>(app.getScene());
+        if (!scene) return;
+        glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        app.setScreen(std::make_shared<ScreenPause>(scene));
+      }
+    );
+  }
+}
+
+void SceneDrill::resize(int width, int height) {
+  ui->setBounds(0, 0, width, height);
+  ui->layout();
 }
 
 //
@@ -57,6 +95,8 @@ void SceneDrill::render(double dt) {
 
   drawWorld();
   drawCrosshair();
+
+  ui->render(dt);
 }
 
 void SceneDrill::drawWorld() {
@@ -67,15 +107,16 @@ void SceneDrill::drawWorld() {
   double camPitch = player->pitch;
   double camYaw = player->yaw;
 
+  // TODO: this does not work, because the raytrace would still be inaccurate
   // when a crosshair has an odd total width, the crosshair is not aligned in the center of the screen.
   // it is offset 0.5 pixels to the top left. as the crosshair position is rounded down.
   // to make the crosshair accurate and pixel true the view is shifted by that amount.
   // note: this assumes the screen resolution is even.
-  int chSize = ch.length + ch.gap + ch.length;
-  if (chSize % 2 == 1) {
-    camPitch += camSens * camPxToDeg;
-    camYaw += camSens * camPxToDeg;
-  }
+  //int chSize = ch.length + ch.gap + ch.length;
+  //if (chSize % 2 == 1) {
+  //  camPitch += 0.5*pxToDeg();
+  //  camYaw += 0.5*pxToDeg();
+  //}
 
   renderScene.updateView(
     player->pos,
@@ -111,26 +152,5 @@ void SceneDrill::drawWorld() {
 
 void SceneDrill::drawCrosshair() {
   Application &app = Application::app;
-  RenderUi &renderUi = app.renderUi;
-  renderUi.start();
-  renderUi.color(0x00ffffff);
-  int thickness = ch.thickness;
-  int length = ch.length;
-  int gap = ch.gap;
-
-  // top left coords
-  int chSize = length + gap + length;
-  int tlx = static_cast<int>(round((app.getWidth() - chSize) / 2.0));
-  int tly = static_cast<int>(round((app.getHeight() - chSize) / 2.0));
-
-  // left
-  renderUi.rect(tlx, static_cast<int>(tly + (chSize - thickness) / 2.0), length, thickness);
-  // right
-  renderUi.rect(tlx + chSize - length, static_cast<int>(tly + (chSize - thickness) / 2.0), length, thickness);
-  // top
-  renderUi.rect(static_cast<int>(tlx + (chSize - thickness) / 2.0), tly, thickness, length);
-  // bottom
-  renderUi.rect(static_cast<int>(tlx + (chSize - thickness) / 2.0), tly + chSize - length, thickness, length);
-
-  renderUi.stop();
+  RenderCrosshair::render(0, 0, app.getWidth(), app.getHeight());
 }

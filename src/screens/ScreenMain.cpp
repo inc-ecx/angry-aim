@@ -59,6 +59,12 @@ ScreenMain::ScreenMain() {
         Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 150),
         Cell::rel(1)
       }), 30),
+      Cell::abs(10),
+      Cell::abs(Row::make({
+        Cell::rel(1),
+        Cell::abs(Button::make("Exit", std::bind(&ScreenMain::actionExit, this)), 150),
+        Cell::rel(1)
+      }), 30),
       Cell::rel(1),
     }), 400),
     Cell::rel(1),
@@ -87,6 +93,10 @@ void ScreenMain::actionSelectDrill() {
 void ScreenMain::actionPlay() {
   const Drill& drill = State::state.drill.currentDrill;
   Application::app.updateScene(std::make_shared<SceneDrill>(drill));
+}
+
+void ScreenMain::actionExit() {
+  glfwSetWindowShouldClose(Application::app.window, GLFW_TRUE);
 }
 
 void ScreenMain::actionSettings() {

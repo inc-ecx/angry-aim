@@ -14,6 +14,8 @@ class ScreenMain : public Ui {
 
   void actionPlay();
 
+  void actionExit();
+
   void actionSettings();
 
 public:

@@ -14,7 +14,7 @@ class DrillDefault :
     public std::enable_shared_from_this<DrillDefault> {
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
-  std::shared_ptr<ScreenDrill> screen;
+  std::shared_ptr<UiDrill> screen;
 
 
   // Valorant Physics Analyzed:
@@ -69,7 +69,7 @@ public:
   explicit DrillDefault();
 
   void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-             std::shared_ptr<ScreenDrill> screen) override;
+             std::shared_ptr<UiDrill> screen) override;
 
   void update(double dt) override;
 

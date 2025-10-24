@@ -5,7 +5,7 @@
 #include <string>
 
 #include "entities/MainPlayer.h"
-#include "screens/ScreenDrill.h"
+#include "scenes/UiDrill.h"
 #include "world/controller/WorldController.h"
 
 class DrillController {
@@ -21,7 +21,7 @@ public:
   virtual void setup(
     std::shared_ptr<WorldController> world,
     std::shared_ptr<MainPlayer> player,
-    std::shared_ptr<ScreenDrill> screen) {
+    std::shared_ptr<UiDrill> screen) {
   }
 };
 

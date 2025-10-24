@@ -61,20 +61,14 @@ public:
   // note: this may not work probably, if min and max are in the negatives.
   double get(double min, double max, double step) {
     double v = min + value * (max - min);
-    double m = fmod(v + epsilon, step);
-    if (m < epsilon) return v;
-    return v - m;
+    return round(v / step) * step;
   }
 
   void set(double v, double min, double max, double step) {
-    double m = fmod(v + epsilon, step);
-    if (m > epsilon) v -= step - m;
     setValue((v-min)/(max-min));
   }
 
   void setSilently(double v, double min, double max, double step) {
-    double m = fmod(v + epsilon, step);
-    if (m > epsilon) v -= step - m;
     setValueSilently((v-min)/(max-min));
   }
 };
