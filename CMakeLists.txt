@@ -163,6 +163,15 @@ set(angry-aim-src
         src/renderers/RenderCrosshair.h
         src/screens/ScreenPause.cpp
         src/screens/ScreenPause.h
+        src/util/Observable.cpp
+        src/util/Observable.h
+        src/screens/DialogHelp.cpp
+        src/screens/DialogHelp.h
+        src/lib/miniaudio.h
+        src/lib/miniaudio_impl.cpp
+        src/sound/Sound.h
+        src/scenes/SceneDrillResources.h
+        src/sound/Sound.cpp
 )
 
 # add executable

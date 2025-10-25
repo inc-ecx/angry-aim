@@ -22,6 +22,12 @@ ScreenPause::ScreenPause(std::weak_ptr<SceneDrill>&& scene) {
        Cell::abs(10),
        Cell::abs(Row::make({
          Cell::rel(1),
+         Cell::abs(Button::make("Restart", std::bind(&ScreenPause::actionRestart, this)), 150),
+         Cell::rel(1)
+       }), 30),
+       Cell::abs(10),
+       Cell::abs(Row::make({
+         Cell::rel(1),
          Cell::abs(Button::make("Quit", std::bind(&ScreenPause::actionQuit, this)), 150),
          Cell::rel(1)
        }), 30),
@@ -50,6 +56,8 @@ void ScreenPause::handle(UiEvent &event) {
       app.later(std::bind(&ScreenPause::actionResume, this));
     } else if (event.button == GLFW_KEY_Q) {
       app.later(std::bind(&ScreenPause::actionQuit, this));
+    } else if (event.button == GLFW_KEY_R) {
+      app.later(std::bind(&ScreenPause::actionRestart, this));
     } else if (event.button == GLFW_KEY_S) {
       app.later(std::bind(&ScreenPause::actionSettings, this));
     }
@@ -81,6 +89,12 @@ void ScreenPause::actionQuit() {
   auto &app = Application::app;
   app.updateScene(nullptr);
   app.setScreen(std::make_shared<ScreenMain>()); // NOTE: PLACEMENT HERE IMPORTANT TO NOT DESTROY THIS
+}
+
+void ScreenPause::actionRestart() {
+  auto &app = Application::app;
+  Application::app.getScene()->replay();
+  app.setScreen(nullptr); // NOTE: PLACEMENT HERE IMPORTANT TO NOT DESTROY THIS
 }
 
 void ScreenPause::actionSettings() {

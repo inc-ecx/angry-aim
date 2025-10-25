@@ -5,6 +5,7 @@
 
 #include "Application.h"
 #include "Scene.h"
+#include "SceneDrillResources.h"
 #include "world/controller/WorldController.h"
 #include "drill/controller/DrillController.h"
 #include "drill/model/Drill.h"
@@ -12,6 +13,7 @@
 
 #include "render/Model.h"
 #include "scenes/UiDrill.h"
+#include "util/Observable.h"
 
 class SceneDrill : public Scene {
 
@@ -19,8 +21,10 @@ class SceneDrill : public Scene {
   Drill drill;
 
   // scene resources
+  std::vector<std::shared_ptr<Observation>> observations;
   std::shared_ptr<Model> targetModel;
   std::shared_ptr<Model> worldModel;
+  std::shared_ptr<SceneDrillResources> resources;
 
   //
   // drill state
@@ -43,6 +47,8 @@ class SceneDrill : public Scene {
 
 public:
   explicit SceneDrill(const Drill &drill);
+
+  void viewSettingsChanged();
 
   //
   // drill specific

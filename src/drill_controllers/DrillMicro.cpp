@@ -21,12 +21,12 @@ DrillMicro::DrillMicro(const std::string &args) :
 }
 
 void DrillMicro::setup(
-  std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-  std::shared_ptr<UiDrill> screen
+  const DrillControllerSetupArgs &args
 ) {
-  this->world = world;
-  this->player = player;
-  this->screen = screen;
+  this->world = args.world;
+  this->player = args.player;
+  this->screen = args.screen;
+  this->setupArgs = args;
 
   player->pos = glm::vec3(0.0f, params.eyeHeight, 0.0f);
 
@@ -124,11 +124,13 @@ void DrillMicro::actionShoot() {
 
   if (!didHit) {
     statsMissed++;
+    setupArgs.resources->soundMiss->play();
     return;
   }
 
   statsHit++;
   statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
+  setupArgs.resources->soundHit->play();
 
   world->remove(target);
   target = nullptr;

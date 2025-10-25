@@ -30,6 +30,10 @@ public:
     return std::make_shared<Label>(text, rgba, LabelAlign::CENTER);
   }
 
+  static std::shared_ptr<Label> make(const std::string &text, int rgba, LabelAlign align) {
+    return std::make_shared<Label>(text, rgba, align);
+  }
+
   void render(double dt) override;
 
   void setText(const std::string &text) { this->text = text; }

@@ -34,11 +34,17 @@ std::shared_ptr<Ui> constructSettingsList() {
   int groupGap = 5;
   int scrollGap = 5;
 
+  std::shared_ptr<Range> rngHorWidth, rngVerGap, rngHorGap, rngVerLength, rngHorLength, rngVerWidth;
+
   std::shared_ptr<Range> rngFov;
+
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("FOV", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
-    Cell::rel(rngFov = Range::make(settings.fov, 10, 170, 0.01, [&](auto v){settings.fov = v;})),
+    Cell::rel(rngFov = Range::make(settings.fov, 10, 170, 0.01, [&](auto v) {
+      settings.fov = v;
+      settings.triggerChangeView();
+    })),
     Cell::abs(scrollGap)
   }), 25));
   items.push_back(ItemY::make(groupGap));
@@ -56,13 +62,23 @@ std::shared_ptr<Ui> constructSettingsList() {
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("Sensitivity", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
-    Cell::rel(Range::make(settings.sensitivity, 0.010, 4, 0.001, [&](auto v){settings.sensitivity = v;})),
+    Cell::rel(Range::make(settings.sensitivity, 0.010, 4, 0.001, [&](auto v) { settings.sensitivity = v; })),
     Cell::abs(scrollGap)
   }), 25));
-
   items.push_back(ItemY::make(settingsGap));
-    std::shared_ptr<Range> rngHorWidth, rngVerGap, rngHorGap, rngVerLength, rngHorLength, rngVerWidth;
-    items.push_back(ItemY::make(Row::make({
+
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(Label::make("Volume", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(labelGap),
+    Cell::rel(Range::make(sqrt(settings.volume), 0, 1.3, 0.001, [&](auto v) {
+      settings.volume = v * v;
+      settings.onChangeVolume->trigger();
+    })),
+    Cell::abs(scrollGap)
+  }), 25));
+  items.push_back(ItemY::make(settingsGap));
+
+  items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("Crosshair", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(std::make_shared<UiCrosshair>()),

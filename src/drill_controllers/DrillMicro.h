@@ -12,6 +12,8 @@ class DrillMicro :
     public DrillController,
     public Controller,
     public std::enable_shared_from_this<DrillMicro> {
+  DrillControllerSetupArgs setupArgs;
+
   std::shared_ptr<UiDrill> screen;
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
@@ -68,8 +70,7 @@ public:
 
   void resume() override;
 
-  void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-             std::shared_ptr<UiDrill> screen) override;
+  void setup(const DrillControllerSetupArgs &args) override;
 
   void update(double dt) override;
 

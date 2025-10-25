@@ -75,7 +75,7 @@ public:
 class PanelYContainer : public Ui {
   // scroll state
   float value = 0;
-  int yOff = 0;
+  int yOff = 0; // TODO: when the ui refreshes the panel yOff gets inaccurate i think
 
 public:
   explicit PanelYContainer(const std::vector<std::shared_ptr<ItemY> > &children) {

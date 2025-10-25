@@ -18,6 +18,8 @@ class DrillSimple :
   std::shared_ptr<CameraController> cameraController;
   std::shared_ptr<MoveController> moveController;
 
+  DrillControllerSetupArgs setupArgs;
+
   // Drill settings
   struct Params {
     int duration = 60;
@@ -68,8 +70,7 @@ public:
 
   void resume() override;
 
-  void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-             std::shared_ptr<UiDrill> screen) override;
+  void setup(const DrillControllerSetupArgs &args) override;
 
   void update(double dt) override;
 

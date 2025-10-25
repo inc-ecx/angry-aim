@@ -11,14 +11,12 @@
 DrillDefault::DrillDefault() :
   DrillController("default") {}
 
-void DrillDefault::setup(
-  std::shared_ptr<WorldController> world,
-  std::shared_ptr<MainPlayer> player,
-  std::shared_ptr<UiDrill> screen
-) {
-  this->player = player;
-  this->world = world;
-  this->screen = screen;
+void DrillDefault::setup(const DrillControllerSetupArgs &args) {
+  this->player = args.player;
+  this->world = args.world;
+  this->screen = args.screen;
+  this->resources = args.resources;
+
   world->control(shared_from_this());
   world->control(player, cameraController = std::make_shared<CameraController>(player));
   // world->control(player, std::make_shared<MoveController>(player, player));
@@ -45,6 +43,7 @@ void DrillDefault::handle(const UiEvent &event) {
   if (!started) {
     if (event.type == UiEventType::MOUSE_BUTTON && event.button == GLFW_MOUSE_BUTTON_LEFT && event.down) {
       start();
+      return;
     }
   }
 
@@ -67,11 +66,15 @@ void DrillDefault::handle(const UiEvent &event) {
           // ++it;
           hit = true;
           statsHit++;
+          resources->soundHit->play();
           ttkSum += static_cast<int>(msCurrent() - msLastSpawn);
           triggerSpawn();
         }
       }
-      if (!hit) statsMiss++;
+      if (!hit) {
+        statsMiss++;
+        resources->soundMiss->play();
+      }
     }
   }
 }
@@ -163,8 +166,8 @@ void DrillDefault::updateWorld(double dt) {
     if (target == nullptr) continue;
 
     target->strafeVelocity = static_cast<float>(std::clamp(
-      target->strafeVelocity + strafeAcceleration * target->strafeInput * dt, -strafeMaxSpeed,
-      strafeMaxSpeed
+      target->strafeVelocity + strafeAcceleration * target->strafeInput * dt,
+      -strafeMaxSpeed, strafeMaxSpeed
     ));
 
     bool decelerating = std::abs(target->strafeInput) < 0.1 && std::abs(target->strafeVelocity) > 0.01;

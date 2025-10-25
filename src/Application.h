@@ -21,6 +21,11 @@
 
 #include "DebugInfo.h"
 
+#include "util/Observable.h"
+
+#include "lib/miniaudio.h"
+#include "sound/Sound.h"
+
 struct Scissors {
   int x;
   int y;
@@ -63,6 +68,8 @@ public:
   // resources
   GLFWwindow *window = nullptr;
   FT_Library freetype = nullptr;
+  ma_engine miniaudio;
+  std::vector<std::shared_ptr<Observation>> observations;
 
   static Application app;
 
@@ -74,6 +81,8 @@ public:
 
   // scissors state
   std::vector<Scissors> scissors;
+
+  void applyFs();
 
   void onClose();
 
@@ -87,7 +96,7 @@ public:
 
   void setClipboardText(const std::string &str);
 
-  bool getClipboardText(std::string& str);
+  bool getClipboardText(std::string &str);
 
   void pushScissors(int x, int y, int w, int h);
 
@@ -99,6 +108,8 @@ public:
   int getHeight() { return height; }
 
   void onEvent(UiEvent event);
+
+  std::shared_ptr<Sound> loadSound(const std::string &path);
 
   std::shared_ptr<Ui> getScreen() { return currentUi; }
 

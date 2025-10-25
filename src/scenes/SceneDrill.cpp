@@ -14,6 +14,18 @@ SceneDrill::SceneDrill(const Drill &drill) :
   drill(drill) {
   targetModel = std::make_shared<Model>("assets/models/target1/Target1.obj");
   worldModel = std::make_shared<Model>("assets/models/map1/Map1.obj");
+
+  auto &app = Application::app;
+  resources = std::make_shared<SceneDrillResources>();
+  resources->soundHit = app.loadSound("assets/sounds/ding.wav");
+  resources->soundMiss = app.loadSound("assets/sounds/click.wav");
+
+  observations.push_back(State::state.settings.listenChangeView(std::bind(&SceneDrill::viewSettingsChanged, this)));
+}
+
+void SceneDrill::viewSettingsChanged() {
+  auto &renderScene = Application::app.renderSceneDrill;
+  renderScene.updateProjection();
 }
 
 void SceneDrill::setup() {
@@ -31,7 +43,13 @@ void SceneDrill::setup() {
 
   // create controller
   drillController = FactoryDrill::create(drill);
-  drillController->setup(world, player, ui);
+
+  drillController->setup(DrillControllerSetupArgs{
+    .world = world,
+    .player = player,
+    .screen = ui,
+    .resources = resources
+  });
 }
 
 //
@@ -100,8 +118,6 @@ void SceneDrill::close() {
 }
 
 void SceneDrill::handle(const UiEvent &event) {
-  auto &app = Application::app;
-
   if (isInGame()) {
     world->handle(event);
 

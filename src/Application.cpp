@@ -1,6 +1,5 @@
 #include "Application.h"
 
-#include <iostream>
 #include <sstream>
 #include <chrono>
 #include <algorithm>
@@ -15,8 +14,11 @@ Application Application::app;
 void Application::initApp() {
   State::state.loadAll();
 
-  if (!glfwInit())
+  if (!glfwInit()) {
+    Log::fatal("Failed to initialize glfw.");
+    glfwTerminate();
     return;
+  }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -27,57 +29,64 @@ void Application::initApp() {
 
   window = glfwCreateWindow(width = 960, height = 540, "AngryAim", nullptr, nullptr);
   if (!window) {
+    Log::fatal("Failed to open GLFW window.");
     glfwTerminate();
     return;
   }
 
-  glfwSetCursorPosCallback(window, [](GLFWwindow *, double x, double y) {
-    int dx = app.mouseX == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(x) - app.mouseX);
-    int dy = app.mouseY == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(y) - app.mouseY);
-    app.mouseX = static_cast<int>(x);
-    app.mouseY = static_cast<int>(y);
-    app.onEvent(UiEvent(app.mouseX, app.mouseY, dx, dy));
-  });
+  glfwSetCursorPosCallback(
+    window, [](GLFWwindow *, double x, double y) {
+      int dx = app.mouseX == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(x) - app.mouseX);
+      int dy = app.mouseY == std::numeric_limits<int>::min() ? 0 : (static_cast<int>(y) - app.mouseY);
+      app.mouseX = static_cast<int>(x);
+      app.mouseY = static_cast<int>(y);
+      app.onEvent(UiEvent(app.mouseX, app.mouseY, dx, dy));
+    }
+  );
   double mx, my;
   glfwGetCursorPos(window, &mx, &my);
   mouseX = static_cast<int>(mx);
   mouseY = static_cast<int>(my);
 
-  glfwSetWindowSizeCallback(window, [](GLFWwindow *, int w, int h) {
-    app.width = w;
-    app.height = h;
-    app.onResize();
-  });
-
-  glfwSetMouseButtonCallback(window, [](GLFWwindow *, int button, int action, int mods) {
-    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
-      app.onEvent(UiEvent(UiEventType::MOUSE_BUTTON, action == GLFW_PRESS, button));
+  glfwSetWindowSizeCallback(
+    window, [](GLFWwindow *, int w, int h) {
+      app.width = w;
+      app.height = h;
+      app.onResize();
     }
-  });
+  );
 
-  glfwSetKeyCallback(window, [](GLFWwindow *, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS || action == GLFW_RELEASE || action == GLFW_REPEAT) {
-      app.onEvent(UiEvent(UiEventType::KEY, action != GLFW_RELEASE, key));
+  glfwSetMouseButtonCallback(
+    window, [](GLFWwindow *, int button, int action, int mods) {
+      if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+        app.onEvent(UiEvent(UiEventType::MOUSE_BUTTON, action == GLFW_PRESS, button));
+      }
     }
-  });
+  );
 
-  glfwSetCharCallback(window, [](GLFWwindow*, uint32_t codepoint) {
+  glfwSetKeyCallback(
+    window, [](GLFWwindow *, int key, int scancode, int action, int mods) {
+      if (action == GLFW_PRESS || action == GLFW_RELEASE || action == GLFW_REPEAT) {
+        app.onEvent(UiEvent(UiEventType::KEY, action != GLFW_RELEASE, key));
+      }
+    }
+  );
+
+  glfwSetCharCallback(
+    window, [](GLFWwindow *, uint32_t codepoint) {
       app.onEvent(UiEvent(codepoint));
-  });
+    }
+  );
 
-  glfwSetScrollCallback(window, [](GLFWwindow*, double dx, double dy) {
-    app.onEvent(UiEvent(dx,-dy));
-  });
+  glfwSetScrollCallback(
+    window, [](GLFWwindow *, double dx, double dy) {
+      app.onEvent(UiEvent(dx, -dy));
+    }
+  );
 
   glfwMakeContextCurrent(window);
 
   gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-
-  // const GLubyte *version = glGetString(GL_VERSION);
-  // const GLubyte *renderer = glGetString(GL_RENDERER);
-  // const GLubyte *vendor = glGetString(GL_VENDOR);
-  // std::cout << "OpenGL version: " << version << std::endl << "Renderer: " << renderer << std::endl << "Vendor: " <<
-  //     vendor << std::endl;
 
   FT_Error ftErr = FT_Init_FreeType(&freetype);
   if (ftErr) {
@@ -85,7 +94,25 @@ void Application::initApp() {
     return;
   }
 
+  ma_result res = ma_engine_init(nullptr, &miniaudio);
+  if (res != MA_SUCCESS) {
+    Log::fatal("Failed to initialize miniaudio.");
+    return;
+  }
+
+  ma_engine_set_volume(&miniaudio, static_cast<float>(State::state.settings.volume));
+  observations.push_back(
+    State::state.settings.onChangeVolume->listen(
+      [this] {
+        ma_engine_set_volume(&miniaudio, static_cast<float>(State::state.settings.volume));
+      }
+    )
+  );
+  observations.push_back(State::state.settings.onChangeFullscreen->listen(std::bind(&Application::applyFs, this)));
+
   stbi_set_flip_vertically_on_load(true);
+
+  applyFs();
 
   renderUi.init();
   renderScene.init();
@@ -95,6 +122,24 @@ void Application::initApp() {
   app.onResize();
 
   app.setScreen(std::make_shared<ScreenMain>());
+}
+
+void Application::applyFs() {
+  GLFWmonitor *mon = glfwGetWindowMonitor(window);
+  bool isFullscreen = mon != nullptr;
+  if (State::state.settings.fullscreen != isFullscreen) {
+    if (mon == nullptr) {
+      GLFWmonitor *primary = glfwGetPrimaryMonitor();
+      const GLFWvidmode *mode = glfwGetVideoMode(primary);
+      glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
+    } else {
+      int width = 1280;
+      int height = 720;
+      int xPos = 100;
+      int yPos = 100;
+      glfwSetWindowMonitor(window, nullptr, xPos, yPos, width, height, GLFW_DONT_CARE);
+    }
+  }
 }
 
 void Application::onResize() {
@@ -195,18 +240,8 @@ void Application::onEvent(UiEvent event) {
   if (currentUi != nullptr) currentUi->handle(event);
 
   if (event.type == UiEventType::KEY && event.down && event.button == GLFW_KEY_F11) {
-    GLFWmonitor *mon = glfwGetWindowMonitor(window);
-    if (mon == nullptr) {
-      GLFWmonitor *primary = glfwGetPrimaryMonitor();
-      const GLFWvidmode *mode = glfwGetVideoMode(primary);
-      glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
-    } else {
-      int width = 1280;
-      int height = 720;
-      int xPos = 100;
-      int yPos = 100;
-      glfwSetWindowMonitor(window, nullptr, xPos, yPos, width, height, GLFW_DONT_CARE);
-    }
+    State::state.settings.fullscreen = !State::state.settings.fullscreen;
+    State::state.settings.onChangeFullscreen->trigger();
   }
 }
 
@@ -237,7 +272,7 @@ void Application::setClipboardText(const std::string &str) {
 }
 
 bool Application::getClipboardText(std::string &str) {
-  const char* text = glfwGetClipboardString(window);
+  const char *text = glfwGetClipboardString(window);
   if (text == nullptr) return false;
   str = text;
   return true;
@@ -297,7 +332,8 @@ void Application::pushScissors(int x, int y, int w, int h) {
   }
 
   glScissor(x, y, w, h);
-  if (scissors.empty()) glEnable(GL_SCISSOR_TEST);
+  if (scissors.empty())
+    glEnable(GL_SCISSOR_TEST);
   scissors.push_back({x, y, w, h});
 
   if (scissors.size() > 10'000) throw std::runtime_error("scissor stack overflow");
@@ -311,4 +347,13 @@ void Application::popScissors() {
     auto &last = scissors.back();
     glScissor(last.x, last.y, last.w, last.h);
   }
+}
+
+std::shared_ptr<Sound> Application::loadSound(const std::string &path) {
+  auto sound = std::make_shared<Sound>();
+  auto result = ma_sound_init_from_file(&miniaudio, path.c_str(), 0, nullptr, nullptr, &sound->_ma_sound);
+  if (result != MA_SUCCESS) {
+    throw std::runtime_error(std::format("Failed to load sound {}", fs::absolute(path).string()));
+  }
+  return sound;
 }

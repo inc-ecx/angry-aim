@@ -6,6 +6,9 @@
 
 class Log {
 public:
+  static void info(std::string&& msg) {
+    std::cout << "[inf] " << msg << std::endl;
+  }
   static void warn(std::string&& msg) {
     std::cout << "[wrn] " << msg << std::endl;
   }

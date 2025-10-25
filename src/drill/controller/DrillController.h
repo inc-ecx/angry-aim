@@ -5,8 +5,16 @@
 #include <string>
 
 #include "entities/MainPlayer.h"
+#include "scenes/SceneDrillResources.h"
 #include "scenes/UiDrill.h"
 #include "world/controller/WorldController.h"
+
+struct DrillControllerSetupArgs {
+  std::shared_ptr<WorldController> world;
+  std::shared_ptr<MainPlayer> player;
+  std::shared_ptr<UiDrill> screen;
+  std::shared_ptr<SceneDrillResources> resources;
+};
 
 class DrillController {
 public:
@@ -18,9 +26,7 @@ public:
   virtual ~DrillController() = default;
 
   virtual void setup(
-    std::shared_ptr<WorldController> world,
-    std::shared_ptr<MainPlayer> player,
-    std::shared_ptr<UiDrill> screen
+    const DrillControllerSetupArgs &args
   ) {}
 
   virtual void pause() {}

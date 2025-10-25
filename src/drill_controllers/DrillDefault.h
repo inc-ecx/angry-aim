@@ -15,8 +15,8 @@ class DrillDefault :
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
   std::shared_ptr<UiDrill> screen;
-
-
+  std::shared_ptr<SceneDrillResources> resources;
+  
   // Valorant Physics Analyzed:
   // https://www.reddit.com/r/VALORANT/comments/utc7qf/valorant_physics_derived/
 
@@ -68,8 +68,7 @@ class DrillDefault :
 public:
   explicit DrillDefault();
 
-  void setup(std::shared_ptr<WorldController> world, std::shared_ptr<MainPlayer> player,
-             std::shared_ptr<UiDrill> screen) override;
+  void setup(const DrillControllerSetupArgs &args) override;
 
   void pause() override;
 

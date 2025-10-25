@@ -12,14 +12,11 @@ DrillSimple::DrillSimple() :
   rngEngine.seed(static_cast<uint32_t>(msCurrent()));
 }
 
-void DrillSimple::setup(
-  std::shared_ptr<WorldController> world,
-  std::shared_ptr<MainPlayer> player,
-  std::shared_ptr<UiDrill> screen
-) {
-  this->world = world;
-  this->player = player;
-  this->screen = screen;
+void DrillSimple::setup(const DrillControllerSetupArgs &args) {
+  this->world = args.world;
+  this->player = args.player;
+  this->screen = args.screen;
+  this->setupArgs = args;
 
   player->pos = glm::vec3(0.0f, params.eyeHeight, 0.0f);
 
@@ -117,11 +114,13 @@ void DrillSimple::actionShoot() {
 
   if (!didHit) {
     statsMissed++;
+    setupArgs.resources->soundMiss->play();
     return;
   }
 
   statsHit++;
   statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
+  setupArgs.resources->soundHit->play();
 
   world->remove(target);
   target = nullptr;

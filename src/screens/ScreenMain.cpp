@@ -1,5 +1,6 @@
 #include "ScreenMain.h"
 #include "Application.h"
+#include "DialogHelp.h"
 
 #include "ScreenSettings.h"
 #include "ScreenTest.h"
@@ -7,9 +8,7 @@
 #include "drill/model/DrillManager.h"
 
 #include "scenes/SceneBackpack.h"
-#include "drill_controllers/DrillSimple.h"
 #include "drill_controllers/DrillDefault.h"
-#include "drill_controllers/FactoryDrill.h"
 #include "scenes/SceneDrill.h"
 #include "state/State.h"
 #include "ui/PanelY.h"
@@ -105,7 +104,9 @@ void ScreenMain::actionSettings() {
 
 void ScreenMain::handle(UiEvent &event) {
   if (event.type == UiEventType::KEY && event.down) {
-    if (event.button == GLFW_KEY_SPACE || event.button == GLFW_KEY_ENTER)
+    if (event.button == GLFW_KEY_F1)
+      Application::app.setScreen(std::make_shared<DialogHelp>(Application::app.getScreen()));
+    if (event.button == GLFW_KEY_SPACE)
       Application::app.later(std::bind(&ScreenMain::actionPlay, this));
     if (event.button == GLFW_KEY_TAB)
       Application::app.later(std::bind(&ScreenMain::actionSelectDrill, this));

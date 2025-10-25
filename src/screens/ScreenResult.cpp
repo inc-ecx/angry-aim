@@ -16,8 +16,7 @@ ScreenResult::ScreenResult(const std::vector<std::string> &results) {
   cells.push_back(Cell::abs(60));
   cells.push_back(Cell::abs(Row::make({
       Cell::rel(),
-      // Cell::abs(Button::make("Play", std::bind(&ScreenResult::handlePlay, this)), 200),
-      Cell::abs(Label::make("(Space) Replay", 0xffffff80), 200),
+      Cell::abs(Label::make("(R) Replay", 0xffffff80), 200),
       Cell::rel(),
   }), 30));
   cells.push_back(Cell::abs(Row::make({
@@ -58,7 +57,7 @@ void ScreenResult::handle(UiEvent &event) {
     });
   }
 
-  if (event.type == UiEventType::KEY && event.down && (event.button == GLFW_KEY_SPACE)) {
+  if (event.type == UiEventType::KEY && event.down && (event.button == GLFW_KEY_R)) {
     Application::app.later(std::bind(&ScreenResult::handlePlay, this));
   }
 

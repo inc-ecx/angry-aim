@@ -16,6 +16,7 @@ public:
   void render(double dt) override;
 
   void actionResume();
+  void actionRestart();
   void actionQuit();
   void actionSettings();
 };
