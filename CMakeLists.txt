@@ -172,6 +172,14 @@ set(angry-aim-src
         src/sound/Sound.h
         src/scenes/SceneDrillResources.h
         src/sound/Sound.cpp
+        src/renderers/PipelineUi.cpp
+        src/renderers/PipelineUi.h
+        src/render/Framebuffer.cpp
+        src/render/Framebuffer.h
+        src/ui/UiRenderParams.cpp
+        src/ui/UiRenderParams.h
+        src/ui/UiUtil.cpp
+        src/ui/UiUtil.h
 )
 
 # add executable

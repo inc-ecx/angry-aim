@@ -6,6 +6,8 @@
 #include "../inc/inc_glfw.h"
 
 class RenderSceneDrill {
+  glm::mat4 projection = glm::mat4();
+
   GLuint shaderProgram = -1;
 
   void initRectVao();
@@ -31,7 +33,7 @@ public:
 
   void updateModel(glm::vec3 pos, float scale);
 
-  void updateView(glm::vec3 pos, float pitch, float yaw);
+  void updateView(glm::vec3 pos, float pitch, float yaw, glm::vec2 pxOffset);
 
   void updateProjection();
 };

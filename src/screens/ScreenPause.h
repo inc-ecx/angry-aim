@@ -13,8 +13,6 @@ public:
 
   void handle(UiEvent &event) override;
 
-  void render(double dt) override;
-
   void actionResume();
   void actionRestart();
   void actionQuit();

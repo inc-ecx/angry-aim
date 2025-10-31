@@ -17,8 +17,8 @@ void Ui::layout() {
   layoutChildren();
 }
 
-void Ui::render(double dt) {
-  renderChildren(dt);
+void Ui::render(double dt, const UiRenderParams& params) {
+  renderChildren(dt, params);
 }
 
 void Ui::doLayeredLayout() const {
@@ -34,9 +34,9 @@ void Ui::layoutChildren() {
   }
 }
 
-void Ui::renderChildren(double dt) {
+void Ui::renderChildren(double dt, const UiRenderParams &params) {
   for (auto itr = children.rbegin(); itr != children.rend(); ++itr) {
-    (*itr)->render(dt);
+    (*itr)->render(dt, params);
   }
 }
 

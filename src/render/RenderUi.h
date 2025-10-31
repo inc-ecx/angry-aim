@@ -24,7 +24,11 @@ public:
 
   void color(int rgba);
 
+  void texture(GLuint id);
+
   void rect(int x, int y, int w, int h);
+
+  void rect(int x, int y, int w, int h, float radius, float borderBlur);
 
   void resize(int width, int height);
 };

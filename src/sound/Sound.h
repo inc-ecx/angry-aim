@@ -15,7 +15,7 @@ public:
     ma_sound_uninit(&_ma_sound);
   }
 
-  void play();
+  void play(double volume);
 
   Sound(const Sound &other) = delete;
 

@@ -114,6 +114,8 @@ void ScreenMain::handle(UiEvent &event) {
       Application::app.updateScene(std::make_shared<SceneBackpack>());
     if (event.button == GLFW_KEY_T)
       Application::app.setScreen(std::make_shared<ScreenTest>(Application::app.getScreen()));
+    if (event.button == GLFW_KEY_S)
+      Application::app.later(std::bind(&ScreenMain::actionSettings, this));
   }
 
   Ui::handle(event);

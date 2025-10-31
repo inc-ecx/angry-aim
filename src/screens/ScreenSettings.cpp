@@ -10,13 +10,18 @@
 
 class UiCrosshair : public Ui {
 public:
-  void render(double dt) override {
+  void render(double dt, const UiRenderParams &params) override {
     auto &app = Application::app;
     auto &render = app.renderUi;
 
     render.start();
     render.color(0x00000020);
+
+    if (params.toBuffer)
+      glBlendFunc(GL_ONE, GL_ZERO);
     render.rect(x, y, width, height);
+    if (params.toBuffer)
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     render.stop();
     RenderCrosshair::render(x, y, width, height);
   }
@@ -28,16 +33,17 @@ std::shared_ptr<Ui> constructSettingsList() {
 
   auto &settings = State::state.settings;
 
-  int labelWidth = 140;
+  int labelWidth = 250;
   int labelGap = 10;
-  int settingsGap = 20;
-  int groupGap = 5;
+  int settingsGap = 48;
+  int groupGap = 10;
   int scrollGap = 5;
 
   std::shared_ptr<Range> rngHorWidth, rngVerGap, rngHorGap, rngVerLength, rngHorLength, rngVerWidth;
 
   std::shared_ptr<Range> rngFov;
 
+  items.push_back(ItemY::make(Label::make("View", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("FOV", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
@@ -59,6 +65,7 @@ std::shared_ptr<Ui> constructSettingsList() {
   }), 25));
   items.push_back(ItemY::make(settingsGap));
 
+  items.push_back(ItemY::make(Label::make("Controls", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("Sensitivity", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
@@ -67,8 +74,9 @@ std::shared_ptr<Ui> constructSettingsList() {
   }), 25));
   items.push_back(ItemY::make(settingsGap));
 
+  items.push_back(ItemY::make(Label::make("Sound", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Volume", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Main Volume", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(Range::make(sqrt(settings.volume), 0, 1.3, 0.001, [&](auto v) {
       settings.volume = v * v;
@@ -76,52 +84,70 @@ std::shared_ptr<Ui> constructSettingsList() {
     })),
     Cell::abs(scrollGap)
   }), 25));
+  items.push_back(ItemY::make(groupGap));
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(Label::make("Hit Volume", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(labelGap),
+    Cell::rel(Range::make(sqrt(settings.hitVolume), 0, 1.3, 0.001, [&](auto v) {
+      settings.hitVolume = v * v;
+    })),
+    Cell::abs(scrollGap)
+  }), 25));
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(Label::make("Miss Volume", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(labelGap),
+    Cell::rel(Range::make(sqrt(settings.missVolume), 0, 1.3, 0.001, [&](auto v) {
+      settings.missVolume = v * v;
+    })),
+    Cell::abs(scrollGap)
+  }), 25));
   items.push_back(ItemY::make(settingsGap));
 
+  items.push_back(ItemY::make(Label::make("Crosshair", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Crosshair", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(std::make_shared<UiCrosshair>()),
     Cell::abs(scrollGap)
   }), 100));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Hor Width", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Horizontal Line Width", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngHorWidth = Range::make(settings.crosshairXThickness, 0, 8, 1, [&](auto v){settings.crosshairXThickness = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Ver Width", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Vertical Line Width", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngVerWidth = Range::make(settings.crosshairYThickness, 0, 8, 1, [&](auto v){settings.crosshairYThickness = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Hor Length", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Horizontal Line Length", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngHorLength = Range::make(settings.crosshairXLength, 0, 24, 1, [&](auto v){settings.crosshairXLength = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Ver Length", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Vertical Line Length", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngVerLength = Range::make(settings.crosshairYLength, 0, 24, 1, [&](auto v){settings.crosshairYLength = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Hor Gap", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Horizontal Gap", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngHorGap = Range::make(settings.crosshairXGap, 0, 16, 1, [&](auto v){settings.crosshairXGap = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
-    Cell::abs(Label::make("Ver Gap", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(Label::make("Vertical Gap", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
     Cell::rel(rngVerGap = Range::make(settings.crosshairYGap, 0, 16, 1, [&](auto v){settings.crosshairYGap = static_cast<int>(v+0.001);})),
     Cell::abs(scrollGap),
@@ -129,7 +155,7 @@ std::shared_ptr<Ui> constructSettingsList() {
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
     Cell::abs(labelWidth + labelGap),
-    Cell::abs(Button::make("Reset", [=, &settings]() {
+    Cell::abs(Button::make("Default", [=, &settings]() {
       settings.crosshairXLength = 4;
       rngHorLength->set(4);
       settings.crosshairXThickness = 2;
@@ -165,7 +191,7 @@ ScreenSettings::ScreenSettings(const std::shared_ptr<Ui> &prev) : prev(prev)  {
     Cell::abs(40),
     Cell::rel(Row::make({
       Cell::rel(),
-      Cell::abs(constructSettingsList(), 500),
+      Cell::abs(constructSettingsList(), 800),
       Cell::rel()
     })),
     Cell::abs(40),

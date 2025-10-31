@@ -17,6 +17,9 @@ public:
   double volume = 0.2;
   std::shared_ptr<Observable> onChangeVolume = Observable::make();
 
+  double hitVolume = 0.5;
+  double missVolume = 1.0;
+
   int crosshairXLength = 4;
   int crosshairXThickness = 2;
   int crosshairYLength = 4;
@@ -31,7 +34,6 @@ public:
   std::shared_ptr<Observation> listenChangeView(std::function<void()> listener);
 
   void triggerChangeView();
-
 };
 
 #endif //STATE_SETTINGS_H

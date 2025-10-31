@@ -66,10 +66,6 @@ void ScreenPause::handle(UiEvent &event) {
   Ui::handle(event);
 }
 
-void ScreenPause::render(double dt) {
-  Ui::render(dt);
-}
-
 //
 // handlers
 //

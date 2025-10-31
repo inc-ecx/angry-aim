@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "screens/ScreenResult.h"
+#include "state/State.h"
 #include "world/WorldUtil.h"
 
 #include "world_controllers/CameraController.h"
@@ -124,13 +125,13 @@ void DrillMicro::actionShoot() {
 
   if (!didHit) {
     statsMissed++;
-    setupArgs.resources->soundMiss->play();
+    setupArgs.resources->soundMiss->play(State::state.settings.missVolume);
     return;
   }
 
   statsHit++;
   statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
-  setupArgs.resources->soundHit->play();
+  setupArgs.resources->soundHit->play(State::state.settings.hitVolume);
 
   world->remove(target);
   target = nullptr;

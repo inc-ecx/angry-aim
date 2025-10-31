@@ -33,7 +33,7 @@ public:
 
   void handle(UiEvent &event) override;
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
 
   void setValue(float value);
 
@@ -84,7 +84,7 @@ public:
 
   void layout() override;
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
 
   int getScrollDistance();
 

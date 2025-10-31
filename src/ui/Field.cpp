@@ -152,12 +152,12 @@ void Field::handle(UiEvent &event) {
     handleChar(event);
   } else if (event.type == UiEventType::MOUSE_BUTTON) {
     handleClick(event);
-  }  else if (event.type == UiEventType::KEY) {
+  } else if (event.type == UiEventType::KEY) {
     if (event.down) handleKeyDown(event);
   }
 }
 
-void Field::render(double dt) {
+void Field::render(double dt, const UiRenderParams &params) {
   auto &app = Application::app;
   auto &render = app.renderUi;
   auto &renderFont = app.renderFont;
@@ -169,8 +169,12 @@ void Field::render(double dt) {
   int xPadding = 3;
 
   render.start();
-  render.color(0x00000080);
-  render.rect(x, y, width, height);
+  render.color(0x101010ff);
+  if (params.toBuffer)
+    glBlendFunc(GL_ONE, GL_ZERO);
+  render.rect(x, y, width, height, 3.0f, 1.0f);
+  if (params.toBuffer)
+    glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
   render.stop();
 
   int textHeight = renderFont.height();
@@ -202,12 +206,16 @@ void Field::render(double dt) {
   }
 
   renderFont.start();
+  if (params.toBuffer)
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
   renderFont.renderText(
     text,
     static_cast<float>(x + xPadding + offset),
     y + round((height - textHeight) / 2.0f),
     0xffffffff
   );
+  if (params.toBuffer)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   renderFont.stop();
 
   uint64_t msNow = msCurrent();
@@ -215,7 +223,7 @@ void Field::render(double dt) {
     int cursorHeight = textHeight + 4;
     int cursorY = y + 2;
     render.start();
-    render.color(0xff000000 | 0xffffffff);
+    render.color(0xffffffff);
     render.rect(x + xPadding + cursorX + offset, cursorY, 2, cursorHeight);
     render.stop();
   }
@@ -281,7 +289,7 @@ void Field::set(const std::string &value) {
 
 void Field::setSilently(const std::string &value) {
   textData.clear();
-  for (char c : value) {
+  for (char c: value) {
     if (!allowChar(c)) continue;
     if (textData.size() >= this->max) break;
     textData.push_back(c);

@@ -24,16 +24,17 @@
 #include "util/Observable.h"
 
 #include "lib/miniaudio.h"
+#include "renderers/PipelineUi.h"
 #include "sound/Sound.h"
 
-struct Scissors {
-  int x;
-  int y;
-  int w;
-  int h;
-};
-
 class Application {
+  struct Scissors {
+    int x;
+    int y;
+    int w;
+    int h;
+  };
+
   // tasks
   std::mutex mtx;
   std::vector<std::function<void()> > laterVec;
@@ -65,22 +66,25 @@ class Application {
   void onResize();
 
 public:
+  static Application app;
+
   // resources
   GLFWwindow *window = nullptr;
   FT_Library freetype = nullptr;
   ma_engine miniaudio;
   std::vector<std::shared_ptr<Observation>> observations;
+  std::vector<Scissors> scissors;
 
-  static Application app;
+  // pipelines
+  // note: pipelines are responsible for managing a chain of renderers and presenting the final image
+  PipelineUi pipelineUi;
 
-  // renderers
+  // renders
+  // note: renders are responsible for providing the functionalities for drawing a scene/screen.
   RenderUi renderUi;
   RenderFont renderFont;
   RenderScene renderScene;
   RenderSceneDrill renderSceneDrill;
-
-  // scissors state
-  std::vector<Scissors> scissors;
 
   void applyFs();
 

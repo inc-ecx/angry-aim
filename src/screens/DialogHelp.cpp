@@ -5,7 +5,7 @@
 // @formatter:off
 static std::shared_ptr<Ui> _lineKeyBind(const std::string &key, const std::string &action) {
   return Row::make({
-    Cell::abs(Label::make(key, 0xffffffb0, LabelAlign::RIGHT), 150),
+    Cell::abs(Label::make(key, 0xffffffb0, LabelAlign::RIGHT), 250),
     Cell::abs(24),
     Cell::rel(Label::make(action, LabelAlign::LEFT)),
   });
@@ -28,6 +28,7 @@ DialogHelp::DialogHelp(const std::shared_ptr<Ui> &prev) : prev(prev) {
 
   helpItems.push_back(ItemY::make(Label::make("Main Screen Shortcuts", 0xffffff60, LabelAlign::LEFT), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("F1", "Help..."), 24));
+  helpItems.push_back(ItemY::make(_lineKeyBind("S", "Settings..."), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("Space", "Play selected drill"), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("Tab", "Select drill"), 24));
   helpItems.push_back(ItemY::make(20));
@@ -45,26 +46,26 @@ DialogHelp::DialogHelp(const std::shared_ptr<Ui> &prev) : prev(prev) {
   helpItems.push_back(ItemY::make(_lineKeyBind("ESC", "Resume"), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("R", "Restart"), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("Q", "Quit"), 24));
-  helpItems.push_back(ItemY::make(_lineKeyBind("S", "Settings"), 24));
+  helpItems.push_back(ItemY::make(_lineKeyBind("S", "Settings..."), 24));
   helpItems.push_back(ItemY::make(20));
 
   helpItems.push_back(ItemY::make(Label::make("Settings Screen Shortcuts", 0xffffff60, LabelAlign::LEFT), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("ESC", "Go to previous screen"), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("Shift", "Slider: Fine control"), 24));
-  helpItems.push_back(ItemY::make(_lineKeyBind("Shift + Arrow", "Field: Select field. Also works with Home/End"), 24));
+  helpItems.push_back(ItemY::make(_lineKeyBind("Shift + Arrow", "Field: Select text. Also works with Home/End"), 24));
   helpItems.push_back(ItemY::make(_lineKeyBind("Ctrl + C/V/X", "Field: Copy paste in text field"), 24));
-  helpItems.push_back(ItemY::make(_lineKeyBind("Ctrl + Arrow", "Field: Move cursor by word. Also works with Home/End and Shift"), 24));
+  helpItems.push_back(ItemY::make(_lineKeyBind("Ctrl + Arrow", "Field: Move cursor by word. Also works with Shift"), 24));
 
   helpItems.push_back(ItemY::make(20));
 
   add(Row::make({
-    Cell::abs(100),
+    Cell::abs(200),
     Cell::rel(Column::make({
       Cell::abs(20),
       Cell::rel(PanelY::make(helpItems)),
       Cell::abs(20),
     })),
-    Cell::abs(100)
+    Cell::abs(200)
   }));
 }
 // @formatter:on

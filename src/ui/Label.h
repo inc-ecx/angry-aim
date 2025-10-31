@@ -34,7 +34,7 @@ public:
     return std::make_shared<Label>(text, rgba, align);
   }
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
 
   void setText(const std::string &text) { this->text = text; }
 

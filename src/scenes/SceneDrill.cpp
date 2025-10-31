@@ -147,7 +147,7 @@ void SceneDrill::render(double dt) {
   drawWorld();
   drawCrosshair();
 
-  ui->render(dt);
+  ui->render(dt, {.toBuffer = false});
 
   if (!isInGame()) renderBackground(dt);
 }
@@ -184,7 +184,8 @@ void SceneDrill::drawWorld() {
   renderScene.updateView(
     player->pos,
     static_cast<float>(camPitch),
-    static_cast<float>(camYaw)
+    static_cast<float>(camYaw),
+    glm::vec2(100,100)
   );
 
   renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
@@ -215,5 +216,7 @@ void SceneDrill::drawWorld() {
 
 void SceneDrill::drawCrosshair() {
   Application &app = Application::app;
+
+  // RenderCrosshair::render(app.getWidth() / 2 - 50, app.getHeight() / 2 - 50, 0, 0); // debug
   RenderCrosshair::render(0, 0, app.getWidth(), app.getHeight());
 }

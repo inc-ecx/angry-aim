@@ -22,7 +22,7 @@ void BarY::handle(UiEvent &event) {
   }
 }
 
-void BarY::render(double dt) {
+void BarY::render(double dt, const UiRenderParams& params) {
   auto &app = Application::app;
   auto &render = app.renderUi;
 
@@ -32,10 +32,15 @@ void BarY::render(double dt) {
 
   render.start();
 
+
+  if (params.toBuffer)
+    glBlendFunc(GL_ONE, GL_ZERO);
   render.color(0x00000030);
   render.rect(x, y, width, height);
+  if (params.toBuffer)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  render.color(hovered() || dragging ? 0xc0ffffff : 0xc0d0d0d0);
+  render.color(hovered() || dragging ? 0xc0ffffff : 0xe0e0e0ff);
   render.rect(x, y + barY, width, sliderHeight);
 
   render.stop();
@@ -107,11 +112,11 @@ void PanelYContainer::layout() {
   layoutChildren();
 }
 
-void PanelYContainer::render(double dt) {
+void PanelYContainer::render(double dt, const UiRenderParams& params) {
   auto &app = Application::app;
 
   app.pushScissors(x, y, width, height);
-  renderChildren(dt);
+  renderChildren(dt, params);
   app.popScissors();
 }
 

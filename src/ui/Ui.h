@@ -7,6 +7,8 @@
 #include <string>
 
 #include "UiEvent.h"
+#include "UiUtil.h"
+#include "UiRenderParams.h"
 
 // the basic building block of any ui element.
 class Ui {
@@ -78,7 +80,7 @@ public:
   virtual void layout();
 
   // renders this element using the ui renderer
-  virtual void render(double dt);
+  virtual void render(double dt, const UiRenderParams& params);
 
   // sets dimensions of this ui element
   void setBounds(const int x, const int y, const int width, const int height) {
@@ -103,7 +105,7 @@ public:
   void layoutChildren();
 
   // calls render for every child
-  void renderChildren(double dt);
+  void renderChildren(double dt, const UiRenderParams &params);
 
   // return true, if the mouse hovers this element
   bool hovered() const;

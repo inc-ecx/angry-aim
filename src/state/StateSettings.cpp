@@ -7,6 +7,8 @@ void StateSettings::load(json &j) {
   if (j["sensitivity"].is_number()) sensitivity = j["sensitivity"];
 
   if (j["volume"].is_number()) volume = j["volume"];
+  if (j["hitVolume"].is_number()) hitVolume = j["hitVolume"];
+  if (j["missVolume"].is_number()) missVolume = j["missVolume"];
 
   if (j["crosshairXLength"].is_number()) crosshairXLength = j["crosshairXLength"];
   if (j["crosshairXThickness"].is_number()) crosshairXThickness = j["crosshairXThickness"];
@@ -23,6 +25,8 @@ void StateSettings::save(json &j) {
   j["sensitivity"] = sensitivity;
 
   j["volume"] = volume;
+  j["hitVolume"] = hitVolume;
+  j["missVolume"] = missVolume;
 
   j["crosshairXLength"] = crosshairXLength;
   j["crosshairXThickness"] = crosshairXThickness;

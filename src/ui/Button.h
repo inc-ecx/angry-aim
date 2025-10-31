@@ -8,6 +8,8 @@ class Button : public Ui {
   std::string text;
   std::function<void()> listener = nullptr;
 
+  double hoverDuration = 0.0;
+
 public:
   static std::shared_ptr<Button> make(const std::string &text, const std::function<void()> &listener = nullptr) {
     auto r = std::make_shared<Button>(text);
@@ -18,7 +20,9 @@ public:
   explicit Button(const std::string &text) : text(text) {
   }
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
+
+  void layout() override;
 
   void onClicked();
 

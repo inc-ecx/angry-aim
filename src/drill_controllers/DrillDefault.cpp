@@ -3,6 +3,7 @@
 #include "entities/StrafingTarget.h"
 #include "scenes/SceneDrill.h"
 #include "screens/ScreenResult.h"
+#include "state/State.h"
 #include "util/math_util.h"
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
@@ -66,14 +67,14 @@ void DrillDefault::handle(const UiEvent &event) {
           // ++it;
           hit = true;
           statsHit++;
-          resources->soundHit->play();
+          resources->soundHit->play(State::state.settings.hitVolume);
           ttkSum += static_cast<int>(msCurrent() - msLastSpawn);
           triggerSpawn();
         }
       }
       if (!hit) {
         statsMiss++;
-        resources->soundMiss->play();
+        resources->soundMiss->play(State::state.settings.missVolume);
       }
     }
   }

@@ -1,6 +1,7 @@
 #include "RenderSceneDrill.h"
 
 #include "Application.h"
+#include "Log.h"
 #include "state/State.h"
 
 void RenderSceneDrill::initRectVao() {}
@@ -148,8 +149,30 @@ void RenderSceneDrill::draw(const Model &model) {
     mesh(*model.meshes[i]);
 }
 
+// pxOffset is offset to center of screen, up=-y, right=x
 // note: should only be called when renderer is active. angles are deg.
-void RenderSceneDrill::updateView(glm::vec3 pos, float pitch, float yaw) {
+void RenderSceneDrill::updateView(glm::vec3 pos, float pitch, float yaw, glm::vec2 pxOffset) {
+  // auto &app = Application::app;
+  // glm::mat4 view = glm::identity<glm::mat4>();
+  // apply pxOffset
+  // pxOffset = {50.0f,50.0f};
+  // glm::vec4 viewport(0.0f, 0.0f, app.getWidth(), app.getHeight());
+  // glm::vec3 unProjected = glm::unProject(
+  //   // note: unProject expects window coordinates with the origin at the bottom left
+  //   glm::vec3(app.getWidth() / 2.0f + pxOffset.x, app.getHeight() / 2.0f - pxOffset.y, 0.01f),
+  //   glm::identity<glm::mat4>(),
+  //   projection,
+  //   viewport
+  // );
+  // double unProjectedPitch = atan2(unProjected.y, -unProjected.z);
+  // double unProjectedYaw = atan2(unProjected.x, -unProjected.z);
+  // Log::info(std::format("unProjected {:.7f}, {:.7f}, {:.7f}", unProjected.x, unProjected.y, unProjected.z));
+  // Log::info(std::format("unProjectedPitch {}", static_cast<int>(glm::degrees(unProjectedPitch))));
+  // Log::info(std::format("unProjectedYaw {}", static_cast<int>(glm::degrees(unProjectedYaw))));
+  // view = glm::rotate(view, glm::radians(-pitch) - static_cast<float>(unProjectedPitch), glm::vec3(1, 0, 0));
+  // view = glm::rotate(view, glm::radians(-yaw) + static_cast<float>(unProjectedYaw), glm::vec3(0, 1, 0));
+  // view = glm::translate(view, -glm::vec3(unProjected.x, unProjected.y, 0));
+
   glm::mat4 view = glm::identity<glm::mat4>();
   view = glm::rotate(view, glm::radians(-pitch), glm::vec3(1, 0, 0));
   view = glm::rotate(view, glm::radians(-yaw), glm::vec3(0, 1, 0));
@@ -172,15 +195,15 @@ void RenderSceneDrill::updateProjection() {
   glUseProgram(shaderProgram);
 
   auto &settings = State::state.settings;
-
   auto &app = Application::app;
   int width = app.getWidth();
   int height = app.getHeight();
-  glm::mat4 projection = glm::perspective(
+  projection = glm::perspective(
     glm::radians(static_cast<float>(settings.fov)),
     static_cast<float>(width) / static_cast<float>(height),
     0.01f, 1000.0f
   );
+
   glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
 
   glUseProgram(0);

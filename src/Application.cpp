@@ -27,6 +27,8 @@ void Application::initApp() {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
+  glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
   window = glfwCreateWindow(width = 960, height = 540, "AngryAim", nullptr, nullptr);
   if (!window) {
     Log::fatal("Failed to open GLFW window.");
@@ -112,16 +114,20 @@ void Application::initApp() {
 
   stbi_set_flip_vertically_on_load(true);
 
-  applyFs();
-
   renderUi.init();
   renderScene.init();
   renderSceneDrill.init();
   renderFont.init(freetype);
 
-  app.onResize();
+  pipelineUi.init();
+
+  applyFs();
+
+  onResize(); // resize renderers
 
   app.setScreen(std::make_shared<ScreenMain>());
+
+  glfwShowWindow(window);
 }
 
 void Application::applyFs() {
@@ -152,6 +158,8 @@ void Application::onResize() {
   renderSceneDrill.resize(width, height);
   renderFont.resize(width, height);
 
+  pipelineUi.resize(width, height);
+
   if (currentUi != nullptr) {
     currentUi->setBounds(0, 0, width, height);
     currentUi->layout();
@@ -164,8 +172,6 @@ void Application::onResize() {
 
 void Application::runApp() {
   initApp();
-
-  glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
   double fpsQueue = 1;
 
@@ -182,6 +188,7 @@ void Application::runApp() {
     while (fpsQueue > 1) {
       fpsQueue--;
 
+      glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       auto currentFrame = std::chrono::steady_clock::now();
 
@@ -247,6 +254,7 @@ void Application::onEvent(UiEvent event) {
 
 void Application::setScreen(const std::shared_ptr<Ui> &screen) {
   currentUi = screen;
+  pipelineUi.setMain(currentUi);
 
   if (screen != nullptr) {
     currentUi->setBounds(0, 0, width, height);
@@ -283,9 +291,8 @@ void Application::renderApp(double dt) {
     currentScene->render(dt);
   }
 
-  if (currentUi != nullptr) {
-    currentUi->render(dt);
-  }
+  // renders currentUi
+  pipelineUi.render(dt);
 
   DebugInfo::update();
   std::stringstream ss;
@@ -328,7 +335,7 @@ void Application::pushScissors(int x, int y, int w, int h) {
     x = x1;
     y = y1;
     w = x2 - x1;
-    h = y2 - x1;
+    h = y2 - y1;
   }
 
   glScissor(x, y, w, h);

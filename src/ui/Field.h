@@ -58,7 +58,7 @@ public:
 
   void handle(UiEvent &event) override;
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
 
   void distract();
 

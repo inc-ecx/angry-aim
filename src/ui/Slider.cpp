@@ -2,8 +2,8 @@
 
 #include "Application.h"
 
-Slider::Slider(const std::function<void()> &changedListener) : changedListener(changedListener) {
-}
+Slider::Slider(const std::function<void()> &changedListener) :
+  changedListener(changedListener) {}
 
 void Slider::onSlide() {
   if (changedListener != nullptr) changedListener();
@@ -44,7 +44,7 @@ void Slider::updateDrag(double dt) {
   }
 }
 
-void Slider::render(double dt) {
+void Slider::render(double dt, const UiRenderParams &params) {
   auto &app = Application::app;
   auto &render = app.renderUi;
 
@@ -52,13 +52,22 @@ void Slider::render(double dt) {
 
   render.start();
 
+  if (params.toBuffer)
+    glBlendFunc(GL_ONE, GL_ZERO);
+
   render.color(0x00000060);
   int railY = static_cast<int>(y + round((height - railHeight) / 2.0));
   render.rect(x, railY, width, railHeight);
+  if (params.toBuffer)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   render.color(isHovered || dragging ? 0xffffffff : 0xc0c0c0ff);
+  if (params.toBuffer)
+    glBlendFunc(GL_ONE, GL_ZERO);
   int sledX = static_cast<int>(x + floor(width - sledWidth) * getValue());
-  render.rect(sledX, y, sledWidth, height);
+  render.rect(sledX, y, sledWidth, height, 3.0f, 1.0f);
+  if (params.toBuffer)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   render.stop();
 

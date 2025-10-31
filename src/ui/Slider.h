@@ -37,7 +37,7 @@ public:
 
   void onSlide();
 
-  void render(double dt) override;
+  void render(double dt, const UiRenderParams& params) override;
 
   void handle(UiEvent &event) override;
 

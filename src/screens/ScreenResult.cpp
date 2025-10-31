@@ -33,17 +33,6 @@ ScreenResult::ScreenResult(const std::vector<std::string> &results) {
   add(Column::make(std::move(cells)));
 }
 
-void ScreenResult::render(double dt) {
-  auto &app = Application::app;
-  auto &render = app.renderUi;
-  render.start();
-  render.color(0x00000080);
-  render.rect(x,y,width,height);
-  render.stop();
-
-  Ui::render(dt);
-}
-
 void ScreenResult::handlePlay() {
   Application::app.getScene()->replay();
   Application::app.setScreen(nullptr);
