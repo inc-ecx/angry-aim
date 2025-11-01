@@ -116,7 +116,7 @@ void RenderScene::mesh(const Mesh &mesh) {
 
   // draw mesh
   glBindVertexArray(mesh.VAO);
-  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.indices.size()), GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0);
 }
 

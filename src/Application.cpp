@@ -118,6 +118,7 @@ void Application::initApp() {
   renderScene.init();
   renderSceneDrill.init();
   renderFont.init(freetype);
+  renderPrimitive.init();
 
   pipelineUi.init();
 
@@ -128,6 +129,8 @@ void Application::initApp() {
   app.setScreen(std::make_shared<ScreenMain>());
 
   glfwShowWindow(window);
+
+  glfwFocusWindow(window);
 }
 
 void Application::applyFs() {
@@ -153,6 +156,7 @@ void Application::onResize() {
 
   glViewport(0, 0, width, height);
 
+  renderPrimitive.resize(width, height);
   renderUi.resize(width, height);
   renderScene.resize(width, height);
   renderSceneDrill.resize(width, height);

@@ -129,6 +129,7 @@ set(angry-aim-src
         src/drill_controllers/DrillSimple.h
         src/entities/SimpleTarget.cpp
         src/entities/SimpleTarget.h
+        src/entities/Miss.h
         src/world/WorldUtil.cpp
         src/world/WorldUtil.h
         src/drill_controllers/DrillDefault.cpp
@@ -180,6 +181,10 @@ set(angry-aim-src
         src/ui/UiRenderParams.h
         src/ui/UiUtil.cpp
         src/ui/UiUtil.h
+        src/render/RenderPrimitive.cpp
+        src/render/RenderPrimitive.h
+        src/render/Shader.cpp
+        src/render/Shader.h
 )
 
 # add executable

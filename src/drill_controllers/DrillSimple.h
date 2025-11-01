@@ -59,6 +59,8 @@ class DrillSimple :
 
   void updateCheckSpawn(double dt);
 
+  void updateRemoveDead(double dt);
+
   void updateClock(double dt);
 
   void handleLeftClick();

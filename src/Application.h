@@ -24,6 +24,7 @@
 #include "util/Observable.h"
 
 #include "lib/miniaudio.h"
+#include "render/RenderPrimitive.h"
 #include "renderers/PipelineUi.h"
 #include "sound/Sound.h"
 
@@ -85,6 +86,7 @@ public:
   RenderFont renderFont;
   RenderScene renderScene;
   RenderSceneDrill renderSceneDrill;
+  RenderPrimitive renderPrimitive;
 
   void applyFs();
 

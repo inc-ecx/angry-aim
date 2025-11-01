@@ -16,6 +16,9 @@ public:
   float strafeInput = 0; // raw input (0, -1 or 1)
   float strafeVelocity = 0;
   float strafePos = 0;
+
+  int fadeOutMs = 300;
+  uint64_t msDeath = 0;
 };
 
 #endif //STRAFING_TARGET_H

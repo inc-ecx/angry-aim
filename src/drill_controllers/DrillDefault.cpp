@@ -1,6 +1,7 @@
 #include "DrillDefault.h"
 
 #include "entities/StrafingTarget.h"
+#include "entities/Miss.h"
 #include "scenes/SceneDrill.h"
 #include "screens/ScreenResult.h"
 #include "state/State.h"
@@ -57,14 +58,21 @@ void DrillDefault::handle(const UiEvent &event) {
         if (strafingTarget) targetsIg.push_back(strafingTarget);
       }
       for (auto target: targetsIg) {
+        if (target->msDeath != 0) continue;
+
         float tHit = 0;
         bool didHit = WorldUtil::hitSphere(
-          player->pos, static_cast<float>(player->pitch),
-          static_cast<float>(player->yaw), target->pos, target->size * 0.5f, tHit
+          player->pos,
+          static_cast<float>(player->pitch),
+          static_cast<float>(player->yaw),
+          target->pos,
+          target->size * 0.5f,
+          tHit
         );
         if (didHit) {
-          world->remove(target);
+          // world->remove(target);
           // ++it;
+          target->msDeath = msCurrent() + target->fadeOutMs;
           hit = true;
           statsHit++;
           resources->soundHit->play(State::state.settings.hitVolume);
@@ -75,6 +83,17 @@ void DrillDefault::handle(const UiEvent &event) {
       if (!hit) {
         statsMiss++;
         resources->soundMiss->play(State::state.settings.missVolume);
+
+        std::shared_ptr<Miss> miss;
+        world->world.entities.insert(miss = std::make_shared<Miss>(msCurrent()));
+
+        glm::vec3 dir;
+        dir.x = cos(glm::radians(static_cast<float>(player->pitch))) * sin(glm::radians(static_cast<float>(player->yaw + 180)));
+        dir.y = sin(glm::radians(static_cast<float>(player->pitch)));
+        dir.z = cos(glm::radians(static_cast<float>(player->pitch))) * cos(glm::radians(static_cast<float>(player->yaw + 180)));
+        dir = glm::normalize(dir);
+
+        miss->pos = player->pos + dir;
       }
     }
   }
@@ -165,6 +184,7 @@ void DrillDefault::updateWorld(double dt) {
   for (auto e: world->world.entities) {
     StrafingTarget *target = dynamic_cast<StrafingTarget *>(e.get());
     if (target == nullptr) continue;
+    if (target->msDeath != 0) continue;
 
     target->strafeVelocity = static_cast<float>(std::clamp(
       target->strafeVelocity + strafeAcceleration * target->strafeInput * dt,
@@ -185,6 +205,7 @@ void DrillDefault::updateWorld(double dt) {
   for (auto e: world->world.entities) {
     StrafingTarget *target = dynamic_cast<StrafingTarget *>(e.get());
     if (target == nullptr) continue;
+    if (target->msDeath != 0) continue;
 
     target->strafePos += target->strafeVelocity * static_cast<float>(dt);
     target->pos = target->strafeStart + glm::vec3(target->strafePos, 0, 0);
@@ -196,6 +217,7 @@ void DrillDefault::updateWorld(double dt) {
   for (auto e: world->world.entities) {
     StrafingTarget *target = dynamic_cast<StrafingTarget *>(e.get());
     if (target == nullptr) continue;
+    if (target->msDeath != 0) continue;
     t = target;
 
     float overshoot = target->strafePos - target->strafeWidth * 0.5f;
@@ -219,5 +241,25 @@ void DrillDefault::updateWorld(double dt) {
 
     std::uniform_int_distribution durationFunc(strafeMinDurationMs, strafeMaxDurationMs);
     strafeMsSwitch = msNow + durationFunc(rng);
+  }
+
+  // remove old target
+  for (auto it = world->world.entities.begin(); it != world->world.entities.end();) {
+    auto strafingTarget = std::dynamic_pointer_cast<StrafingTarget>(*it);
+    if (strafingTarget && strafingTarget->msDeath != 0 && static_cast<int64_t>(msNow - strafingTarget->msDeath) > 0) {
+      it = world->world.entities.erase(it);
+    } else {
+      it++;
+    }
+  }
+
+  // remove old miss
+  for (auto it = world->world.entities.begin(); it != world->world.entities.end();) {
+    auto miss = std::dynamic_pointer_cast<Miss>(*it);
+    if (miss && static_cast<int64_t>(msNow - miss->msSpawn - miss->lifetimeMs) > 0) {
+      it = world->world.entities.erase(it);
+    } else {
+      it++;
+    }
   }
 }

@@ -7,7 +7,7 @@
 void RenderSceneDrill::initRectVao() {}
 
 void RenderSceneDrill::initShader() {
-  auto vertexShaderSource = R"(
+  auto vertSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
@@ -25,20 +25,8 @@ void main()
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 )";
-  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-  glCompileShader(vertexShader);
 
-  GLint success;
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-  if (!success) {
-    char infoLog[512];
-    glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-    std::cout << "SHADER COMPILATION FAILED:\n" << infoLog << std::endl;
-  }
-
-  auto fragmentShaderSource = R"(
+  auto fragSource = R"(
 #version 330 core
 out vec4 FragColor;
 
@@ -59,30 +47,7 @@ void main()
   }
 }
 )";
-  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-  glCompileShader(fragmentShader);
-
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-
-  if (!success) {
-    char infoLog[512];
-    glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-    std::cout << "SHADER COMPILATION FAILED:\n" << infoLog << std::endl;
-  }
-
-  shaderProgram = glCreateProgram();
-
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
-    char infoLog[512];
-    glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-    std::cout << "SHADER COMPILATION FAILED:\n" << infoLog << std::endl;
-  }
+  shader = Shader(vertSource, fragSource);
 }
 
 void RenderSceneDrill::init() {
@@ -96,7 +61,7 @@ void RenderSceneDrill::start() {
   glEnable(GL_ALPHA);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glUseProgram(shaderProgram);
+  glUseProgram(shader.programId);
 }
 
 void RenderSceneDrill::stop() {
@@ -109,7 +74,7 @@ void RenderSceneDrill::stop() {
 }
 
 void RenderSceneDrill::texture(bool value) {
-  glUniform1i(glGetUniformLocation(shaderProgram, "u_doTexture"), value ? 1 : 0);
+  glUniform1i(glGetUniformLocation(shader.programId, "u_doTexture"), value ? 1 : 0);
 }
 
 void RenderSceneDrill::color(int rgba) {
@@ -117,7 +82,7 @@ void RenderSceneDrill::color(int rgba) {
   float g = ((rgba >> 16) & 0xFF) / 255.0f;
   float b = ((rgba >> 8) & 0xFF) / 255.0f;
   float a = (rgba & 0xFF) / 255.0f;
-  glUniform4f(glGetUniformLocation(shaderProgram, "u_baseColor"), r, g, b, a);
+  glUniform4f(glGetUniformLocation(shader.programId, "u_baseColor"), r, g, b, a);
 }
 
 void RenderSceneDrill::mesh(const Mesh &mesh) {
@@ -133,7 +98,7 @@ void RenderSceneDrill::mesh(const Mesh &mesh) {
     else if (name == "texture_specular")
       number = std::to_string(specularNr++);
 
-    glUniform1i(glGetUniformLocation(shaderProgram, ("material." + name + number).c_str()), i);
+    glUniform1i(glGetUniformLocation(shader.programId, ("material." + name + number).c_str()), i);
     glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
   }
   glActiveTexture(GL_TEXTURE0);
@@ -177,14 +142,14 @@ void RenderSceneDrill::updateView(glm::vec3 pos, float pitch, float yaw, glm::ve
   view = glm::rotate(view, glm::radians(-pitch), glm::vec3(1, 0, 0));
   view = glm::rotate(view, glm::radians(-yaw), glm::vec3(0, 1, 0));
   view = glm::translate(view, -pos);
-  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
+  glUniformMatrix4fv(glGetUniformLocation(shader.programId, "view"), 1, GL_FALSE, &view[0][0]);
 }
 
 void RenderSceneDrill::updateModel(glm::vec3 pos, float scale) {
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, pos);
   model = glm::scale(model, glm::vec3(scale));
-  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
+  glUniformMatrix4fv(glGetUniformLocation(shader.programId, "model"), 1, GL_FALSE, &model[0][0]);
 }
 
 void RenderSceneDrill::resize(int width, int height) {
@@ -192,7 +157,7 @@ void RenderSceneDrill::resize(int width, int height) {
 }
 
 void RenderSceneDrill::updateProjection() {
-  glUseProgram(shaderProgram);
+  glUseProgram(shader.programId);
 
   auto &settings = State::state.settings;
   auto &app = Application::app;
@@ -204,7 +169,7 @@ void RenderSceneDrill::updateProjection() {
     0.01f, 1000.0f
   );
 
-  glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
+  glUniformMatrix4fv(glGetUniformLocation(shader.programId, "projection"), 1, GL_FALSE, &projection[0][0]);
 
   glUseProgram(0);
 }

@@ -93,6 +93,7 @@ std::shared_ptr<Ui> constructSettingsList() {
     })),
     Cell::abs(scrollGap)
   }), 25));
+  items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("Miss Volume", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),

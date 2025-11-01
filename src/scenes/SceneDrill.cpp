@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "drill_controllers/FactoryDrill.h"
 #include "entities/MainPlayer.h"
+#include "entities/Miss.h"
 #include "entities/SimpleTarget.h"
 #include "entities/StrafingTarget.h"
 #include "renderers/RenderCrosshair.h"
@@ -165,6 +166,7 @@ void SceneDrill::renderBackground(double dt) {
 void SceneDrill::drawWorld() {
   Application &app = Application::app;
   RenderSceneDrill &renderScene = app.renderSceneDrill;
+  auto &renderPrim = app.renderPrimitive;
   renderScene.start();
 
   double camPitch = player->pitch;
@@ -193,25 +195,61 @@ void SceneDrill::drawWorld() {
   renderScene.texture(true);
   renderScene.draw(*worldModel);
 
+  // note: target model is of radius 1
+
+  // simple targets
   for (auto e: world->world.entities) {
     auto target = std::dynamic_pointer_cast<SimpleTarget>(e);
     if (target == nullptr) continue;
     renderScene.updateModel(target->pos, static_cast<float>(0.5 * (target->size)));
-    renderScene.color(0xf04040ff);
-    renderScene.draw(*targetModel); // note: target model is of radius 1
+    int alpha = 0xff;
+    if (target->msDeath != 0) {
+      double deathProgress = static_cast<double>(target->msDeath - msCurrent()) / target->fadeOutMs;
+      alpha = static_cast<int>(alpha * deathProgress);
+    }
+    renderScene.color(0xffffff00 | alpha);
+    renderScene.draw(*targetModel);
   }
 
+  // strafing targets
   for (auto e: world->world.entities) {
     auto target = std::dynamic_pointer_cast<StrafingTarget>(e);
     if (target == nullptr) continue;
     renderScene.updateModel(target->pos, static_cast<float>(0.5 * (target->size)));
-    renderScene.color(0xf04040ff);
+    int alpha = 0xff;
+    if (target->msDeath != 0) {
+      double deathProgress = static_cast<double>(target->msDeath - msCurrent()) / target->fadeOutMs;
+      alpha = static_cast<int>(alpha * deathProgress);
+    }
+    renderScene.color(0xffffff00 | alpha);
     renderScene.draw(*targetModel);
   }
 
   renderScene.texture(false);
 
   renderScene.stop();
+
+  // primitive test (simple target)
+  renderPrim.start();
+  renderPrim.updateView(
+    player->pos,
+    static_cast<float>(camPitch),
+    static_cast<float>(camYaw),
+    glm::vec2(100,100)
+  );
+  for (auto e: world->world.entities) {
+    auto target = std::dynamic_pointer_cast<Miss>(e);
+    if (target == nullptr) continue;
+    int alpha = 0x60;
+    double fadeProgress = static_cast<double>(target->msSpawn + target->lifetimeMs - msCurrent()) / target->lifetimeMs;
+    alpha = static_cast<int>(fadeProgress * alpha);
+    renderPrim.color(0xff000000 | alpha);
+    renderPrim.updateModel(target->pos, 1.0);
+    renderPrim.drawPoint();
+  }
+  // renderPrim.updateModel(glm::vec3(0,0,-10), 1.0f);
+  // renderPrim.drawPoint();
+  renderPrim.stop();
 }
 
 void SceneDrill::drawCrosshair() {

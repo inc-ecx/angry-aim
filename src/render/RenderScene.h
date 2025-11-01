@@ -20,11 +20,11 @@ public:
 
   void stop();
 
+  void resize(int width, int height);
+
   void mesh(const Mesh& mesh);
 
   void model(const Model& model);
-
-  void resize(int width, int height);
 
   void updateView(glm::vec3 pos, float pitch, float yaw);
 };

@@ -1,6 +1,7 @@
 #include "DrillMicro.h"
 
 #include "Application.h"
+#include "entities/Miss.h"
 #include "screens/ScreenResult.h"
 #include "state/State.h"
 #include "world/WorldUtil.h"
@@ -50,6 +51,31 @@ void DrillMicro::resume() {
 void DrillMicro::update(double dt) {
   updateCheckSpawn(dt);
   updateClock(dt);
+  updateRemoveDead(dt);
+}
+
+void DrillMicro::updateRemoveDead(double dt) {
+  uint64_t msNow = msCurrent();
+
+  // remove old target
+  for (auto it = world->world.entities.begin(); it != world->world.entities.end();) {
+    auto target = std::dynamic_pointer_cast<SimpleTarget>(*it);
+    if (target && target->msDeath != 0 && static_cast<int64_t>(msNow - target->msDeath) > 0) {
+      it = world->world.entities.erase(it); // BUG: this should be done using world.remove (EVERYWHERE!!!!)
+    } else {
+      it++;
+    }
+  }
+
+  // remove old miss
+  for (auto it = world->world.entities.begin(); it != world->world.entities.end();) {
+    auto miss = std::dynamic_pointer_cast<Miss>(*it);
+    if (miss && static_cast<int64_t>(msNow - miss->msSpawn - miss->lifetimeMs) > 0) {
+      it = world->world.entities.erase(it);
+    } else {
+      it++;
+    }
+  }
 }
 
 void DrillMicro::updateCheckSpawn(double dt) {
@@ -126,6 +152,15 @@ void DrillMicro::actionShoot() {
   if (!didHit) {
     statsMissed++;
     setupArgs.resources->soundMiss->play(State::state.settings.missVolume);
+
+    std::shared_ptr<Miss> miss;
+    world->world.entities.insert(miss = std::make_shared<Miss>(msCurrent()));
+    glm::vec3 dir;
+    dir.x = cos(glm::radians(static_cast<float>(player->pitch))) * sin(glm::radians(static_cast<float>(player->yaw + 180)));
+    dir.y = sin(glm::radians(static_cast<float>(player->pitch)));
+    dir.z = cos(glm::radians(static_cast<float>(player->pitch))) * cos(glm::radians(static_cast<float>(player->yaw + 180)));
+    dir = glm::normalize(dir);
+    miss->pos = player->pos + dir;
     return;
   }
 
@@ -133,7 +168,7 @@ void DrillMicro::actionShoot() {
   statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
   setupArgs.resources->soundHit->play(State::state.settings.hitVolume);
 
-  world->remove(target);
+  target->msDeath = msCurrent() + target->fadeOutMs;
   target = nullptr;
   msToSpawn = msCurrent() + static_cast<uint64_t>(params.spawnDelay * 1000);
 }

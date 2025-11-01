@@ -3,12 +3,13 @@
 
 #include "Mesh.h"
 #include "Model.h"
+#include "Shader.h"
 #include "../inc/inc_glfw.h"
 
 class RenderSceneDrill {
   glm::mat4 projection = glm::mat4();
 
-  GLuint shaderProgram = -1;
+  Shader shader;
 
   void initRectVao();
 
