@@ -9,12 +9,12 @@ public:
   static void render(int x, int y, int w, int h) {
     auto &app = Application::app;
     auto &renderUi = app.renderUi;
+    auto &settings = State::state.settings;
 
     renderUi.start();
 
-    renderUi.color(0x00ffffff);
+    renderUi.color(settings.crosshairRgba);
 
-    auto &settings = State::state.settings;
     int chWidth = settings.crosshairXLength * 2 + settings.crosshairXGap;
     int chHeight = settings.crosshairYLength * 2 + settings.crosshairYGap;
     int xLen = settings.crosshairXLength;

@@ -16,6 +16,7 @@ void StateSettings::load(json &j) {
   if (j["crosshairYThickness"].is_number()) crosshairYThickness = j["crosshairYThickness"];
   if (j["crosshairXGap"].is_number()) crosshairXGap = j["crosshairXGap"];
   if (j["crosshairYGap"].is_number()) crosshairYGap = j["crosshairYGap"];
+  if (j["crosshairRgba"].is_number()) crosshairRgba = j["crosshairRgba"];
 }
 
 void StateSettings::save(json &j) {
@@ -34,6 +35,7 @@ void StateSettings::save(json &j) {
   j["crosshairYThickness"] = crosshairYThickness;
   j["crosshairXGap"] = crosshairXGap;
   j["crosshairYGap"] = crosshairYGap;
+  j["crosshairRgba"] = crosshairRgba;
 }
 
 void StateSettings::triggerChangeView() {

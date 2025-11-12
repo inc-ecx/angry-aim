@@ -11,6 +11,7 @@
 #include "drill_controllers/DrillDefault.h"
 #include "scenes/SceneDrill.h"
 #include "state/State.h"
+#include "ui/Image.h"
 #include "ui/PanelY.h"
 
 static std::string _sceneButtonText() {
@@ -41,6 +42,8 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
 
 // @formatter:off
 ScreenMain::ScreenMain() {
+  auto &app = Application::app;
+
   add(Row::make({
     Cell::rel(1),
     Cell::abs(Column::make({
@@ -70,13 +73,19 @@ ScreenMain::ScreenMain() {
   }));
 
   add(Column::make({
+    Cell::abs(20),
     Cell::abs(Row::make({
       Cell::rel(1),
-      Cell::abs(Label::make("AngryAim"), 150),
-      Cell::rel(Row::make({
-        Cell::rel(1),
-        Cell::abs(Button::make("Settings", std::bind(&ScreenMain::actionSettings, this)), 120),
-      }), 1),
+      Cell::abs(Image::make(app.textures.logoLarge->id), 368),
+      Cell::rel(1),
+    }), 80),
+    Cell::rel(),
+  }));
+
+  add(Column::make({
+    Cell::abs(Row::make({
+      Cell::rel(1),
+      Cell::abs(Button::make("Settings", std::bind(&ScreenMain::actionSettings, this)), 120),
     }), 30),
     Cell::rel(),
   }));

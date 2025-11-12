@@ -38,7 +38,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
 std::shared_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
-  std::vector<Texture> textures;
+  std::vector<MeshTex> textures;
 
   for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
     Vertex vertex;
@@ -72,10 +72,10 @@ std::shared_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   if (static_cast<int>(mesh->mMaterialIndex) >= 0) {
     if (static_cast<int>(mesh->mMaterialIndex) >= 0) {
       aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-      std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+      std::vector<MeshTex> diffuseMaps = loadMaterialTextures(material,
                                                               aiTextureType_DIFFUSE, "texture_diffuse");
       textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-      std::vector<Texture> specularMaps = loadMaterialTextures(material,
+      std::vector<MeshTex> specularMaps = loadMaterialTextures(material,
                                                                aiTextureType_SPECULAR, "texture_specular");
       textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
@@ -125,9 +125,9 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
   return textureID;
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName)
+std::vector<MeshTex> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName)
 {
-  std::vector<Texture> textures;
+  std::vector<MeshTex> textures;
   for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
   {
     aiString str;
@@ -144,7 +144,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     }
     if(!skip)
     {   // if texture hasn't been loaded already, load it
-      Texture texture;
+      MeshTex texture;
       texture.id = TextureFromFile(str.C_Str(), directory, false);
       texture.type = typeName;
       texture.path = str.C_Str();

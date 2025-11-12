@@ -15,23 +15,11 @@ public:
 
   Framebuffer(const Framebuffer &other) = delete;
 
-  Framebuffer(Framebuffer &&other) noexcept :
-    id(other.id),
-    textureId(other.textureId),
-    depthBufferId(other.depthBufferId),
-    prevId(other.prevId) {}
+  Framebuffer(Framebuffer &&other) = delete;
 
   Framebuffer & operator=(const Framebuffer &other) = delete;
 
-  Framebuffer & operator=(Framebuffer &&other) noexcept {
-    if (this == &other)
-      return *this;
-    id = other.id;
-    textureId = other.textureId;
-    depthBufferId = other.depthBufferId;
-    prevId = other.prevId;
-    return *this;
-  }
+  Framebuffer & operator=(Framebuffer &&other) =delete;
 
   void bind();
   void unbind();

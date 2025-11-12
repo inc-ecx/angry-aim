@@ -15,6 +15,7 @@ SceneDrill::SceneDrill(const Drill &drill) :
   drill(drill) {
   targetModel = std::make_shared<Model>("assets/models/target1/Target1.obj");
   worldModel = std::make_shared<Model>("assets/models/map1/Map1.obj");
+  worldModel2 = std::make_shared<Model>("assets/models/beveled_cube/BeveledCube.obj");
 
   auto &app = Application::app;
   resources = std::make_shared<SceneDrillResources>();
@@ -188,12 +189,19 @@ void SceneDrill::drawWorld() {
     static_cast<float>(camPitch),
     static_cast<float>(camYaw),
     glm::vec2(100,100)
-  );
+    );
 
-  renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
-  renderScene.color(0xffffffff);
+  // renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
+  // renderScene.color(0xffffffff);
+  // renderScene.texture(true);
+  // renderScene.draw(*worldModel);
+
+  renderScene.updateModel(glm::vec3(0, 0, 0), 100.0);
+  renderScene.color(0xe0e0e0ff);
   renderScene.texture(true);
-  renderScene.draw(*worldModel);
+  renderScene.depthMask(false);
+  renderScene.draw(*worldModel2);
+  renderScene.depthMask(true);
 
   // note: target model is of radius 1
 

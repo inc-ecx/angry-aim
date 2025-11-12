@@ -13,7 +13,7 @@ struct Vertex {
   glm::vec2 TexCoords;
 };
 
-struct Texture {
+struct MeshTex {
   unsigned int id;
   std::string type;
   std::string path;
@@ -24,11 +24,11 @@ public:
   // mesh data
   std::vector<Vertex>       vertices;
   std::vector<unsigned int> indices;
-  std::vector<Texture>      textures;
+  std::vector<MeshTex>      textures;
 
-  Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures);
+  Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<MeshTex> &textures);
 
-  static std::shared_ptr<Mesh> make(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures) {
+  static std::shared_ptr<Mesh> make(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<MeshTex> &textures) {
     return std::make_shared<Mesh>(vertices, indices, textures);
   }
 

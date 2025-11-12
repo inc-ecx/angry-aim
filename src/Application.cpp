@@ -122,6 +122,8 @@ void Application::initApp() {
 
   pipelineUi.init();
 
+  textures.logoLarge = Texture::load("assets/ui/Logo Large.png");
+
   applyFs();
 
   onResize(); // resize renderers

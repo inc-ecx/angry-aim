@@ -22,6 +22,8 @@ public:
 
   void stop();
 
+  void depthMask(bool depthMask);
+
   void texture(bool value);
 
   void color(int rgba);

@@ -26,6 +26,7 @@ public:
   int crosshairYThickness = 2;
   int crosshairXGap = 4;
   int crosshairYGap = 4;
+  int crosshairRgba = 0x00ffffff;
 
   void load(json &j) override;
 

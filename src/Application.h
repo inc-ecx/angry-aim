@@ -25,6 +25,7 @@
 
 #include "lib/miniaudio.h"
 #include "render/RenderPrimitive.h"
+#include "render/Texture.h"
 #include "renderers/PipelineUi.h"
 #include "sound/Sound.h"
 
@@ -34,6 +35,10 @@ class Application {
     int y;
     int w;
     int h;
+  };
+
+  struct Textures {
+    std::unique_ptr<Texture> logoLarge;
   };
 
   // tasks
@@ -75,6 +80,7 @@ public:
   ma_engine miniaudio;
   std::vector<std::shared_ptr<Observation>> observations;
   std::vector<Scissors> scissors;
+  Textures textures;
 
   // pipelines
   // note: pipelines are responsible for managing a chain of renderers and presenting the final image

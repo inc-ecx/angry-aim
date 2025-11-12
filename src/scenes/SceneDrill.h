@@ -24,6 +24,7 @@ class SceneDrill : public Scene {
   std::vector<std::shared_ptr<Observation>> observations;
   std::shared_ptr<Model> targetModel;
   std::shared_ptr<Model> worldModel;
+  std::shared_ptr<Model> worldModel2;
   std::shared_ptr<SceneDrillResources> resources;
 
   //

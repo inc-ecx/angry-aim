@@ -3,6 +3,7 @@
 #include "../Application.h"
 #include "renderers/RenderCrosshair.h"
 #include "state/State.h"
+#include "ui/Color.h"
 #include "ui/Field.h"
 #include "ui/PanelY.h"
 #include "ui/Range.h"
@@ -39,9 +40,10 @@ std::shared_ptr<Ui> constructSettingsList() {
   int groupGap = 10;
   int scrollGap = 5;
 
+  std::shared_ptr<Range> rngFov;
   std::shared_ptr<Range> rngHorWidth, rngVerGap, rngHorGap, rngVerLength, rngHorLength, rngVerWidth;
 
-  std::shared_ptr<Range> rngFov;
+  std::shared_ptr<Color> colorCross;
 
   items.push_back(ItemY::make(Label::make("View", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
@@ -155,20 +157,22 @@ std::shared_ptr<Ui> constructSettingsList() {
   }), 25));
   items.push_back(ItemY::make(groupGap));
   items.push_back(ItemY::make(Row::make({
+    Cell::abs(Label::make("Color", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(labelGap),
+    Cell::rel(colorCross = Color::make(settings.crosshairRgba, [&](auto v){settings.crosshairRgba = v;})),
+    Cell::abs(scrollGap),
+  }), 25));
+  items.push_back(ItemY::make(groupGap));
+  items.push_back(ItemY::make(Row::make({
     Cell::abs(labelWidth + labelGap),
     Cell::abs(Button::make("Default", [=, &settings]() {
-      settings.crosshairXLength = 4;
-      rngHorLength->set(4);
-      settings.crosshairXThickness = 2;
-      rngHorWidth->set(2);
-      settings.crosshairYLength = 4;
-      rngVerLength->set(4);
-      settings.crosshairYThickness = 2;
-      rngVerWidth->set(2);
-      settings.crosshairXGap = 4;
-      rngHorGap->set(4);
-      settings.crosshairYGap = 4;
-      rngVerGap->set(4);
+      rngHorLength->set(settings.crosshairXLength = 4);
+      rngHorWidth->set(settings.crosshairXThickness = 2);
+      rngVerLength->set(settings.crosshairYLength = 4);
+      rngVerWidth->set(settings.crosshairYThickness = 2);
+      rngHorGap->set(settings.crosshairXGap = 4);
+      rngVerGap->set(settings.crosshairYGap = 4);
+      colorCross->setRgba(settings.crosshairRgba = 0x00ffffff);
     }), 100),
     Cell::rel(),
     Cell::abs(scrollGap)

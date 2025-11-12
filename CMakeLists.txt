@@ -185,6 +185,14 @@ set(angry-aim-src
         src/render/RenderPrimitive.h
         src/render/Shader.cpp
         src/render/Shader.h
+        src/ui/Color.cpp
+        src/ui/Color.h
+        src/render/Texture.cpp
+        src/render/Texture.h
+        src/ui/Image.cpp
+        src/ui/Image.h
+        src/drill_controllers/DrillDynamic.cpp
+        src/drill_controllers/DrillDynamic.h
 )
 
 # add executable

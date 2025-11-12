@@ -5,6 +5,7 @@
 #include "lib/miniaudio.h"
 
 class Sound {
+  bool movedFrom = false;
 public:
   ma_sound _ma_sound;
 
@@ -12,7 +13,7 @@ public:
     _ma_sound() {}
 
   ~Sound() {
-    ma_sound_uninit(&_ma_sound);
+    if (!movedFrom) ma_sound_uninit(&_ma_sound);
   }
 
   void play(double volume);
@@ -20,7 +21,9 @@ public:
   Sound(const Sound &other) = delete;
 
   Sound(Sound &&other) noexcept :
-    _ma_sound(std::move(other._ma_sound)) {}
+    _ma_sound(std::move(other._ma_sound)) {
+    other.movedFrom = true;
+  }
 
   Sound &operator=(const Sound &other) = delete;
 
@@ -28,6 +31,7 @@ public:
     if (this == &other)
       return *this;
     _ma_sound = std::move(other._ma_sound);
+    other.movedFrom = true;
     return *this;
   }
 };

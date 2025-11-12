@@ -276,7 +276,13 @@ int Field::getNextCursor(int direction) {
   return result;
 }
 
-bool Field::allowChar(char c) { return c >= 32; }
+bool Field::allowChar(char c) {
+  if (c < 32) return false;
+
+  if (allowCharFunc && !allowCharFunc(c)) return false;
+
+  return true;
+}
 
 void Field::distract() {
   cursor = -1;

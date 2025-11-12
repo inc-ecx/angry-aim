@@ -13,6 +13,7 @@ class Field : public Ui {
   int cursor = -1;
   int select = -1;
 
+  std::function<bool(char c)> allowCharFunc = nullptr;
   std::function<void()> listenerChanged;
   std::function<void()> listenerSubmit;
 
@@ -47,12 +48,14 @@ public:
   static std::shared_ptr<Field> make(
     std::string value,
     const std::function<void()> &listenerChanged,
-    const std::function<void()> &listenerSubmit
+    const std::function<void()> &listenerSubmit,
+    const std::function<bool(char c)> &allowCharFunc = nullptr
   ) {
     auto r = std::make_shared<Field>();
     r->textData = std::vector(value.begin(), value.end());
     r->listenerChanged = listenerChanged;
     r->listenerSubmit = listenerSubmit;
+    r->allowCharFunc = allowCharFunc;
     return r;
   }
 

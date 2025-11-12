@@ -41,27 +41,9 @@ public:
 
   Ui &operator=(const Ui &other) = delete;
 
-  Ui(Ui &&other) noexcept
-    :
-    // : parent(std::move(other.parent)),
-    children(std::move(other.children)),
-    x(other.x),
-    y(other.y),
-    width(other.width),
-    height(other.height) {
-  }
+  Ui(Ui &&other) = delete;
 
-  Ui &operator=(Ui &&other) noexcept {
-    if (this == &other)
-      return *this;
-    // parent = std::move(other.parent);
-    children = std::move(other.children);
-    x = other.x;
-    y = other.y;
-    width = other.width;
-    height = other.height;
-    return *this;
-  }
+  Ui &operator=(Ui &&other) = delete;
 
   explicit Ui(std::vector<std::shared_ptr<Ui> > &&children)
     : children(children) {

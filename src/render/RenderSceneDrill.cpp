@@ -65,12 +65,17 @@ void RenderSceneDrill::start() {
 }
 
 void RenderSceneDrill::stop() {
+  glDepthMask(GL_TRUE);
   glDisable(GL_CULL_FACE);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_ALPHA);
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ZERO);
   glUseProgram(0);
+}
+
+void RenderSceneDrill::depthMask(bool depthMask) {
+  glDepthMask(depthMask ? GL_TRUE : GL_FALSE);
 }
 
 void RenderSceneDrill::texture(bool value) {
