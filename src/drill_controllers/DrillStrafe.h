@@ -8,10 +8,10 @@
 #include "drill/controller/DrillController.h"
 #include "world_controllers/CameraController.h"
 
-class DrillDefault :
+class DrillStrafe :
     public DrillController,
     public Controller,
-    public std::enable_shared_from_this<DrillDefault> {
+    public std::enable_shared_from_this<DrillStrafe> {
   std::shared_ptr<WorldController> world;
   std::shared_ptr<MainPlayer> player;
   std::shared_ptr<UiDrill> screen;
@@ -66,7 +66,7 @@ class DrillDefault :
   void updateSpawn(double dt);
 
 public:
-  explicit DrillDefault();
+  explicit DrillStrafe();
 
   void setup(const DrillControllerSetupArgs &args) override;
 

@@ -32,7 +32,7 @@ std::unique_ptr<Ui> ScreenResult::createMainStats() {
   for (auto drillProp : args.mainStats) {
     cells.push_back(Cell::abs(Label::make(drillProp.first, 0x808080ff, LabelAlign::LEFT, false), 18));
     cells.push_back(Cell::abs(0));
-    cells.push_back(Cell::abs(Label::make(drillProp.second, 0xffffffff, LabelAlign::LEFT, true), 32));
+    cells.push_back(Cell::abs(Label::make(drillProp.second, 0xffffffff, LabelAlign::LEFT, true), 40));
     cells.push_back(Cell::abs(8));
   }
   cells.push_back(Cell::rel());
@@ -47,15 +47,15 @@ ScreenResult::ScreenResult(ScreenResultArgs&& args) :args(args){
   // to drill property panel:
   cells.push_back(Cell::wrap(Row::make({
       Cell::rel(),
-      Cell::abs(createDrillProps(), 500),
+      Cell::abs(createDrillProps(), 400),
       Cell::rel(),
   })));
-  cells.push_back(Cell::abs(20));
+  cells.push_back(Cell::abs(30));
 
   // side stats panel
   cells.push_back(Cell::wrap(Row::make({
       Cell::rel(),
-      Cell::abs(createMainStats(), 500),
+      Cell::abs(createMainStats(), 400),
       Cell::rel(),
   })));
   cells.push_back(Cell::abs(100));

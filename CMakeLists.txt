@@ -132,8 +132,8 @@ set(angry-aim-src
         src/entities/Miss.h
         src/world/WorldUtil.cpp
         src/world/WorldUtil.h
-        src/drill_controllers/DrillDefault.cpp
-        src/drill_controllers/DrillDefault.h
+        src/drill_controllers/DrillStrafe.cpp
+        src/drill_controllers/DrillStrafe.h
         src/ui/PanelY.cpp
         src/ui/PanelY.h
         src/drill_controllers/FactoryDrill.cpp
@@ -199,6 +199,10 @@ set(angry-aim-src
         src/drill_controllers/DrillAce.h
         src/drill_controllers/shared/TimeController.cpp
         src/drill_controllers/shared/TimeController.h
+        src/drill_controllers/shared/HitController.cpp
+        src/drill_controllers/shared/HitController.h
+        src/entities/HitTarget.cpp
+        src/entities/HitTarget.h
 )
 
 # add executable

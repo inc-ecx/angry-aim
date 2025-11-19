@@ -8,7 +8,7 @@
 #include "drill/model/DrillManager.h"
 
 #include "scenes/SceneBackpack.h"
-#include "drill_controllers/DrillDefault.h"
+#include "drill_controllers/DrillStrafe.h"
 #include "scenes/SceneDrill.h"
 #include "state/State.h"
 #include "ui/Image.h"

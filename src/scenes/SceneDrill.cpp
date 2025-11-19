@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "Log.h"
 #include "drill_controllers/FactoryDrill.h"
+#include "entities/HitTarget.h"
 #include "entities/MainPlayer.h"
 #include "entities/Miss.h"
 #include "entities/SimpleTarget.h"
@@ -229,6 +230,20 @@ void SceneDrill::drawWorld() {
   // strafing targets
   for (auto e: world->world.entities) {
     auto target = std::dynamic_pointer_cast<StrafingTarget>(e);
+    if (target == nullptr) continue;
+    renderScene.updateModel(target->pos, static_cast<float>(0.5 * (target->size)));
+    int alpha = 0xff;
+    if (target->msDeath != 0) {
+      double deathProgress = static_cast<double>(target->msDeath - msCurrent()) / target->fadeOutMs;
+      alpha = static_cast<int>(alpha * deathProgress);
+    }
+    renderScene.color(0xffffff00 | alpha);
+    renderScene.draw(*targetModel);
+  }
+
+  // hit targets
+  for (auto e: world->world.entities) {
+    auto target = std::dynamic_pointer_cast<HitTarget>(e);
     if (target == nullptr) continue;
     renderScene.updateModel(target->pos, static_cast<float>(0.5 * (target->size)));
     int alpha = 0xff;

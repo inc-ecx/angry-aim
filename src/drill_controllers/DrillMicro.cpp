@@ -118,24 +118,26 @@ void DrillMicro::actionStart() {
 void DrillMicro::triggerStop() {
   stopped = true;
 
+  if (target != nullptr) {
+    statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
+  }
+
   auto &app = Application::app;
-  int m = params.duration / 60;
-  int s = params.duration % 60;
-  std::vector stats{
-    std::format("Time: {:02d}:{:02d}", m, s),
-    std::format("Hit: {}", statsHit),
-    std::format("TTK: {}ms", statsTtkSum / statsHit),
-    std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / (statsHit + statsMissed) * 100.0f),
-  };
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  app.later(
-    [stats] {
-      Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
-        .drillProps = {},
-        // .mainStats = stats // TODO
-      }));
-    }
-  );
+  // @formatter:off
+  app.later([=] {
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drillProps = {
+        {"drill", std::format("micro {}s", params.duration)}
+      },
+      .mainStats = {
+        {"ttk", std::format("{}ms", statsTtkSum / std::max(1, statsHit))},
+        {"acc", std::format("{:0.1f}%", static_cast<float>(statsHit) / std::max(1, statsHit + statsMissed) * 100.0f)},
+        {"hit", std::format("{}", statsHit)},
+      }
+    }));
+  });
+  // @formatter:on
 
   cameraController->setEnabled(false);
 }

@@ -1,12 +1,12 @@
 #include "FactoryDrill.h"
 
 #include "DrillAce.h"
-#include "DrillDefault.h"
+#include "DrillStrafe.h"
 #include "DrillMicro.h"
 #include "DrillSimple.h"
 
 std::map<std::string, Entry> FactoryDrill::entries{
-  {"default", {.creator = [](auto s) { return std::make_shared<DrillDefault>(); }}},
+  {"strafe", {.creator = [](auto s) { return std::make_shared<DrillStrafe>(); }}},
   {"simple", {.creator = [](auto s) { return std::make_shared<DrillSimple>(); }}},
   {"micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
   {"ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(s); }}},

@@ -115,7 +115,8 @@ void DrillSimple::triggerStop() {
   auto &app = Application::app;
 
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-// @formatter:off
+
+  // @formatter:off
   app.later([=] {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
       .drillProps = {

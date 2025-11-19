@@ -1,4 +1,4 @@
-#include "DrillDefault.h"
+#include "DrillStrafe.h"
 
 #include "entities/StrafingTarget.h"
 #include "entities/Miss.h"
@@ -11,10 +11,10 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillDefault::DrillDefault() :
+DrillStrafe::DrillStrafe() :
   DrillController("default") {}
 
-void DrillDefault::setup(const DrillControllerSetupArgs &args) {
+void DrillStrafe::setup(const DrillControllerSetupArgs &args) {
   this->player = args.player;
   this->world = args.world;
   this->screen = args.screen;
@@ -38,21 +38,21 @@ void DrillDefault::setup(const DrillControllerSetupArgs &args) {
   screen->lblMainStat->setText("Click to start");
 }
 
-void DrillDefault::pause() {
+void DrillStrafe::pause() {
   cameraController->setEnabled(false);
 }
 
-void DrillDefault::resume() {
+void DrillStrafe::resume() {
   cameraController->setEnabled(true);
 }
 
-void DrillDefault::update(double dt) {
+void DrillStrafe::update(double dt) {
   updateTimer();
   updateWorld(dt);
   updateSpawn(dt);
 }
 
-void DrillDefault::handle(const UiEvent &event) {
+void DrillStrafe::handle(const UiEvent &event) {
   if (started && !over) {
     if (event.type == UiEventType::MOUSE_BUTTON && event.button == GLFW_MOUSE_BUTTON_LEFT && event.down) {
       bool hit = false;
@@ -103,60 +103,49 @@ void DrillDefault::handle(const UiEvent &event) {
   }
 }
 
-void DrillDefault::start() {
+void DrillStrafe::start() {
   started = true;
   msStarted = msCurrent();
   triggerSpawn();
 }
 
-void DrillDefault::triggerSpawn() {
+void DrillStrafe::triggerSpawn() {
   spawnQueue++;
   spawnMsSpawn = msCurrent() + spawnDelay;
 }
 
-void DrillDefault::triggerOver() {
+void DrillStrafe::triggerOver() {
   screen->lblMainStat->setText("");
   over = true;
   cameraController->setEnabled(false);
 
   auto &app = Application::app;
-  int m = duration / 60;
-  int s = duration % 60;
-  std::vector stats{
-    std::format("Time: {:02d}:{:02d}", m, s),
-    std::format("Hit: {}", statsHit),
-    std::format("TTK: {}ms", ttkSum / std::max(1, statsHit)),
-    std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / std::max(1, statsHit + statsMiss) * 100.0f),
-  };
+
+  if (spawnQueue == 0) {
+    ttkSum += static_cast<int>(msCurrent() - msLastSpawn);
+  }
+
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  app.later(
-    [stats] {
-      Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
-        .drillProps = {},
-        // .mainStats = stats // TODO
-      }));
-    }
-  );
+  // @formatter:off
+  app.later([=] {
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drillProps = {
+        {"drill", std::format("strafe {}s", duration)}
+      },
+      .mainStats = {
+        {"ttk", std::format("{}ms", ttkSum / std::max(1, statsHit))},
+        {"acc", std::format("{:0.1f}%", static_cast<float>(statsHit) / std::max(1, statsHit + statsMiss) * 100.0f)},
+        {"hit", std::format("{}", statsHit)},
+      }
+    }));
+  });
+  // @formatter:on
 }
 
-void DrillDefault::updateTimer() {
-  // if (!started) {
-  //   screen->lblMainStat->setText("Click to start");
-  //   return;
-  // }
-  // uint64_t runningMs = msCurrent() - msStarted;
-  // int timeLeft = static_cast<int>((duration * 1000 - static_cast<int>(runningMs)) / 1000.0f + 0.5f);
-  // if (timeLeft > 0) {
-  //   int m = timeLeft / 60;
-  //   int s = timeLeft % 60;
-  //   screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
-  // } else {
-  //   screen->lblMainStat->setText("");
-  //   if (!over) triggerOver();
-  // }
+void DrillStrafe::updateTimer() {
 }
 
-void DrillDefault::updateSpawn(double dt) {
+void DrillStrafe::updateSpawn(double dt) {
   uint64_t msNow = msCurrent();
   if (spawnQueue > 0 && static_cast<int64_t>(msNow - spawnMsSpawn) >= 0) {
     float mapWidth = 20;
@@ -180,7 +169,7 @@ void DrillDefault::updateSpawn(double dt) {
   }
 }
 
-void DrillDefault::updateWorld(double dt) {
+void DrillStrafe::updateWorld(double dt) {
   if (!started || over) return;
 
   uint64_t msNow = msCurrent();

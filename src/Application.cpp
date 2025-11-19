@@ -118,7 +118,7 @@ void Application::initApp() {
   renderScene.init();
   renderSceneDrill.init();
   renderFont.init(freetype, "assets/fonts/RobotoMono-Regular.ttf", 18);
-  renderFontStats.init(freetype, "assets/fonts/RobotoMono-Regular.ttf", 32);
+  renderFontStats.init(freetype, "assets/fonts/RobotoMono-Regular.ttf", 40);
   renderPrimitive.init();
 
   pipelineUi.init();
