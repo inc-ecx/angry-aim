@@ -7,14 +7,14 @@ static int queryWrapWidth(Cell* cell) {
   bool subHasWidth = false, subHasHeight = false;
   cell->queryWrap(subWidth, subHeight, subHasWidth, subHasHeight);
   if (!subHasWidth) {
-    Log::warn("A wrapped cell does not provide its size");
+    Log::warn("ROW: A wrapped cell does not provide its size");
   }
   return subWidth;
 }
 
 void Row::queryWrap(int &width, int &height, bool &hasWidth, bool &hasHeight) {
+  // calculate required size to wrap this element
   hasWidth = true;
-
   int totalAbsolute = 0;
   for (auto &child: children) {
     const auto pCell = dynamic_cast<Cell *>(child.get());
@@ -24,8 +24,16 @@ void Row::queryWrap(int &width, int &height, bool &hasWidth, bool &hasHeight) {
       totalAbsolute += queryWrapWidth(pCell);
     }
   }
-
   width = totalAbsolute;
+
+  // transfer opposite dimension
+  int subWidth = 0, subHeight = 0;
+  bool subHasWidth = false, subHasHeight = false;
+  queryWrapChildren(subWidth, subHeight, subHasWidth, subHasHeight);
+  if (subHasHeight) {
+    hasHeight = true;
+    height = subHeight;
+  }
 }
 
 void Row::layout() {

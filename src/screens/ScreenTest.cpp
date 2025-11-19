@@ -16,6 +16,59 @@ std::shared_ptr<Ui> constructTestList() {
     Cell::abs(5)
   }), 25));
 
+  // single level row wrap
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(5),
+    Cell::abs(Button::make("0"), 30),
+    Cell::wrap(Row::make({
+      Cell::abs(Button::make("A"), 40),
+      Cell::abs(Button::make("B"), 40),
+      Cell::abs(Button::make("CC"), 60),
+      Cell::abs(Button::make("D"), 40),
+    })),
+    Cell::abs(Button::make("E"), 30),
+    Cell::abs(5)
+  }), 25));
+
+  // single level column wrap
+  items.push_back(ItemY::make(Column::make({
+    Cell::abs(5),
+    Cell::abs(Button::make("0"), 30),
+    Cell::wrap(Column::make({
+      Cell::abs(Button::make("A"), 40),
+      Cell::abs(Button::make("B"), 40),
+      Cell::abs(Button::make("CC"), 60),
+      Cell::abs(Button::make("D"), 40),
+    })),
+    Cell::abs(Button::make("E"), 30),
+    Cell::abs(5),
+    Cell::rel()
+  }), 300));
+
+  // nested col wrap
+  std::shared_ptr<Row> test;
+  items.push_back(ItemY::make(Column::make({
+    Cell::abs(5),
+    Cell::abs(Button::make("0"), 30),
+    Cell::wrap(test = Row::make({
+      Cell::rel(1),
+      Cell::rel(Column::make({
+        Cell::abs(Button::make("A"), 40),
+        Cell::abs(Button::make("B"), 40),
+        Cell::abs(Button::make("CC"), 60),
+        Cell::abs(Button::make("D"), 40),
+      }), 10),
+      Cell::rel(1)
+    })),
+    Cell::abs(Button::make("E"), 30),
+    Cell::abs(5),
+    Cell::rel()
+  }), 300));
+
+  // int x = 0,y = 0;
+  // bool a = false,b = false;
+  // test->queryWrap(x,y,a,b);
+
   items.push_back(ItemY::make(Row::make({
     Cell::abs(5),
     Cell::rel(Field::make("Test", nullptr, nullptr)),
