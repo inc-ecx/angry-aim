@@ -19,8 +19,10 @@ public:
 
   void layout() override;
 
-  static std::shared_ptr<Row> make(std::vector<std::shared_ptr<Cell>>&& children) {
-    return std::make_shared<Row>(std::move(children));
+  void queryWrap(int &width, int &height, bool &hasWidth, bool &hasHeight) override;
+
+  static std::unique_ptr<Row> make(std::vector<std::shared_ptr<Cell>>&& children) {
+    return std::make_unique<Row>(std::move(children));
   }
 };
 

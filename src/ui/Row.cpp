@@ -1,5 +1,33 @@
 #include "Row.h"
 
+#include "Log.h"
+
+static int queryWrapWidth(Cell* cell) {
+  int subWidth = 0, subHeight = 0;
+  bool subHasWidth = false, subHasHeight = false;
+  cell->queryWrap(subWidth, subHeight, subHasWidth, subHasHeight);
+  if (!subHasWidth) {
+    Log::warn("A wrapped cell does not provide its size");
+  }
+  return subWidth;
+}
+
+void Row::queryWrap(int &width, int &height, bool &hasWidth, bool &hasHeight) {
+  hasWidth = true;
+
+  int totalAbsolute = 0;
+  for (auto &child: children) {
+    const auto pCell = dynamic_cast<Cell *>(child.get());
+    if (pCell->type == CellType::ABSOLUTE) {
+      totalAbsolute += pCell->size;
+    } else if (pCell->type == CellType::WRAP) {
+      totalAbsolute += queryWrapWidth(pCell);
+    }
+  }
+
+  width = totalAbsolute;
+}
+
 void Row::layout() {
   const int total = width;
 
@@ -11,6 +39,8 @@ void Row::layout() {
     const auto pCell = dynamic_cast<Cell *>(child.get());
     if (pCell->type == CellType::ABSOLUTE) {
       totalAbsolute += pCell->size;
+    } else if (pCell->type == CellType::WRAP) {
+      totalAbsolute += queryWrapWidth(pCell);
     } else {
       totalRelative += pCell->size;
       lastRelative = pCell;
@@ -34,6 +64,8 @@ void Row::layout() {
     double dSize = remainder;
     if (pCell->type == CellType::ABSOLUTE) {
       dSize += pCell->size;
+    } else if (pCell->type == CellType::WRAP) {
+      dSize += queryWrapWidth(pCell);
     } else {
       dSize += static_cast<double>(pCell->size) / static_cast<double>(totalRelative) * available;
     }

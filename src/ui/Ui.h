@@ -72,6 +72,12 @@ public:
     this->height = height;
   }
 
+  // used by container ui elements looking for their children to give a wanted size dimension.
+  // note: width and height must be zero-initialized. hasWidth and hasHeight must be false-initialized.
+  virtual void queryWrap(int &width, int &height, bool &hasWidth, bool &hasHeight);
+
+  void queryWrapChildren(int &width, int &height, bool &hasWidth, bool &hasHeight);
+
   // sets the viewport of this element. used by scroll panels.
   void setViewport(const int x1, const int y1, const int x2, const int y2) {
     this->vpx1 = x1;
