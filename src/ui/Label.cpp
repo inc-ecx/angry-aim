@@ -4,7 +4,7 @@
 
 void Label::render(double dt, const UiRenderParams &params) {
   auto &app = Application::app;
-  auto &fr = app.renderFont;
+  auto &fr = isStats ? app.renderFontStats : app.renderFont;
 
   fr.start();
   float tw = static_cast<float>(fr.width(text));

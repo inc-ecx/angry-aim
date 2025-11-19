@@ -33,6 +33,15 @@ void SceneDrill::viewSettingsChanged() {
 void SceneDrill::setup() {
   auto &app = Application::app;
 
+  drillController = FactoryDrill::create(drill);
+
+  if (!drillController) {
+    Log::error(std::format("Failed to create drill \"{}\" from \"{}\"", drill.name, drill.link));
+    app.later([] {
+      Application::app.updateScene(nullptr);
+    });
+  }
+
   // create world
   world = std::make_shared<WorldController>();
   world->add(player = std::make_shared<MainPlayer>());
@@ -43,9 +52,7 @@ void SceneDrill::setup() {
   ui->setBounds(0, 0, app.getWidth(), app.getHeight());
   ui->layout();
 
-  // create controller
-  drillController = FactoryDrill::create(drill);
-
+  // setup controller
   drillController->setup(DrillControllerSetupArgs{
     .world = world,
     .player = player,

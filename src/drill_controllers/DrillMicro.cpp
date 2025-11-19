@@ -130,7 +130,10 @@ void DrillMicro::triggerStop() {
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   app.later(
     [stats] {
-      Application::app.setScreen(std::make_shared<ScreenResult>(stats));
+      Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+        .drillProps = {},
+        // .mainStats = stats // TODO
+      }));
     }
   );
 

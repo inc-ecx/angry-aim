@@ -22,7 +22,7 @@ class DrillSimple :
 
   // Drill settings
   struct Params {
-    int duration = 60;
+    int duration = 5;
     double initialSpawnDelay = 0.2;
     double spawnDelay = 0.0;
     float eyeHeight = 1.6f;

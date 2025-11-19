@@ -27,16 +27,17 @@ class RenderFont {
   GLuint shaderProgram = -1;
   GLuint VAO = -1, VBO = -1;
 
-  void initCharMap(FT_Library ft);
+  void initCharMap(FT_Library ft, const std::string &location, int pxHeight);
   void initQuad();
   void initShader();
 
 public:
+
   void renderText(std::string text, float x, float y, int rgba);
   int height() { return lineHeight; }
   int width(std::string text);
 
-  void init(FT_Library ft);
+  void init(FT_Library ft, const std::string& location, int pxHeight);
   void start();
   void stop();
 

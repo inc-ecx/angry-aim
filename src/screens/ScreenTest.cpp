@@ -46,11 +46,10 @@ std::shared_ptr<Ui> constructTestList() {
   }), 300));
 
   // nested col wrap
-  std::shared_ptr<Row> test;
   items.push_back(ItemY::make(Column::make({
     Cell::abs(5),
     Cell::abs(Button::make("0"), 30),
-    Cell::wrap(test = Row::make({
+    Cell::wrap(Row::make({
       Cell::rel(1),
       Cell::rel(Column::make({
         Cell::abs(Button::make("A"), 40),
@@ -64,10 +63,6 @@ std::shared_ptr<Ui> constructTestList() {
     Cell::abs(5),
     Cell::rel()
   }), 300));
-
-  // int x = 0,y = 0;
-  // bool a = false,b = false;
-  // test->queryWrap(x,y,a,b);
 
   items.push_back(ItemY::make(Row::make({
     Cell::abs(5),

@@ -108,21 +108,27 @@ void DrillSimple::actionStart() {
 void DrillSimple::triggerStop() {
   stopped = true;
 
+  if (target != nullptr) {
+    statsTtkSum += static_cast<int>(msCurrent() - msLastSpawn);
+  }
+
   auto &app = Application::app;
-  int m = params.duration / 60;
-  int s = params.duration % 60;
-  std::vector stats{
-    std::format("Time: {:02d}:{:02d}", m, s),
-    std::format("Hit: {}", statsHit),
-    std::format("TTK: {}ms", statsTtkSum / statsHit),
-    std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / (statsHit + statsMissed) * 100.0f),
-  };
+
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  app.later(
-    [stats] {
-      Application::app.setScreen(std::make_shared<ScreenResult>(stats));
-    }
-  );
+// @formatter:off
+  app.later([=] {
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drillProps = {
+        {"drill", std::format("simple {}s", params.duration)}
+      },
+      .mainStats = {
+        {"ttk", std::format("{}ms", statsTtkSum / std::max(1, statsHit))},
+        {"acc", std::format("{:0.1f}%", static_cast<float>(statsHit) / std::max(1, statsHit + statsMissed) * 100.0f)},
+        {"hit", std::format("{}", statsHit)},
+      }
+    }));
+  });
+  // @formatter:on
 
   cameraController->setEnabled(false);
 }
@@ -146,9 +152,13 @@ void DrillSimple::actionShoot() {
     std::shared_ptr<Miss> miss;
     world->world.entities.insert(miss = std::make_shared<Miss>(msCurrent()));
     glm::vec3 dir;
-    dir.x = cos(glm::radians(static_cast<float>(player->pitch))) * sin(glm::radians(static_cast<float>(player->yaw + 180)));
+    dir.x = cos(glm::radians(static_cast<float>(player->pitch))) * sin(
+              glm::radians(static_cast<float>(player->yaw + 180))
+            );
     dir.y = sin(glm::radians(static_cast<float>(player->pitch)));
-    dir.z = cos(glm::radians(static_cast<float>(player->pitch))) * cos(glm::radians(static_cast<float>(player->yaw + 180)));
+    dir.z = cos(glm::radians(static_cast<float>(player->pitch))) * cos(
+              glm::radians(static_cast<float>(player->yaw + 180))
+            );
     dir = glm::normalize(dir);
     miss->pos = player->pos + dir;
     return;

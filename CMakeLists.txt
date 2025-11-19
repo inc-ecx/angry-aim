@@ -193,6 +193,12 @@ set(angry-aim-src
         src/ui/Image.h
         src/drill_controllers/DrillDynamic.cpp
         src/drill_controllers/DrillDynamic.h
+        src/drill_controllers/UtilDrill.cpp
+        src/drill_controllers/UtilDrill.h
+        src/drill_controllers/DrillAce.cpp
+        src/drill_controllers/DrillAce.h
+        src/drill_controllers/shared/TimeController.cpp
+        src/drill_controllers/shared/TimeController.h
 )
 
 # add executable

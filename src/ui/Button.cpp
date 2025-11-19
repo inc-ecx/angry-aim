@@ -55,7 +55,7 @@ void Button::onClicked() {
 }
 
 void Button::handle(UiEvent &event) {
-  if (event.type == UiEventType::MOUSE_BUTTON && event.down && event.button == GLFW_MOUSE_BUTTON_LEFT) {
+  if (event.type == UiEventType::MOUSE_BUTTON && event.down && event.button == GLFW_MOUSE_BUTTON_LEFT && !event.claimed) {
     if (hovered()) {
       onClicked();
     }

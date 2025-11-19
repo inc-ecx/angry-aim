@@ -8,10 +8,11 @@
 class DrillManager {
 public:
   std::vector<Drill> drills = {
-    Drill("Default", "Valorant based shooting.", "default"),
+    Drill("Strafe", "Valorant based shooting.", "default"),
     Drill("Simple", "Simple scene.", "simple"),
     Drill("Micro", "Micro flick training.", "micro"),
     Drill("Nano", "Nano flick training.", "micro:1.5"),
+    Drill("Ace", "Flick to five targets.", "ace"),
   };
   Drill def = Drill("Default", "Valorant based shooting.", "default");
 

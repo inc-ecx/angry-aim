@@ -1,14 +1,14 @@
 #include "RenderFont.h"
 
-void RenderFont::initCharMap(FT_Library ft) {
+void RenderFont::initCharMap(FT_Library ft, const std::string &location, int pxHeight) {
   FT_Face face;
 
-  FT_Error ftErr = FT_New_Face(ft, "assets/fonts/RobotoMono-Regular.ttf", 0, &face);
+  FT_Error ftErr = FT_New_Face(ft, location.c_str(), 0, &face);
   if (ftErr) {
     std::cout << "ERROR: Failed to load font. " << ftErr << std::endl;
     return;
   }
-  FT_Set_Pixel_Sizes(face, 0, 18);
+  FT_Set_Pixel_Sizes(face, 0, pxHeight);
 
   lineHeight = (face->size->metrics.height) >> 6;
   descender = (face->size->metrics.descender) >> 6;
@@ -66,8 +66,8 @@ void RenderFont::initQuad() {
   glBindVertexArray(0);
 }
 
-void RenderFont::init(FT_Library ft) {
-  initCharMap(ft);
+void RenderFont::init(FT_Library ft, const std::string& location, int pxHeight) {
+  initCharMap(ft, location, pxHeight);
   initShader();
   initQuad();
 }

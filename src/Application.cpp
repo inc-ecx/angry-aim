@@ -117,7 +117,8 @@ void Application::initApp() {
   renderUi.init();
   renderScene.init();
   renderSceneDrill.init();
-  renderFont.init(freetype);
+  renderFont.init(freetype, "assets/fonts/RobotoMono-Regular.ttf", 18);
+  renderFontStats.init(freetype, "assets/fonts/RobotoMono-Regular.ttf", 32);
   renderPrimitive.init();
 
   pipelineUi.init();
@@ -163,6 +164,7 @@ void Application::onResize() {
   renderScene.resize(width, height);
   renderSceneDrill.resize(width, height);
   renderFont.resize(width, height);
+  renderFontStats.resize(width, height);
 
   pipelineUi.resize(width, height);
 

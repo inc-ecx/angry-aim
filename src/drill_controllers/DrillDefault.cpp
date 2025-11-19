@@ -4,6 +4,7 @@
 #include "entities/Miss.h"
 #include "scenes/SceneDrill.h"
 #include "screens/ScreenResult.h"
+#include "shared/TimeController.h"
 #include "state/State.h"
 #include "util/math_util.h"
 #include "world/WorldUtil.h"
@@ -20,6 +21,16 @@ void DrillDefault::setup(const DrillControllerSetupArgs &args) {
   this->resources = args.resources;
 
   world->control(shared_from_this());
+  auto handleTime = [this](const std::string& time) {
+    screen->lblMainStat->setText(time);
+  };
+  auto handleStart = [this] {
+    start();
+  };
+  auto handleEnd = [this] {
+    triggerOver();
+  };
+  world->control(std::make_shared<TimeController>(TimeControllerArgs{duration, handleTime, handleStart, handleEnd}));
   world->control(player, cameraController = std::make_shared<CameraController>(player));
   // world->control(player, std::make_shared<MoveController>(player, player));
 
@@ -42,13 +53,6 @@ void DrillDefault::update(double dt) {
 }
 
 void DrillDefault::handle(const UiEvent &event) {
-  if (!started) {
-    if (event.type == UiEventType::MOUSE_BUTTON && event.button == GLFW_MOUSE_BUTTON_LEFT && event.down) {
-      start();
-      return;
-    }
-  }
-
   if (started && !over) {
     if (event.type == UiEventType::MOUSE_BUTTON && event.button == GLFW_MOUSE_BUTTON_LEFT && event.down) {
       bool hit = false;
@@ -111,6 +115,7 @@ void DrillDefault::triggerSpawn() {
 }
 
 void DrillDefault::triggerOver() {
+  screen->lblMainStat->setText("");
   over = true;
   cameraController->setEnabled(false);
 
@@ -120,32 +125,35 @@ void DrillDefault::triggerOver() {
   std::vector stats{
     std::format("Time: {:02d}:{:02d}", m, s),
     std::format("Hit: {}", statsHit),
-    std::format("TTK: {}ms", ttkSum / statsHit),
-    std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / (statsHit + statsMiss) * 100.0f),
+    std::format("TTK: {}ms", ttkSum / std::max(1, statsHit)),
+    std::format("Hit Rate: {:0.1f}%", static_cast<float>(statsHit) / std::max(1, statsHit + statsMiss) * 100.0f),
   };
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   app.later(
     [stats] {
-      Application::app.setScreen(std::make_shared<ScreenResult>(stats));
+      Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+        .drillProps = {},
+        // .mainStats = stats // TODO
+      }));
     }
   );
 }
 
 void DrillDefault::updateTimer() {
-  if (!started) {
-    screen->lblMainStat->setText("Click to start");
-    return;
-  }
-  uint64_t runningMs = msCurrent() - msStarted;
-  int timeLeft = static_cast<int>((duration * 1000 - static_cast<int>(runningMs)) / 1000.0f + 0.5f);
-  if (timeLeft > 0) {
-    int m = timeLeft / 60;
-    int s = timeLeft % 60;
-    screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
-  } else {
-    screen->lblMainStat->setText("");
-    if (!over) triggerOver();
-  }
+  // if (!started) {
+  //   screen->lblMainStat->setText("Click to start");
+  //   return;
+  // }
+  // uint64_t runningMs = msCurrent() - msStarted;
+  // int timeLeft = static_cast<int>((duration * 1000 - static_cast<int>(runningMs)) / 1000.0f + 0.5f);
+  // if (timeLeft > 0) {
+  //   int m = timeLeft / 60;
+  //   int s = timeLeft % 60;
+  //   screen->lblMainStat->setText(std::format("{:02d}:{:02d}", m, s));
+  // } else {
+  //   screen->lblMainStat->setText("");
+  //   if (!over) triggerOver();
+  // }
 }
 
 void DrillDefault::updateSpawn(double dt) {

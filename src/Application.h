@@ -90,6 +90,7 @@ public:
   // note: renders are responsible for providing the functionalities for drawing a scene/screen.
   RenderUi renderUi;
   RenderFont renderFont;
+  RenderFont renderFontStats;
   RenderScene renderScene;
   RenderSceneDrill renderSceneDrill;
   RenderPrimitive renderPrimitive;

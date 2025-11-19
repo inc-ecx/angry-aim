@@ -1,5 +1,6 @@
 #include "FactoryDrill.h"
 
+#include "DrillAce.h"
 #include "DrillDefault.h"
 #include "DrillMicro.h"
 #include "DrillSimple.h"
@@ -8,6 +9,7 @@ std::map<std::string, Entry> FactoryDrill::entries{
   {"default", {.creator = [](auto s) { return std::make_shared<DrillDefault>(); }}},
   {"simple", {.creator = [](auto s) { return std::make_shared<DrillSimple>(); }}},
   {"micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
+  {"ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(s); }}},
 };
 
 std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {
