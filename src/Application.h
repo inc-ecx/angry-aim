@@ -45,15 +45,12 @@ class Application {
   std::mutex mtx;
   std::vector<std::function<void()> > laterVec;
 
-  // loop configuration
-  int targetFps = 432;
-  int maxFpsQueue = 2;
-
   // window props
   int mouseX = std::numeric_limits<int>::min();
   int mouseY = std::numeric_limits<int>::min();
   int width = std::numeric_limits<int>::min();
   int height = std::numeric_limits<int>::min();
+  bool windowFocused = false;
 
   // fps measure
   std::vector<std::chrono::time_point<std::chrono::steady_clock> > frameHistory;
@@ -64,6 +61,10 @@ class Application {
   // controllers
   std::shared_ptr<Ui> currentUi = nullptr;
   std::shared_ptr<Scene> currentScene = nullptr;
+  std::chrono::time_point<std::chrono::steady_clock> lastFrame;
+  std::chrono::time_point<std::chrono::steady_clock> lastFpsUpdate;
+
+  void tickApp();
 
   void renderApp(double dt);
 

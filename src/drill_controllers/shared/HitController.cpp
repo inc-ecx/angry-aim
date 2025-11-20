@@ -45,11 +45,11 @@ void HitController::handle(const UiEvent &event) {
   }
 }
 
-void HitController::notifySpawn() {
+void HitController::notifyCanKill() {
   msLastSpawn = msCurrent();
 }
 
-void HitController::notifyDone() {
+void HitController::notifyOver() {
   if (msLastSpawn == 0) {
     Log::warn("Failed to call HitController::notifySpawn.");
   } else {

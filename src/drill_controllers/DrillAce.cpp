@@ -8,6 +8,7 @@
 #include "shared/HitController.h"
 #include "state/State.h"
 #include "util/time_util.h"
+#include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
 DrillAce::DrillAce(const std::string &args) :
@@ -32,7 +33,7 @@ void DrillAce::handleTimeEnd() {
   args.screen->lblMainStat->setText("");
   ctrlCam->setEnabled(false);
   ctrlHit->setEnabled(false);
-  ctrlHit->notifyDone();
+  ctrlHit->notifyOver();
 
   auto &app = Application::app;
 
@@ -76,13 +77,10 @@ void DrillAce::handleMiss() {
 
 void DrillAce::handleHit(const std::shared_ptr<HitTarget> &target) {
   args.resources->soundHit->play(State::state.settings.hitVolume);
-  if (living == 5) {
-    msHitFirst = msCurrent();
-  }
-  if (living == 0) {
-    msHitFirst = 0;
-  }
   living--;
+  if (living > 0) {
+    ctrlHit->notifyCanKill();
+  }
 }
 
 void DrillAce::pause() {
@@ -114,23 +112,16 @@ void DrillAce::spawnWave() {
   std::uniform_real_distribution<float> randomFloat;
 
   for (int i = 0; i < params.waveCount; ++i) {
-    float rndPitch = params.pitch * (randomFloat(rng) - 0.5);
-    float rndYaw = params.yaw * (randomFloat(rng) - 0.5);
+    float rndPitch = params.pitch * (randomFloat(rng) - 0.5f);
+    float rndYaw = params.yaw * (randomFloat(rng) - 0.5f);
     float rndDist = params.minDist + (randomFloat(rng) * (params.maxDist - params.minDist));
 
-    glm::vec3 pos;
-    pos.x = cos(glm::radians(rndPitch))
-            * sin(glm::radians(rndYaw + 180));
-    pos.y = sin(glm::radians(rndPitch));
-    pos.z = cos(glm::radians(rndPitch))
-            * cos(glm::radians(rndYaw + 180));
-    pos = glm::normalize(pos);
-    pos *= rndDist;
+    glm::vec3 pos = WorldUtil::lookVec(rndPitch, rndYaw) * rndDist;
 
     auto target = std::make_shared<HitTarget>();
     target->pos = pos;
     args.world->add(target);
   }
-  ctrlHit->notifySpawn();
+  ctrlHit->notifyCanKill();
   living = params.waveCount;
 }

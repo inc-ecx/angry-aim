@@ -45,6 +45,17 @@ std::shared_ptr<Ui> constructSettingsList() {
 
   std::shared_ptr<Color> colorCross;
 
+  items.push_back(ItemY::make(Label::make("Graphics", 0xffffff60, LabelAlign::LEFT), 36));
+  items.push_back(ItemY::make(Row::make({
+    Cell::abs(Label::make("Max FPS", LabelAlign::RIGHT), labelWidth),
+    Cell::abs(labelGap),
+    Cell::rel(Range::make(settings.maxFps, 30, 1000, 1, [&](auto v) {
+      settings.maxFps = static_cast<int>(v+0.001);
+    })),
+    Cell::abs(scrollGap)
+  }), 25));
+  items.push_back(ItemY::make(groupGap));
+
   items.push_back(ItemY::make(Label::make("View", 0xffffff60, LabelAlign::LEFT), 36));
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("FOV", LabelAlign::RIGHT), labelWidth),

@@ -2,6 +2,7 @@
 
 void StateSettings::load(json &j) {
   if (j["fullscreen"].is_boolean()) fullscreen = j["fullscreen"];
+  if (j["maxFps"].is_number()) maxFps = j["maxFps"];
 
   if (j["fov"].is_number()) fov = j["fov"];
   if (j["sensitivity"].is_number()) sensitivity = j["sensitivity"];
@@ -21,6 +22,7 @@ void StateSettings::load(json &j) {
 
 void StateSettings::save(json &j) {
   j["fullscreen"] = fullscreen;
+  j["maxFps"] = maxFps;
 
   j["fov"] = fov;
   j["sensitivity"] = sensitivity;

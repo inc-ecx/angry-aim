@@ -1,12 +1,14 @@
 #include "WorldUtil.h"
 
-bool WorldUtil::hitSphere(const glm::vec3 &rayOrigin, float pitch, float yaw, const glm::vec3 &spherePos, float radius,
-float &tHit)  {
-  glm::vec3 dir;
-  dir.x = cos(glm::radians(pitch)) * sin(glm::radians(yaw + 180));
-  dir.y = sin(glm::radians(pitch));
-  dir.z = cos(glm::radians(pitch)) * cos(glm::radians(yaw + 180));
-  dir = glm::normalize(dir);
+bool WorldUtil::hitSphere(
+  const glm::vec3 &rayOrigin,
+  float pitch,
+  float yaw,
+  const glm::vec3 &spherePos,
+  float radius,
+  float &tHit
+) {
+  glm::vec3 dir = lookVec(pitch,yaw);
 
   glm::vec3 L = spherePos - rayOrigin;
   float tca = glm::dot(L, dir);
@@ -19,4 +21,13 @@ float &tHit)  {
   float thc = sqrt(r2 - d2);
   tHit = tca - thc; // nearest intersection along the ray
   return true;
+}
+
+glm::vec3 WorldUtil::lookVec(float pitch, float yaw) {
+  glm::vec3 dir;
+  dir.x = cos(glm::radians(pitch)) * sin(glm::radians(yaw + 180));
+  dir.y = sin(glm::radians(pitch));
+  dir.z = cos(glm::radians(pitch)) * cos(glm::radians(yaw + 180));
+  dir = glm::normalize(dir);
+  return dir;
 }

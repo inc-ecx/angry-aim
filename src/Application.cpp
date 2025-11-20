@@ -86,6 +86,13 @@ void Application::initApp() {
     }
   );
 
+  glfwSetWindowFocusCallback(
+    window,
+    [](GLFWwindow *, int focused) {
+      app.windowFocused = focused ? true : false;
+    }
+  );
+
   glfwMakeContextCurrent(window);
 
   gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -184,60 +191,82 @@ void Application::runApp() {
   double fpsQueue = 1;
 
   auto lastIteration = std::chrono::steady_clock::now();
-  auto lastFrame = std::chrono::steady_clock::now();
-  auto lastFpsUpdate = std::chrono::steady_clock::now();
+  lastFrame = std::chrono::steady_clock::now();
+  lastFpsUpdate = std::chrono::steady_clock::now();
+
+  auto &settings = State::state.settings;
 
   while (!glfwWindowShouldClose(window)) {
     auto currentIteration = std::chrono::steady_clock::now();
     double loopDt = std::chrono::duration<double>(currentIteration - lastIteration).count();
     lastIteration = currentIteration;
-    fpsQueue = std::min(fpsQueue + loopDt * targetFps, static_cast<double>(maxFpsQueue));
 
-    while (fpsQueue > 1) {
-      fpsQueue--;
-
-      glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      auto currentFrame = std::chrono::steady_clock::now();
-
-      // get dt for frame
-      double frameDt = std::chrono::duration<double>(currentFrame - lastFrame).count();
-      lastFrame = currentFrame;
-      frameDt = std::min(frameDt, 0.1);
-
-      // calc fps
-      frameHistory.push_back(currentFrame);
-
-      // remove old frames from the front
-      while (!frameHistory.empty() && std::chrono::duration<double>(currentFrame - frameHistory.front()).count() >
-             frameHistoryDuration) {
-        frameHistory.erase(frameHistory.begin());
-      }
-
-      if (frameHistory.size() > 2) {
-        if (std::chrono::duration<double>(currentFrame - lastFpsUpdate).count() > currentFpsUpdate) {
-          currentFps = (frameHistory.size() - 1) / std::chrono::duration<double>(currentFrame - frameHistory.front()).
-                       count();
-          lastFpsUpdate = currentFrame;
-        }
-      }
-
-      renderApp(frameDt);
-
-      glfwSwapBuffers(window);
-
-      glfwPollEvents();
-
-      std::vector<std::function<void()> > tasks; {
-        std::lock_guard lk(this->mtx);
-        tasks = this->laterVec;
-        this->laterVec.clear();
-      }
-      for (auto task: tasks) task();
+    int targetFps = settings.maxFps;
+    int intervalMs = 0;
+    if (!windowFocused) {
+      targetFps = settings.maxTabbedOutFps;
+      intervalMs = 5;
+    } else if (currentUi != nullptr) {
+      targetFps = settings.maxUiFps;
     }
+    double maxFpsQueue = settings.maxFrameQueue;
+    if (targetFps >= 30 && targetFps < 1000) {
+      fpsQueue = std::min(fpsQueue + loopDt * targetFps, maxFpsQueue);
+      while (fpsQueue >= 1) {
+        fpsQueue--;
+        tickApp();
+      }
+    } else {
+      fpsQueue = 1;
+      tickApp();
+    }
+
+    // note: this may take way longer than the time in milliseconds.
+    // hence intervalMs is never > 0 if in game.
+    if (intervalMs > 0)
+      std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
   }
 
   onClose();
+}
+
+void Application::tickApp() {
+  auto currentFrame = std::chrono::steady_clock::now();
+
+  // get dt for frame
+  double frameDt = std::chrono::duration<double>(currentFrame - lastFrame).count();
+  lastFrame = currentFrame;
+  frameDt = std::min(frameDt, 0.1);
+
+  // calc fps
+  frameHistory.push_back(currentFrame);
+
+  // remove old frames from the front
+  while (!frameHistory.empty() && std::chrono::duration<double>(currentFrame - frameHistory.front()).count() >
+         frameHistoryDuration) {
+    frameHistory.erase(frameHistory.begin());
+  }
+
+  if (frameHistory.size() > 2) {
+    if (std::chrono::duration<double>(currentFrame - lastFpsUpdate).count() > currentFpsUpdate) {
+      currentFps = (frameHistory.size() - 1) / std::chrono::duration<double>(currentFrame - frameHistory.front()).
+                   count();
+      lastFpsUpdate = currentFrame;
+    }
+  }
+
+  renderApp(frameDt);
+
+  glfwSwapBuffers(window);
+
+  glfwPollEvents();
+
+  std::vector<std::function<void()> > tasks; {
+    std::lock_guard lk(this->mtx);
+    tasks = this->laterVec;
+    this->laterVec.clear();
+  }
+  for (auto task: tasks) task();
 }
 
 void Application::onClose() {
@@ -295,6 +324,9 @@ bool Application::getClipboardText(std::string &str) {
 }
 
 void Application::renderApp(double dt) {
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   if (currentScene != nullptr) {
     currentScene->render(dt);
   }

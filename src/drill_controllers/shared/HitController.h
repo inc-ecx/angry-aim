@@ -41,9 +41,9 @@ public:
   // Input message
   //
 
-  void notifySpawn();
+  void notifyCanKill();
 
-  void notifyDone();
+  void notifyOver();
 
   //
   // Controller implementation

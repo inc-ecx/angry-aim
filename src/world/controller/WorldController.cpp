@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include "Log.h"
+
 WorldController::WorldController() : controllerMap{
   {
     nullptr, ControllerEntry()
@@ -21,11 +23,18 @@ void WorldController::control(const std::shared_ptr<Controller> &controller) {
 
 // adds controller, attached to entity
 void WorldController::control(const std::shared_ptr<Entity> &entity, const std::shared_ptr<Controller> &controller) {
+  if (!controllerMap.contains(entity)) {
+    Log::error("Tried to control non-attached entity.");
+    return;
+  }
   controllerMap[entity].controllers.push_back(controller);
 }
 
 void WorldController::remove(const std::shared_ptr<Entity> &entity) {
-  if (entity == nullptr) return;
+  if (entity == nullptr) {
+    Log::error("Tried to remove nullptr entity.");
+    return;
+  }
   world.entities.erase(entity);
   controllerMap.erase(entity);
 }

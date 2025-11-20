@@ -10,6 +10,10 @@ class StateSettings : public ManagerState {
 public:
   bool fullscreen = false;
   std::shared_ptr<Observable> onChangeFullscreen = Observable::make();
+  int maxFps = 864;
+  int maxUiFps = 144;
+  int maxTabbedOutFps = 30;
+  double maxFrameQueue = 2;
 
   double fov = 103;
   double sensitivity = 0.3;

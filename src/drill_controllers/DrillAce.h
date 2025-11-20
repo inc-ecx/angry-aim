@@ -37,7 +37,6 @@ class DrillAce :
   // controller state
   std::default_random_engine rng;
   int living = 5;
-  uint64_t msHitFirst = 0;
 
 public:
   explicit DrillAce(const std::string &args);
