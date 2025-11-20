@@ -241,6 +241,7 @@ void DrillStrafe::updateWorld(double dt) {
   }
 
   // remove old target
+  // TODO: this is evil, it does directly access world model and not the world controller. could be in other drills too.
   for (auto it = world->world.entities.begin(); it != world->world.entities.end();) {
     auto strafingTarget = std::dynamic_pointer_cast<StrafingTarget>(*it);
     if (strafingTarget && strafingTarget->msDeath != 0 && static_cast<int64_t>(msNow - strafingTarget->msDeath) > 0) {

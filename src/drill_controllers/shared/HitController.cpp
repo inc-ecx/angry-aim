@@ -14,6 +14,19 @@ HitController::HitController(HitControllerArgs &&args) :
 
 void HitController::update(double dt) {
   if (!isEnabled()) return;
+
+  uint64_t msNow = msCurrent();
+  std::vector<std::shared_ptr<HitTarget>> toRemove;
+  for (auto entity : args.world->world.entities) {
+    auto target = std::dynamic_pointer_cast<HitTarget>(entity);
+    if (target && target->msDeath != 0 && static_cast<int64_t>(msNow - target->msDeath) > 0) {
+      toRemove.push_back(target);
+    }
+  }
+
+  for (auto removed : toRemove) {
+    args.world->remove(removed);
+  }
 }
 
 void HitController::handle(const UiEvent &event) {
