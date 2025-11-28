@@ -2,11 +2,11 @@
 #define STATE_DRILL_H
 #include "ManagerState.h"
 #include "drill/model/Drill.h"
-#include "drill/model/DrillManager.h"
+#include "drill/model/ManagerDrill.h"
 
 class StateDrill : public ManagerState {
 public:
-  Drill currentDrill = DrillManager::inst.def;
+  Drill currentDrill = ManagerDrill::inst.def;
 
   void load(json &j) override;
 

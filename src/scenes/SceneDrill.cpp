@@ -250,6 +250,9 @@ void SceneDrill::drawWorld() {
     if (target->msDeath != 0) {
       double deathProgress = static_cast<double>(target->msDeath - msCurrent()) / target->fadeOutMs;
       alpha = static_cast<int>(alpha * deathProgress);
+    } else if (target->fadeInMs != 0) {
+      double fadeProgress = static_cast<double>(msCurrent() - target->msSpawn) / target->fadeInMs;
+      alpha = static_cast<int>(alpha * std::clamp(fadeProgress, 0.0, 1.0));
     }
     renderScene.color(0xffffff00 | alpha);
     renderScene.draw(*targetModel);

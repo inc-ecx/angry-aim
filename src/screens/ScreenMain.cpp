@@ -5,7 +5,7 @@
 #include "ScreenSettings.h"
 #include "ScreenTest.h"
 #include "drill/model/Drill.h"
-#include "drill/model/DrillManager.h"
+#include "drill/model/ManagerDrill.h"
 
 #include "scenes/SceneBackpack.h"
 #include "drill_controllers/DrillStrafe.h"
@@ -22,7 +22,7 @@ static std::string _sceneButtonText() {
 // @formatter:off
 std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   std::vector<std::shared_ptr<ItemY> > items;
-  for (auto &drill: DrillManager::inst.drills) {
+  for (auto &drill: ManagerDrill::inst.drills) {
     items.push_back(ItemY::make(Row::make({
       Cell::abs(8/*scrollbar width*/ + 5),
       Cell::rel(Button::make(drill.name, [this, drill] {

@@ -11,6 +11,20 @@
 
 Application Application::app;
 
+GLFWimage Application::loadIcon(const std::string &location) {
+  GLFWimage res{};
+
+  int nrChannels;
+  unsigned char *data = stbi_load(location.c_str(), &res.width, &res.height, &nrChannels, 4);
+  if (data == nullptr) {
+    Log::error("Failed to load icon: " + location);
+    return res;
+  }
+
+  res.pixels = data;
+  return res;
+}
+
 void Application::initApp() {
   State::state.loadAll();
 
@@ -35,6 +49,14 @@ void Application::initApp() {
     glfwTerminate();
     return;
   }
+
+  // note: smallest last
+  GLFWimage images[4];
+  images[0] = loadIcon("assets/ui/Logo Simple 16.png");
+  images[1] = loadIcon("assets/ui/Logo Simple 32.png");
+  images[2] = loadIcon("assets/ui/Logo Simple 48.png");
+  images[3] = loadIcon("assets/ui/Logo Simple 256.png");
+  glfwSetWindowIcon(window, 2, images);
 
   glfwSetCursorPosCallback(
     window, [](GLFWwindow *, double x, double y) {

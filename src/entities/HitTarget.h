@@ -1,6 +1,7 @@
 #ifndef HIT_TARGET_H
 #define HIT_TARGET_H
 #include "components/Positioned.h"
+#include "util/time_util.h"
 #include "world/model/Entity.h"
 
 class HitTarget :
@@ -9,7 +10,9 @@ class HitTarget :
 public:
   float size = 0.2f;
   uint64_t msDeath = 0;
+  uint64_t msSpawn = msCurrent();
   int fadeOutMs = 200;
+  int fadeInMs = 0;
 
   bool isHittable() {
     return msDeath == 0;

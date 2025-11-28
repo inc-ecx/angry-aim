@@ -120,7 +120,7 @@ set(angry-aim-src
         src/world_controllers/components/Toggelable.h
         src/drill/model/Drill.cpp
         src/drill/model/Drill.h
-        src/drill/model/DrillManager.h
+        src/drill/model/ManagerDrill.h
         src/scenes/SceneDrill.cpp
         src/scenes/SceneDrill.h
         src/drill/controller/DrillController.cpp
@@ -149,7 +149,7 @@ set(angry-aim-src
         src/inc/inc_json.h
         src/state/ManagerState.cpp
         src/state/ManagerState.h
-        src/drill/model/DrillManager.cpp
+        src/drill/model/ManagerDrill.cpp
         src/Log.cpp
         src/Log.h
         src/state/StateSettings.cpp
@@ -203,6 +203,8 @@ set(angry-aim-src
         src/drill_controllers/shared/HitController.h
         src/entities/HitTarget.cpp
         src/entities/HitTarget.h
+        src/drill_controllers/DrillFlick.cpp
+        src/drill_controllers/DrillFlick.h
 )
 
 # add executable

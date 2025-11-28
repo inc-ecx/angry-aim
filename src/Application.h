@@ -128,6 +128,8 @@ public:
   std::shared_ptr<Ui> getScreen() { return currentUi; }
 
   std::shared_ptr<Scene> getScene() { return currentScene; }
+
+  static GLFWimage loadIcon(const std::string &location);
 };
 
 #endif //APPLICATION_H
