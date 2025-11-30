@@ -1,6 +1,7 @@
 #ifndef UI_UTIL_H
 #define UI_UTIL_H
-#include <complex.h>
+
+#include <cstdint>
 
 class UiUtil {
 public:

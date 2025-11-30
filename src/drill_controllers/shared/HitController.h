@@ -1,6 +1,6 @@
 #ifndef HIT_CONTROLLER_H
 #define HIT_CONTROLLER_H
-#include <complex.h>
+
 #include <functional>
 
 #include "entities/HitTarget.h"
@@ -9,10 +9,9 @@
 #include "world/controller/WorldController.h"
 #include "world_controllers/components/Toggelable.h"
 
-
 struct HitControllerArgs {
-  WorldController* world;
-  MainPlayer* player;
+  WorldController *world;
+  MainPlayer *player;
   std::function<void()> listenerMiss;
   std::function<void(const std::shared_ptr<HitTarget> &target)> listenerHit;
 };
@@ -30,12 +29,12 @@ class HitController : public Controller, public Toggelable {
 
   void onMiss();
 
-  void onHit(const std::shared_ptr<HitTarget> & target);
+  void onHit(const std::shared_ptr<HitTarget> &target);
 
 public:
   HitControllerStats stats;
 
-  explicit HitController(HitControllerArgs&& args);
+  explicit HitController(HitControllerArgs &&args);
 
   //
   // Input message

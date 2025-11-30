@@ -251,10 +251,15 @@ void SceneDrill::drawWorld() {
       double deathProgress = static_cast<double>(target->msDeath - msCurrent()) / target->fadeOutMs;
       alpha = static_cast<int>(alpha * deathProgress);
     } else if (target->fadeInMs != 0) {
-      double fadeProgress = static_cast<double>(msCurrent() - target->msSpawn) / target->fadeInMs;
+      double fadeProgress = static_cast<double>(msCurrent() - target->msCreate) / target->fadeInMs;
       alpha = static_cast<int>(alpha * std::clamp(fadeProgress, 0.0, 1.0));
     }
-    renderScene.color(0xffffff00 | alpha);
+    int rgbx = 0xffffff00;
+    if (target->isTrackable && target->msDeath == 0) {
+      rgbx = target->isTracked ? 0xffffff00 : 0xb0b0b000;
+    }
+
+    renderScene.color(rgbx | alpha);
     renderScene.draw(*targetModel);
   }
 

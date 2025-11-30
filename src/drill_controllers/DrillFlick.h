@@ -8,10 +8,10 @@
 
 struct DrillFlickParams {
   int flicks = 50;
-  float yaw = 5;
-  float pitch = 5;
+  float yaw = 30;
+  float pitch = 30;
   float minDist = 5;
-  float maxDist = 30;
+  float maxDist = 10;
 };
 
 class DrillFlick :
@@ -24,6 +24,7 @@ class DrillFlick :
   std::shared_ptr<CameraController> ctrlCam;
 
   // state
+  std::shared_ptr<HitTarget> lastTarget;
   bool started = false;
   uint64_t msStarted = false;
   bool paused = false;

@@ -5,6 +5,7 @@
 #include "DrillMicro.h"
 #include "DrillSimple.h"
 #include "DrillFlick.h"
+#include "DrillTrackLine.h"
 
 std::map<std::string, Entry> FactoryDrill::entries{
   {"strafe", {.creator = [](auto s) { return std::make_shared<DrillStrafe>(); }}},
@@ -12,6 +13,7 @@ std::map<std::string, Entry> FactoryDrill::entries{
   {"micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
   {"ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(s); }}},
   {"flick", {.creator = [](auto s) { return std::make_shared<DrillFlick>(); }}},
+  {"track_line", {.creator = [](auto s) { return std::make_shared<DrillTrackLine>(s); }}},
 };
 
 std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {

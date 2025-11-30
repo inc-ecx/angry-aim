@@ -205,6 +205,12 @@ set(angry-aim-src
         src/entities/HitTarget.h
         src/drill_controllers/DrillFlick.cpp
         src/drill_controllers/DrillFlick.h
+        src/drill_controllers/DrillTrackLine.cpp
+        src/drill_controllers/DrillTrackLine.h
+        src/drill_controllers/shared/TrackController.cpp
+        src/drill_controllers/shared/TrackController.h
+        src/drill_controllers/shared/LineStrafeController.cpp
+        src/drill_controllers/shared/LineStrafeController.h
 )
 
 # add executable

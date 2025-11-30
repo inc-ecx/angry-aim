@@ -145,7 +145,7 @@ int RenderFont::width(std::string text) {
   std::string::const_iterator c;
   for (c = text.begin(); c != text.end(); c++) {
     Character ch = charMap[*c];
-    w+=(ch.Advance >> 6) * scale;
+    w+=static_cast<int>((ch.Advance >> 6) * scale);
   }
   return w;
 }

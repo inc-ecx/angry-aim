@@ -1,7 +1,5 @@
 #include "UiUtil.h"
 
-#include <cstdint>
-
 uint32_t UiUtil::lerpColor(uint32_t x, uint32_t y, float t) {
   uint8_t x0 = (x >> 24) & 0xFF;
   uint8_t x1 = (x >> 16) & 0xFF;

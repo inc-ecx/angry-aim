@@ -33,7 +33,7 @@ std::unique_ptr<Ui> ScreenResult::createMainStats() {
     cells.push_back(Cell::abs(Label::make(drillProp.first, 0x808080ff, LabelAlign::LEFT, false), 18));
     cells.push_back(Cell::abs(0));
     cells.push_back(Cell::abs(Label::make(drillProp.second, 0xffffffff, LabelAlign::LEFT, true), 40));
-    cells.push_back(Cell::abs(8));
+    cells.push_back(Cell::abs(4));
   }
   cells.push_back(Cell::rel());
   return Column::make(std::move(cells));
@@ -50,7 +50,7 @@ ScreenResult::ScreenResult(ScreenResultArgs&& args) :args(args){
       Cell::abs(createDrillProps(), 400),
       Cell::rel(),
   })));
-  cells.push_back(Cell::abs(30));
+  cells.push_back(Cell::abs(16));
 
   // side stats panel
   cells.push_back(Cell::wrap(Row::make({

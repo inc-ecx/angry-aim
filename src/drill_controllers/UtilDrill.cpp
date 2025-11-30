@@ -1,8 +1,35 @@
 #include "UtilDrill.h"
 
 #include "Application.h"
+#include "Log.h"
 #include "screens/ScreenResult.h"
-#include "shared/HitController.h"
+
+//
+// Tracking results
+//
+
+// @formatter:off
+void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<TrackController>& ctrlTrack) {
+  auto &app = Application::app;
+  app.later([=] {
+    // Log::info(std::format("{:#010x}", reinterpret_cast<intptr_t>(ctrlTrack.get())));
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drillProps = {
+        {"drill", drill}
+      },
+      .mainStats = {
+        {"tracked", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.hoverMs) / std::max(1ull, ctrlTrack->stats.hoverMs + ctrlTrack->stats.missMs) * 100)},
+        {"steadiness", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.reachedHoverMs) / std::max(1ull, ctrlTrack->stats.reachedHoverMs + ctrlTrack->stats.reachedMissMs) * 100)},
+        {"ttr", std::format("{}", static_cast<int>(ctrlTrack->stats.timeToReachSumMs / ctrlTrack->stats.reachedCount))}
+      }
+   }));
+ });
+}
+// @formatter:on
+
+//
+// Clicking results
+//
 
 // @formatter:off
 void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<HitController>& ctrlHit) {
@@ -20,10 +47,11 @@ void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<HitC
    }));
  });
 }
+
 // @formatter:on
 
 // @formatter:off
-void UtilDrill::showResultsHit(const std::string& drill, const std::shared_ptr<HitController>& ctrlHit, uint64_t durationMs) {
+void UtilDrill::showResultsWithTime(const std::string& drill, const std::shared_ptr<HitController>& ctrlHit, uint64_t durationMs) {
   int duration = static_cast<int>((durationMs + 999) / 1000);
   int m = duration / 60;
   int s = duration % 60;

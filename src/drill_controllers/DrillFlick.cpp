@@ -11,6 +11,15 @@ void DrillFlick::handleMiss() {
   handleLook();
 
   args.resources->soundMiss->play(State::state.settings.missVolume);
+
+  // args.world->remove(lastTarget);
+  // lastTarget->msDeath = msCurrent() + lastTarget->fadeOutMs;
+  //
+  // msMousePause = msCurrent() + 500;
+  // args.screen->lblMainStat->setRgba(0xff0000ff);
+  // ctrlCam->setEnabled(false);
+  // ctrlHit->setEnabled(false);
+  // spawn();
 }
 
 void DrillFlick::handleHit(const std::shared_ptr<HitTarget> &ptr) {
@@ -107,9 +116,10 @@ void DrillFlick::spawn() {
   glm::vec3 pos = WorldUtil::lookVec(pitch, yaw) * dist;
 
   auto target = std::make_shared<HitTarget>();
-  target->pos = pos;
+  target->pos = args.player->pos + pos;
   target->fadeInMs = 600;
   args.world->add(target);
+  lastTarget = target;
 }
 
 void DrillFlick::start() {
@@ -132,5 +142,5 @@ void DrillFlick::end() {
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
   uint64_t durationMs = msCurrent() - msStarted;
-  UtilDrill::showResultsHit(std::format("flick {}", params.flicks), ctrlHit, durationMs);
+  UtilDrill::showResultsWithTime(std::format("flick {}", params.flicks), ctrlHit, durationMs);
 }

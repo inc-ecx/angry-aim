@@ -4,6 +4,7 @@
 #include <random>
 
 #include "shared/HitController.h"
+#include "shared/TrackController.h"
 #include "util/time_util.h"
 
 class DrillRandom {
@@ -19,9 +20,13 @@ public:
     rng.seed(microsCurrent);
   }
 
-  int nextBool() {
+  bool nextBool() {
     std::uniform_int_distribution dist(0, 1);
     return dist(rng) == 0;
+  }
+
+  bool nextBool(float chance) {
+    return distFloat(rng) < chance;
   }
 
   int nextInt(int max) {
@@ -53,8 +58,13 @@ public:
 
 class UtilDrill {
 public:
+  static void showResults(const std::string &drill, const std::shared_ptr<TrackController> &ctrlTrack);
+
   static void showResults(const std::string &drill, const std::shared_ptr<HitController> &ctrlHit);
-  static void showResultsHit(const std::string &drill, const std::shared_ptr<HitController> &ctrlHit, uint64_t durationMs);
+
+  static void showResultsWithTime(
+    const std::string &drill, const std::shared_ptr<HitController> &ctrlHit, uint64_t durationMs
+  );
 };
 
 #endif //UTIL_DRILL_H

@@ -14,6 +14,7 @@ public:
     Drill("Nano", "Nano flick training.", "micro:1.5"),
     Drill("Ace", "Flick to five targets.", "ace"),
     Drill("Flick", "Practice single flicks.", "flick"),
+    Drill("Track Line", "Track straight-moving targets.", "track_line"),
   };
   Drill def = Drill("Default", "Valorant based shooting.", "default");
 

@@ -50,7 +50,6 @@ void Application::initApp() {
     return;
   }
 
-  // note: smallest last
   GLFWimage images[4];
   images[0] = loadIcon("assets/ui/Logo Simple 16.png");
   images[1] = loadIcon("assets/ui/Logo Simple 32.png");
