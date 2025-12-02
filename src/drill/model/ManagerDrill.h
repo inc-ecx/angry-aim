@@ -15,6 +15,7 @@ public:
     Drill("Ace", "Flick to five targets.", "ace"),
     Drill("Flick", "Practice single flicks.", "flick"),
     Drill("Track Line", "Track straight-moving targets.", "track_line"),
+    Drill("Track Run", "Track running targets.", "track_line:5.4"),
   };
   Drill def = Drill("Default", "Valorant based shooting.", "default");
 

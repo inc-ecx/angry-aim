@@ -9,32 +9,35 @@
 
 ScreenPause::ScreenPause(std::weak_ptr<SceneDrill>&& scene) {
   this->_scene = std::move(scene);
+  auto s = _scene.lock();
 
   add(Row::make({
-     Cell::rel(1),
-     Cell::abs(Column::make({
-       Cell::rel(1),
-       Cell::abs(Row::make({
-         Cell::rel(1),
-         Cell::abs(Button::make("Resume", std::bind(&ScreenPause::actionResume, this)), 150),
-         Cell::rel(1)
-       }), 30),
-       Cell::abs(10),
-       Cell::abs(Row::make({
-         Cell::rel(1),
-         Cell::abs(Button::make("Restart", std::bind(&ScreenPause::actionRestart, this)), 150),
-         Cell::rel(1)
-       }), 30),
-       Cell::abs(10),
-       Cell::abs(Row::make({
-         Cell::rel(1),
-         Cell::abs(Button::make("Quit", std::bind(&ScreenPause::actionQuit, this)), 150),
-         Cell::rel(1)
-       }), 30),
-       Cell::rel(1),
-     }), 400),
-     Cell::rel(1),
-   }));
+    Cell::rel(1),
+    Cell::abs(Column::make({
+      Cell::rel(1),
+      Cell::abs(Label::make(std::format("{}", s->getDrill().name)), 30),
+      Cell::abs(30),
+      Cell::abs(Row::make({
+        Cell::rel(1),
+        Cell::abs(Button::make("Resume", std::bind(&ScreenPause::actionResume, this)), 150),
+        Cell::rel(1)
+      }), 30),
+      Cell::abs(10),
+      Cell::abs(Row::make({
+        Cell::rel(1),
+        Cell::abs(Button::make("Restart", std::bind(&ScreenPause::actionRestart, this)), 150),
+        Cell::rel(1)
+      }), 30),
+      Cell::abs(10),
+      Cell::abs(Row::make({
+        Cell::rel(1),
+        Cell::abs(Button::make("Quit", std::bind(&ScreenPause::actionQuit, this)), 150),
+        Cell::rel(1)
+      }), 30),
+      Cell::rel(1),
+    }), 400),
+    Cell::rel(1),
+  }));
 
   add(Column::make({
     Cell::abs(Row::make({

@@ -12,7 +12,13 @@
 #include "world_controllers/CameraController.h"
 
 DrillTrackLine::DrillTrackLine(const std::string &args) :
-  DrillController("track_line") {}
+  DrillController("track_line") {
+  float speed;
+  auto [ptr,ec] = std::from_chars(args.data(), args.data() + args.size(), speed);
+  if (ec == std::errc()) {
+    params.maxVelocity = speed;
+  }
+}
 
 //
 // own events
@@ -39,7 +45,7 @@ void DrillTrackLine::handleTimeEnd() {
 
   over = true;
 
-  UtilDrill::showResults(std::format("track_line {}s", params.duration), ctrlTrack);
+  UtilDrill::showResults(std::format("track_line {}s {:.2f}m/s", params.duration, params.maxVelocity), ctrlTrack);
 }
 
 void DrillTrackLine::handleKilled(const std::shared_ptr<HitTarget> &target) {

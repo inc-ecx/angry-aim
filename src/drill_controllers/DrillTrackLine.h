@@ -11,7 +11,7 @@ struct DrillTrackLineParams {
   int duration = 60;
   float yaw = 60;
   float pitch = 30;
-  float minDist = 3;
+  float minDist = 5;
   float maxDist = 20;
   float period = 10;
   float slopeChancePitch = 0.2f;

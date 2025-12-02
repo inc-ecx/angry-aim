@@ -86,6 +86,10 @@ public:
 
   void render(double dt) override;
 
+  Drill getDrill() {
+    return drill;
+  }
+
 private:
   void renderBackground(double dt);
 
