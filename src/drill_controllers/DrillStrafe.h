@@ -1,5 +1,5 @@
-#ifndef DRILL_DEFAULT_H
-#define DRILL_DEFAULT_H
+#ifndef DRILL_STRAFE_H
+#define DRILL_STRAFE_H
 
 #include "Application.h"
 #include <memory>
@@ -79,4 +79,4 @@ public:
   void handle(const UiEvent &event) override;
 };
 
-#endif //DRILL_DEFAULT_H
+#endif //DRILL_STRAFE_H
