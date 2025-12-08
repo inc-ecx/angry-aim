@@ -117,8 +117,8 @@ void DrillTrackLine::spawn() {
   glm::mat4 rot = glm::yawPitchRoll(glm::radians(yaw), glm::radians(slopePitch), glm::radians(slopeRoll));
   glm::vec3 slant = glm::vec3(rot * glm::vec4(glm::vec3(1, 0, 0), 1.0f));
   glm::vec3 pos = args.player->pos + WorldUtil::lookVec(pitch, yaw) * dist;
-  glm::vec3 a = pos - slant * (0.5f * params.period);
-  glm::vec3 b = pos + slant * (0.5f * params.period);
+  glm::vec3 a = pos - slant * (0.5f * params.period * params.maxVelocity);
+  glm::vec3 b = pos + slant * (0.5f * params.period * params.maxVelocity);
   if (dir) std::swap(a, b);
 
   auto target = std::make_shared<HitTarget>();
