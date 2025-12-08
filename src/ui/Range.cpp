@@ -10,8 +10,13 @@
 #include "Slider.h"
 
 // @formatter:off
-Range::Range(double value, double min, double max, double step, const std::function<void(double fov)> &listenerChange) :
-  min(min), max(max), step(step), listenerChange(listenerChange) {
+Range::Range(double value, double min, double max, double step,
+             const std::optional<std::string> &minLabel,
+             const std::optional<std::string> &maxLabel,
+             const std::function<void(double fov)> &listenerChange)
+:
+  min(min), max(max), step(step), minLabel(minLabel), maxLabel(maxLabel), listenerChange(listenerChange)
+{
   add(Row::make({
     Cell::rel(slider = Slider::make(std::bind(&Range::actionSlider, this))),
     Cell::abs(10),

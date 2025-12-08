@@ -11,5 +11,6 @@
 #include "ui/Field.h"
 #include "ui/Range.h"
 #include "ui/PanelY.h"
+#include "ui/TranslucentButton.h"
 
 #endif //COMPONENTS_H

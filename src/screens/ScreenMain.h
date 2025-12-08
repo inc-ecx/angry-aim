@@ -6,7 +6,7 @@
 
 class ScreenMain : public Ui {
   std::shared_ptr<Ui> drillListContainer;
-  std::shared_ptr<Button> sceneButton;
+  std::shared_ptr<TranslucentButton> sceneButton;
 
   std::shared_ptr<Ui> constructDrillList();
 

@@ -25,13 +25,13 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   for (auto &drill: ManagerDrill::inst.drills) {
     items.push_back(ItemY::make(Row::make({
       Cell::abs(8/*scrollbar width*/ + 5),
-      Cell::rel(Button::make(drill.title, [this, drill] {
+      Cell::rel(TranslucentButton::make(drill.title, [this, drill] {
         State::state.drill.currentDrill = drill;
         sceneButton->setText(_sceneButtonText());
         drillListContainer->clear();
       })),
       Cell::abs(5)
-    }), 25));
+    }), 20));
     items.push_back(ItemY::make(10));
   }
   // items.push_back(ItemY::make(Label::make("Scene selector panel"), 25));
@@ -44,31 +44,31 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
 ScreenMain::ScreenMain() {
   auto &app = Application::app;
 
-  add(Row::make({
+  add(Column::make({
     Cell::rel(1),
-    Cell::abs(Column::make({
+    Cell::abs(Row::make({
+      Cell::rel(),
+      Cell::abs(drillListContainer = std::make_shared<Ui>(), 400),
+      Cell::rel()
+    }), 100),
+    Cell::abs(10),
+    Cell::abs(Row::make({
       Cell::rel(1),
-      Cell::abs(drillListContainer = std::make_shared<Ui>(), 100),
-      Cell::abs(10),
-      Cell::abs(Row::make({
-        Cell::rel(1),
-        Cell::abs(sceneButton = Button::make(_sceneButtonText(), std::bind(&ScreenMain::actionSelectDrill, this)), 150),
-        Cell::rel(1)
-      }), 30),
-      Cell::abs(30),
-      Cell::abs(Row::make({
-        Cell::rel(1),
-        Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 150),
-        Cell::rel(1)
-      }), 30),
-      Cell::abs(10),
-      Cell::abs(Row::make({
-        Cell::rel(1),
-        Cell::abs(Button::make("Exit", std::bind(&ScreenMain::actionExit, this)), 150),
-        Cell::rel(1)
-      }), 30),
+      Cell::abs(sceneButton = TranslucentButton::make(_sceneButtonText(), std::bind(&ScreenMain::actionSelectDrill, this)), 400),
+      Cell::rel(1)
+    }), 30),
+    Cell::abs(30),
+    Cell::abs(Row::make({
       Cell::rel(1),
-    }), 400),
+      Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 150),
+      Cell::rel(1)
+    }), 30),
+    Cell::abs(10),
+    Cell::abs(Row::make({
+      Cell::rel(1),
+      Cell::abs(Button::make("Exit", std::bind(&ScreenMain::actionExit, this)), 150),
+      Cell::rel(1)
+    }), 30),
     Cell::rel(1),
   }));
 

@@ -31,7 +31,7 @@ void PipelineUi::render(double dt) {
     fb1->bind();
     glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    uiLast->render(dt, {.toBuffer = true});
+    uiLast->render(dt, {.toBuffer = true, .blended = true, .blendOpacity = (1 - blendInProgress)});
     fb1->unbind();
     renderUi.start();
     renderUi.color(0xffffff00 | uiLastAlpha);
@@ -52,7 +52,7 @@ void PipelineUi::render(double dt) {
     fb1->bind();
     glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    uiMain->render(dt, {.toBuffer = true});
+    uiMain->render(dt, {.toBuffer = true, .blended = blendInProgress < 1, .blendOpacity = blendInProgress});
     fb1->unbind();
     renderUi.start();
     renderUi.color(0xffffff00 | uiMainAlpha);

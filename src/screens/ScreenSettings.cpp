@@ -49,7 +49,7 @@ std::shared_ptr<Ui> constructSettingsList() {
   items.push_back(ItemY::make(Row::make({
     Cell::abs(Label::make("Max FPS", LabelAlign::RIGHT), labelWidth),
     Cell::abs(labelGap),
-    Cell::rel(Range::make(settings.maxFps, 30, 1000, 1, [&](auto v) {
+    Cell::rel(Range::make(settings.maxFps, 30, 2000, 1, [&](auto v) {
       settings.maxFps = static_cast<int>(v+0.001);
     })),
     Cell::abs(scrollGap)

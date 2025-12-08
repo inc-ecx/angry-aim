@@ -1,24 +1,24 @@
-#ifndef BUTTON_H
-#define BUTTON_H
+#ifndef TRANSLUCENT_BUTTON_H
+#define TRANSLUCENT_BUTTON_H
 
 #include <functional>
 
 #include "Ui.h"
 
-class Button : public Ui {
+class TranslucentButton : public Ui {
   std::string text;
   std::function<void()> listener = nullptr;
 
   double hoverDuration = 0.0;
 
 public:
-  static std::shared_ptr<Button> make(const std::string &text, const std::function<void()> &listener = nullptr) {
-    auto r = std::make_shared<Button>(text);
+  static std::shared_ptr<TranslucentButton> make(const std::string &text, const std::function<void()> &listener = nullptr) {
+    auto r = std::make_shared<TranslucentButton>(text);
     r->listener = listener;
     return r;
   }
 
-  explicit Button(const std::string &text) : text(text) {
+  explicit TranslucentButton(const std::string &text) : text(text) {
   }
 
   void render(double dt, const UiRenderParams& params) override;
@@ -32,4 +32,5 @@ public:
   void setText(const std::string &text) { this->text = text; }
 };
 
-#endif //BUTTON_H
+
+#endif //TRANSLUCENT_BUTTON_H
