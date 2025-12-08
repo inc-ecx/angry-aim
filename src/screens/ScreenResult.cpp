@@ -46,7 +46,7 @@ ScreenResult::ScreenResult(ScreenResultArgs&& args) :args(args){
 
   // title
   cells.push_back(Cell::abs(Label::make(args.drill.title), 18));
-  cells.push_back(Cell::abs(32));
+  cells.push_back(Cell::abs(50));
 
   // to drill property panel:
   cells.push_back(Cell::wrap(Row::make({
@@ -62,7 +62,7 @@ ScreenResult::ScreenResult(ScreenResultArgs&& args) :args(args){
       Cell::abs(createMainStats(), 400),
       Cell::rel(),
   })));
-  cells.push_back(Cell::abs(100));
+  cells.push_back(Cell::abs(50));
 
   // buttons
   cells.push_back(Cell::abs(Row::make({

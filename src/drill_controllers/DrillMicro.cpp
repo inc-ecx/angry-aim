@@ -1,6 +1,7 @@
 #include "DrillMicro.h"
 
 #include "Application.h"
+#include "drill/DrillFormat.h"
 #include "entities/Miss.h"
 #include "screens/ScreenResult.h"
 #include "state/State.h"
@@ -130,7 +131,7 @@ void DrillMicro::triggerStop() {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
       .drill =  this->drill,
       .drillProps = {
-        {"drill", std::format("micro {}s", params.duration)}
+        {"drill", DrillFormat::formatDrillId(drill)}
       },
       .mainStats = {
         {"ttk", std::format("{}ms", statsTtkSum / std::max(1, statsHit))},

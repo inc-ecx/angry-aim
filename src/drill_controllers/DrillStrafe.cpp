@@ -1,5 +1,6 @@
 #include "DrillStrafe.h"
 
+#include "drill/DrillFormat.h"
 #include "entities/StrafingTarget.h"
 #include "entities/Miss.h"
 #include "scenes/SceneDrill.h"
@@ -131,7 +132,7 @@ void DrillStrafe::triggerOver() {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
       .drill =  this->drill,
       .drillProps = {
-        {"drill", std::format("strafe {}s", duration)}
+        {"drill", DrillFormat::formatDrillId(drill)}
       },
       .mainStats = {
         {"ttk", std::format("{}ms", ttkSum / std::max(1, statsHit))},

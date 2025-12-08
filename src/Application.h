@@ -73,6 +73,8 @@ class Application {
   void onResize();
 
 public:
+  static constexpr float MAX_FPS_LIMIT = 2000;
+
   static Application app;
 
   // resources

@@ -13,8 +13,8 @@ ScreenPause::ScreenPause(std::weak_ptr<SceneDrill>&& scene) {
 
   add(Column::make({
     Cell::rel(1),
-    Cell::abs(Label::make(std::format("{}", s->getDrill().title)), 30),
-    Cell::abs(30),
+    Cell::abs(Label::make(std::format("{}", s->getDrill().title)), 18),
+    Cell::abs(50),
     Cell::abs(Row::make({
       Cell::rel(1),
       Cell::abs(Button::make("Resume", std::bind(&ScreenPause::actionResume, this)), 150),

@@ -50,7 +50,7 @@ ScreenMain::ScreenMain() {
       Cell::rel(),
       Cell::abs(drillListContainer = std::make_shared<Ui>(), 400),
       Cell::rel()
-    }), 100),
+    }), 160),
     Cell::abs(10),
     Cell::abs(Row::make({
       Cell::rel(1),

@@ -231,7 +231,7 @@ void Application::runApp() {
       targetFps = settings.maxUiFps;
     }
     double maxFpsQueue = settings.maxFrameQueue;
-    if (targetFps >= 30 && targetFps < 1000) {
+    if (targetFps >= 30 && targetFps < MAX_FPS_LIMIT) {
       fpsQueue = std::min(fpsQueue + loopDt * targetFps, maxFpsQueue);
       while (fpsQueue >= 1) {
         fpsQueue--;
