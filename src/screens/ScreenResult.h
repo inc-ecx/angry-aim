@@ -5,6 +5,7 @@
 #include "ui/components.h"
 
 struct ScreenResultArgs {
+  Drill drill;
   std::vector<std::pair<std::string, std::string> > drillProps;
   std::vector<std::pair<std::string, std::string> > mainStats;
 };

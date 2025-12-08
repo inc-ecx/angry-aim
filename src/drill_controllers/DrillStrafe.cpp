@@ -129,6 +129,7 @@ void DrillStrafe::triggerOver() {
   // @formatter:off
   app.later([=] {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill =  this->drill,
       .drillProps = {
         {"drill", std::format("strafe {}s", duration)}
       },

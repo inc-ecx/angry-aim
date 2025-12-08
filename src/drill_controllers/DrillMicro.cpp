@@ -128,6 +128,7 @@ void DrillMicro::triggerStop() {
   // @formatter:off
   app.later([=] {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill =  this->drill,
       .drillProps = {
         {"drill", std::format("micro {}s", params.duration)}
       },

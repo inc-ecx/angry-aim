@@ -119,6 +119,7 @@ void DrillSimple::triggerStop() {
   // @formatter:off
   app.later([=] {
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill =  this->drill,
       .drillProps = {
         {"drill", std::format("simple {}s", params.duration)}
       },

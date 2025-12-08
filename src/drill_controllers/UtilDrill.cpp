@@ -14,6 +14,7 @@ void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<TrackContr
   app.later([=] {
     // Log::info(std::format("{:#010x}", reinterpret_cast<intptr_t>(ctrlTrack.get())));
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill = drill,
       .drillProps = {
         {"drill", DrillFormat::formatDrillId(drill)}
       },
@@ -35,17 +36,18 @@ void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<TrackContr
 void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<HitController>& ctrlHit) {
   auto &app = Application::app;
   app.later([=] {
-   Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
-     .drillProps = {
-       {"drill", DrillFormat::formatDrillId(drill)}
-     },
-     .mainStats = {
-       {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
-       {"acc", std::format("{:0.1f}%", static_cast<float>(ctrlHit->stats.hit) / std::max(1, ctrlHit->stats.hit + ctrlHit->stats.miss) * 100.0f)},
-       {"hit", std::format("{}", ctrlHit->stats.hit)},
-     }
-   }));
- });
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill = drill,
+      .drillProps = {
+        {"drill", DrillFormat::formatDrillId(drill)}
+      },
+      .mainStats = {
+        {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
+        {"acc", std::format("{:0.1f}%", static_cast<float>(ctrlHit->stats.hit) / std::max(1, ctrlHit->stats.hit + ctrlHit->stats.miss) * 100.0f)},
+        {"hit", std::format("{}", ctrlHit->stats.hit)},
+      }
+    }));
+  });
 }
 
 // @formatter:on
@@ -58,16 +60,17 @@ void UtilDrill::showResultsWithTime(const Drill& drill, const std::shared_ptr<Hi
 
   auto &app = Application::app;
   app.later([drill, ctrlHit, m, s] {
-   Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
-     .drillProps = {
-       {"drill", DrillFormat::formatDrillId(drill)}
-     },
-     .mainStats = {
-       {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
-       {"acc", std::format("{:0.1f}%", static_cast<float>(ctrlHit->stats.hit) / std::max(1, ctrlHit->stats.hit + ctrlHit->stats.miss) * 100.0f)},
-       {"time", std::format("{:02d}:{:02d}", m, s)},
-     }
-   }));
+    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
+      .drill = drill,
+      .drillProps = {
+        {"drill", DrillFormat::formatDrillId(drill)}
+      },
+      .mainStats = {
+        {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
+        {"acc", std::format("{:0.1f}%", static_cast<float>(ctrlHit->stats.hit) / std::max(1, ctrlHit->stats.hit + ctrlHit->stats.miss) * 100.0f)},
+        {"time", std::format("{:02d}:{:02d}", m, s)},
+      }
+    }));
   });
 }
 // @formatter:on

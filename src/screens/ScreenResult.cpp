@@ -44,6 +44,10 @@ ScreenResult::ScreenResult(ScreenResultArgs&& args) :args(args){
   std::vector<std::shared_ptr<Cell>> cells;
   cells.push_back(Cell::rel());
 
+  // title
+  cells.push_back(Cell::abs(Label::make(args.drill.title), 18));
+  cells.push_back(Cell::abs(32));
+
   // to drill property panel:
   cells.push_back(Cell::wrap(Row::make({
       Cell::rel(),
