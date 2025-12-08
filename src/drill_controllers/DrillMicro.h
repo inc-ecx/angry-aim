@@ -67,7 +67,7 @@ class DrillMicro :
   void handleLeftClick();
 
 public:
-  explicit DrillMicro(const json &args);
+  explicit DrillMicro(const Drill &drill);
 
   void pause() override;
 

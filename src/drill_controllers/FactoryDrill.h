@@ -8,7 +8,7 @@
 #include "drill/controller/DrillController.h"
 
 struct Entry {
-  std::function<std::shared_ptr<DrillController>(json args)> creator;
+  std::function<std::shared_ptr<DrillController>(const Drill& drill)> creator;
 };
 
 class FactoryDrill {

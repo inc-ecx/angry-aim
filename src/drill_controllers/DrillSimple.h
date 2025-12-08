@@ -66,7 +66,7 @@ class DrillSimple :
   void handleLeftClick();
 
 public:
-  explicit DrillSimple();
+  explicit DrillSimple(const Drill &drill);
 
   void pause() override;
 

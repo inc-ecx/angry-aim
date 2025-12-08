@@ -9,18 +9,17 @@
 #include "DrillTrackPattern.h"
 
 std::map<std::string, Entry> FactoryDrill::entries{
-  {"angry_aim:strafe", {.creator = [](auto s) { return std::make_shared<DrillStrafe>(); }}},
-  {"angry_aim:simple", {.creator = [](auto s) { return std::make_shared<DrillSimple>(); }}},
-  {"angry_aim:micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
-  {"angry_aim:ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(); }}},
-  {"angry_aim:flick", {.creator = [](auto s) { return std::make_shared<DrillFlick>(); }}},
-  {"angry_aim:track_line", {.creator = [](auto s) { return std::make_shared<DrillTrackLine>(s); }}},
-  {"angry_aim:track_pattern", {.creator = [](auto s) { return std::make_shared<DrillTrackPattern>(s); }}},
+  {"angry_aim:strafe", {.creator = [](auto r) { return std::make_shared<DrillStrafe>(r); }}},
+  {"angry_aim:simple", {.creator = [](auto r) { return std::make_shared<DrillSimple>(r); }}},
+  {"angry_aim:micro", {.creator = [](auto r) { return std::make_shared<DrillMicro>(r); }}},
+  {"angry_aim:ace", {.creator = [](auto r) { return std::make_shared<DrillAce>(r); }}},
+  {"angry_aim:flick", {.creator = [](auto r) { return std::make_shared<DrillFlick>(r); }}},
+  {"angry_aim:track_line", {.creator = [](auto r) { return std::make_shared<DrillTrackLine>(r); }}},
+  {"angry_aim:track_pattern", {.creator = [](auto r) { return std::make_shared<DrillTrackPattern>(r); }}},
 };
 
 std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {
-  std::string controllerId = std::format("{}:{}", drill.controllerPackage, drill.controllerName);
-  json args = drill.controllerConfig;
+  std::string controllerId = DrillFormat::formatControllerId(drill.controllerPackage, drill.controllerName);
 
   auto it = entries.find(controllerId);
   if (it == entries.end()) return nullptr;
@@ -28,5 +27,5 @@ std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {
   //   std::format("could not find drill controller for drill {} with id {}", drill.name, id));
 
   auto &entry = it->second;
-  return entry.creator(args);
+  return entry.creator(drill);
 }

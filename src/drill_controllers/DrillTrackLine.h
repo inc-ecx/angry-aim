@@ -49,7 +49,7 @@ class DrillTrackLine :
   DrillRandom rnd;
 
 public:
-  explicit DrillTrackLine(const json &args);
+  explicit DrillTrackLine(const Drill &drill);
 
   // Own events
 

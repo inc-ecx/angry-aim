@@ -9,9 +9,10 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillMicro::DrillMicro(const json &args) :
-  DrillController("micro") {
+DrillMicro::DrillMicro(const Drill& drill) :
+  DrillController("micro", drill) {
 
+  json args = drill.controllerConfig;
   if (args.is_object() && args.contains("area") && args["area"].is_number()) {
     float size = args["area"];
     params.targetSpawnWidth = size;

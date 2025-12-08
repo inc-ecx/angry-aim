@@ -66,7 +66,7 @@ class DrillStrafe :
   void updateSpawn(double dt);
 
 public:
-  explicit DrillStrafe();
+  explicit DrillStrafe(const Drill &drill);
 
   void setup(const DrillControllerSetupArgs &args) override;
 

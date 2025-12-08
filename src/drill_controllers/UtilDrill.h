@@ -3,6 +3,8 @@
 
 #include <random>
 
+#include "drill/DrillFormat.h"
+#include "drill/model/Drill.h"
 #include "shared/HitController.h"
 #include "shared/TrackController.h"
 #include "util/time_util.h"
@@ -58,12 +60,12 @@ public:
 
 class UtilDrill {
 public:
-  static void showResults(const std::string &drill, const std::shared_ptr<TrackController> &ctrlTrack);
+  static void showResults(const Drill &drill, const std::shared_ptr<TrackController> &ctrlTrack);
 
-  static void showResults(const std::string &drill, const std::shared_ptr<HitController> &ctrlHit);
+  static void showResults(const Drill &drill, const std::shared_ptr<HitController> &ctrlHit);
 
   static void showResultsWithTime(
-    const std::string &drill, const std::shared_ptr<HitController> &ctrlHit, uint64_t durationMs
+    const Drill &drill, const std::shared_ptr<HitController> &ctrlHit, uint64_t durationMs
   );
 };
 

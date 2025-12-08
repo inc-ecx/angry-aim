@@ -38,7 +38,7 @@ class DrillAce :
   int living = 5;
 
 public:
-  explicit DrillAce();
+  explicit DrillAce(const Drill &drill);
 
   // Own events
 

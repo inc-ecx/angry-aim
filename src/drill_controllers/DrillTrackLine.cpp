@@ -11,8 +11,10 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillTrackLine::DrillTrackLine(const json &args) :
-  DrillController("track_line") {
+DrillTrackLine::DrillTrackLine(const Drill &drill) :
+  DrillController("track_line", drill) {
+
+  json args = drill.controllerConfig;
   if (args.is_object() && args.contains("speed") && args["speed"].is_number()) {
     float speed = args["speed"];
     params.maxVelocity = speed;
@@ -44,7 +46,7 @@ void DrillTrackLine::handleTimeEnd() {
 
   over = true;
 
-  UtilDrill::showResults(std::format("track_line {}s {:.2f}m/s", params.duration, params.maxVelocity), ctrlTrack);
+  UtilDrill::showResults(drill, ctrlTrack);
 }
 
 void DrillTrackLine::handleKilled(const std::shared_ptr<HitTarget> &target) {

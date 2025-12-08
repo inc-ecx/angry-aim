@@ -40,7 +40,7 @@ class DrillFlick :
   void spawn();
 
 public:
-  DrillFlick();
+  explicit DrillFlick(const Drill &drill);
 
   //
   // controller events

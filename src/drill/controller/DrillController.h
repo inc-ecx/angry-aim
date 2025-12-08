@@ -20,9 +20,10 @@ struct DrillControllerSetupArgs {
 class DrillController {
 public:
   std::string id;
+  const Drill drill;
 
-  explicit DrillController(const std::string &id) :
-    id(id) {}
+  DrillController(const std::string &id, const Drill& drill) :
+    id(id), drill(drill) {}
 
   virtual ~DrillController() = default;
 

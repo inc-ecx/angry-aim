@@ -11,8 +11,8 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillStrafe::DrillStrafe() :
-  DrillController("default") {}
+DrillStrafe::DrillStrafe(const Drill &drill) :
+  DrillController("default", drill) {}
 
 void DrillStrafe::setup(const DrillControllerSetupArgs &args) {
   this->player = args.player;

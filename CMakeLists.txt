@@ -120,6 +120,8 @@ set(angry-aim-src
         src/world_controllers/components/Toggelable.h
         src/drill/model/Drill.cpp
         src/drill/model/Drill.h
+        src/drill/DrillFormat.cpp
+        src/drill/DrillFormat.h
         src/drill/model/ManagerDrill.h
         src/scenes/SceneDrill.cpp
         src/scenes/SceneDrill.h
@@ -191,8 +193,6 @@ set(angry-aim-src
         src/render/Texture.h
         src/ui/Image.cpp
         src/ui/Image.h
-        src/drill_controllers/DrillDynamic.cpp
-        src/drill_controllers/DrillDynamic.h
         src/drill_controllers/UtilDrill.cpp
         src/drill_controllers/UtilDrill.h
         src/drill_controllers/DrillAce.cpp

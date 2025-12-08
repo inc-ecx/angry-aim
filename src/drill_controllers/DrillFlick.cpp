@@ -4,8 +4,8 @@
 #include "state/State.h"
 #include "world/WorldUtil.h"
 
-DrillFlick::DrillFlick() :
-  DrillController("flick") {}
+DrillFlick::DrillFlick(const Drill &drill) :
+  DrillController("flick", drill) {}
 
 void DrillFlick::handleMiss() {
   handleLook();
@@ -142,5 +142,5 @@ void DrillFlick::end() {
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
   uint64_t durationMs = msCurrent() - msStarted;
-  UtilDrill::showResultsWithTime(std::format("flick {}", params.flicks), ctrlHit, durationMs);
+  UtilDrill::showResultsWithTime(drill, ctrlHit, durationMs);
 }

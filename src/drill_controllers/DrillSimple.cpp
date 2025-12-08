@@ -9,8 +9,8 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillSimple::DrillSimple() :
-  DrillController("simple") {
+DrillSimple::DrillSimple(const Drill &drill) :
+  DrillController("simple", drill) {
   rngEngine.seed(static_cast<uint32_t>(msCurrent()));
 }
 

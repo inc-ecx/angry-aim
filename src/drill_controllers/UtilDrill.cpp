@@ -9,13 +9,13 @@
 //
 
 // @formatter:off
-void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<TrackController>& ctrlTrack) {
+void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<TrackController>& ctrlTrack) {
   auto &app = Application::app;
   app.later([=] {
     // Log::info(std::format("{:#010x}", reinterpret_cast<intptr_t>(ctrlTrack.get())));
     Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
       .drillProps = {
-        {"drill", drill}
+        {"drill", DrillFormat::formatDrillId(drill)}
       },
       .mainStats = {
         {"tracked", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.hoverMs) / std::max(1ull, ctrlTrack->stats.hoverMs + ctrlTrack->stats.missMs) * 100)},
@@ -32,12 +32,12 @@ void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<Trac
 //
 
 // @formatter:off
-void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<HitController>& ctrlHit) {
+void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<HitController>& ctrlHit) {
   auto &app = Application::app;
   app.later([=] {
    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
      .drillProps = {
-       {"drill", drill}
+       {"drill", DrillFormat::formatDrillId(drill)}
      },
      .mainStats = {
        {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
@@ -51,16 +51,16 @@ void UtilDrill::showResults(const std::string& drill, const std::shared_ptr<HitC
 // @formatter:on
 
 // @formatter:off
-void UtilDrill::showResultsWithTime(const std::string& drill, const std::shared_ptr<HitController>& ctrlHit, uint64_t durationMs) {
+void UtilDrill::showResultsWithTime(const Drill& drill, const std::shared_ptr<HitController>& ctrlHit, uint64_t durationMs) {
   int duration = static_cast<int>((durationMs + 999) / 1000);
   int m = duration / 60;
   int s = duration % 60;
 
   auto &app = Application::app;
-  app.later([=] {
+  app.later([drill, ctrlHit, m, s] {
    Application::app.setScreen(std::make_shared<ScreenResult>(ScreenResultArgs{
      .drillProps = {
-       {"drill", drill}
+       {"drill", DrillFormat::formatDrillId(drill)}
      },
      .mainStats = {
        {"ttk", std::format("{}ms", ctrlHit->stats.ttkSum / std::max(1, ctrlHit->stats.hit))},
@@ -68,6 +68,6 @@ void UtilDrill::showResultsWithTime(const std::string& drill, const std::shared_
        {"time", std::format("{:02d}:{:02d}", m, s)},
      }
    }));
- });
+  });
 }
 // @formatter:on

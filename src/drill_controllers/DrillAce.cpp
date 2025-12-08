@@ -11,8 +11,8 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillAce::DrillAce() :
-  DrillController("ace") {
+DrillAce::DrillAce(const Drill &drill) :
+  DrillController("ace", drill) {
   rng.seed(static_cast<uint32_t>(msCurrent()));
 }
 
@@ -39,7 +39,7 @@ void DrillAce::handleTimeEnd() {
 
   glfwSetInputMode(app.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-  UtilDrill::showResults(std::format("ace {}s", params.duration), ctrlHit);
+  UtilDrill::showResults(drill, ctrlHit);
 }
 
 //

@@ -11,8 +11,9 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillTrackPattern::DrillTrackPattern(const json &args) :
-  DrillController("track_pattern") {
+DrillTrackPattern::DrillTrackPattern(const Drill &drill) :
+  DrillController("track_pattern", drill) {
+  json args = drill.controllerConfig;
   if (args.is_object() && args.contains("speed") && args["speed"].is_number()) {
     float speed = args["speed"];
     params.maxVelocity = speed;
@@ -44,7 +45,7 @@ void DrillTrackPattern::handleTimeEnd() {
 
   over = true;
 
-  UtilDrill::showResults(std::format("track_pattern {}s {:.2f}m/s", params.duration, params.maxVelocity), ctrlTrack);
+  UtilDrill::showResults(drill, ctrlTrack);
 }
 
 void DrillTrackPattern::handleKilled(const std::shared_ptr<HitTarget> &target) {
