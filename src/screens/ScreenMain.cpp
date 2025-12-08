@@ -15,7 +15,7 @@
 #include "ui/PanelY.h"
 
 static std::string _sceneButtonText() {
-  const Drill& drill = State::state.drill.currentDrill;
+  const Drill &drill = State::state.drill.currentDrill;
   return std::format("[{}]", drill.title);
 }
 
@@ -29,6 +29,7 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
         State::state.drill.currentDrill = drill;
         sceneButton->setText(_sceneButtonText());
         drillListContainer->clear();
+        searchField = nullptr;
       })),
       Cell::abs(5)
     }), 20));
@@ -37,6 +38,22 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   // items.push_back(ItemY::make(Label::make("Scene selector panel"), 25));
   // items.push_back(ItemY::make(10));
   return PanelY::make(items);
+}
+// @formatter:on
+
+// @formatter:off
+std::shared_ptr<Ui> ScreenMain::constructDrillSelector() {
+  auto res = Column::make({
+    Cell::abs(searchField = Field::make("",
+      std::bind(&ScreenMain::onSearchChanged, this),
+      std::bind(&ScreenMain::onSearchSubmit, this),
+      std::bind(&ScreenMain::isSearchCharAllowed, this, std::placeholders::_1)
+    ), 24),
+    Cell::abs(8),
+    Cell::rel(constructDrillList())
+  });
+  searchField->focus();
+  return res;
 }
 // @formatter:on
 
@@ -91,9 +108,25 @@ ScreenMain::ScreenMain() {
   }));
 }
 
+//
+// search field events
+//
+
+void ScreenMain::onSearchChanged() {}
+
+void ScreenMain::onSearchSubmit() {}
+
+bool ScreenMain::isSearchCharAllowed(char c) {
+  return true;
+}
+
+//
+// actions
+//
+
 void ScreenMain::actionSelectDrill() {
   if (drillListContainer->children.empty()) {
-    drillListContainer->add(constructDrillList());
+    drillListContainer->add(constructDrillSelector());
     drillListContainer->layout();
   }
 }
@@ -112,6 +145,10 @@ void ScreenMain::actionSettings() {
 }
 
 void ScreenMain::handle(UiEvent &event) {
+  Ui::handle(event);
+
+  if (event.claimed) return;
+
   if (event.type == UiEventType::KEY && event.down) {
     if (event.button == GLFW_KEY_F1)
       Application::app.setScreen(std::make_shared<DialogHelp>(Application::app.getScreen()));
@@ -126,6 +163,4 @@ void ScreenMain::handle(UiEvent &event) {
     if (event.button == GLFW_KEY_S)
       Application::app.later(std::bind(&ScreenMain::actionSettings, this));
   }
-
-  Ui::handle(event);
 }
