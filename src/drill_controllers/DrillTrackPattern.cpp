@@ -114,7 +114,6 @@ void DrillTrackPattern::spawn() {
   if (rnd.nextBool(params.slopeChanceRoll))
     slopeRoll = rnd.nextFloat(params.slopeRollMin, params.slopeRollMax);
 
-  // TODO: why does msvc lie to me?
   bool startReversedVal = rnd.nextBool();
   float startVelocityVal = rnd.nextFloat(-params.maxVelocity, params.maxVelocity);
 
@@ -144,6 +143,8 @@ void DrillTrackPattern::spawn() {
     .startReversed = startReversedVal,
     .startSpeed = startVelocityVal,
   }));
+  (void)startReversedVal; // otherwise warnings will prank me
+  (void)startVelocityVal;
   // @formatter:on
   ctrlTrack->setCanKill(true);
 }
