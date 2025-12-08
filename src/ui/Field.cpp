@@ -27,6 +27,8 @@ void Field::handleClick(UiEvent &event) {
 void Field::handleKeyDown(UiEvent &event) {
   if (!focused()) return;
 
+  event.claimed = true;
+
   auto &app = Application::app;
 
   if (glfwGetKey(app.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
@@ -273,6 +275,7 @@ int Field::getNextCursor(int direction) {
     if (sign != lastSign) return result - (direction == -1 ? -1 : 0);
     result += direction;
   }
+  if (result < 0) result = 0;
   return result;
 }
 
@@ -301,4 +304,8 @@ void Field::setSilently(const std::string &value) {
     textData.push_back(c);
   }
   cursor = -1;
+}
+
+void Field::focus() {
+  cursor = static_cast<int>(textData.size());
 }

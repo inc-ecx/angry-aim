@@ -74,6 +74,8 @@ public:
   void setSilently(const std::string &value);
 
   std::string text() { return std::string(textData.begin(), textData.end()); }
+
+  void focus();
 };
 
 #endif //FIELD_H
