@@ -49,7 +49,7 @@ class DrillTrackPattern :
   DrillRandom rnd;
 
 public:
-  explicit DrillTrackPattern(const std::string &args);
+  explicit DrillTrackPattern(const json &args);
 
   // Own events
 

@@ -330,6 +330,8 @@ void Application::updateScene(const std::shared_ptr<Scene> &scene) {
     setScreen(nullptr);
     currentScene->open();
     currentScene->resize(width, height);
+  } else {
+    setScreen(std::make_shared<ScreenMain>());
   }
 }
 

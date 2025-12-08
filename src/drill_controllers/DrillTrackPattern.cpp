@@ -11,11 +11,10 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillTrackPattern::DrillTrackPattern(const std::string &args) :
+DrillTrackPattern::DrillTrackPattern(const json &args) :
   DrillController("track_pattern") {
-  float speed;
-  auto [ptr,ec] = std::from_chars(args.data(), args.data() + args.size(), speed);
-  if (ec == std::errc()) {
+  if (args.is_object() && args.contains("speed") && args["speed"].is_number()) {
+    float speed = args["speed"];
     params.maxVelocity = speed;
   }
 }
@@ -115,6 +114,7 @@ void DrillTrackPattern::spawn() {
   if (rnd.nextBool(params.slopeChanceRoll))
     slopeRoll = rnd.nextFloat(params.slopeRollMin, params.slopeRollMax);
 
+  // TODO: why does msvc lie to me?
   bool startReversedVal = rnd.nextBool();
   float startVelocityVal = rnd.nextFloat(-params.maxVelocity, params.maxVelocity);
 

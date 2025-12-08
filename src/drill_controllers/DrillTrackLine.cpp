@@ -11,11 +11,10 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillTrackLine::DrillTrackLine(const std::string &args) :
+DrillTrackLine::DrillTrackLine(const json &args) :
   DrillController("track_line") {
-  float speed;
-  auto [ptr,ec] = std::from_chars(args.data(), args.data() + args.size(), speed);
-  if (ec == std::errc()) {
+  if (args.is_object() && args.contains("speed") && args["speed"].is_number()) {
+    float speed = args["speed"];
     params.maxVelocity = speed;
   }
 }

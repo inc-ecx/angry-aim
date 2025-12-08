@@ -11,7 +11,7 @@
 #include "world/WorldUtil.h"
 #include "world_controllers/CameraController.h"
 
-DrillAce::DrillAce(const std::string &args) :
+DrillAce::DrillAce() :
   DrillController("ace") {
   rng.seed(static_cast<uint32_t>(msCurrent()));
 }

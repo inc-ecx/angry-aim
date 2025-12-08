@@ -1,13 +1,14 @@
 #ifndef FACTORY_DRILLS_H
 #define FACTORY_DRILLS_H
+
 #include <functional>
 #include <memory>
 
-#include "drill/controller/DrillController.h"
 #include "drill/model/Drill.h"
+#include "drill/controller/DrillController.h"
 
 struct Entry {
-  std::function<std::shared_ptr<DrillController>(std::string args)> creator;
+  std::function<std::shared_ptr<DrillController>(json args)> creator;
 };
 
 class FactoryDrill {

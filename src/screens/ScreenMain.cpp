@@ -16,7 +16,7 @@
 
 static std::string _sceneButtonText() {
   const Drill& drill = State::state.drill.currentDrill;
-  return std::format("[{}]", drill.name);
+  return std::format("[{}]", drill.title);
 }
 
 // @formatter:off
@@ -25,7 +25,7 @@ std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   for (auto &drill: ManagerDrill::inst.drills) {
     items.push_back(ItemY::make(Row::make({
       Cell::abs(8/*scrollbar width*/ + 5),
-      Cell::rel(Button::make(drill.name, [this, drill] {
+      Cell::rel(Button::make(drill.title, [this, drill] {
         State::state.drill.currentDrill = drill;
         sceneButton->setText(_sceneButtonText());
         drillListContainer->clear();

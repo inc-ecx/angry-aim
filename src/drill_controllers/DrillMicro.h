@@ -8,6 +8,7 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
+
 class DrillMicro :
     public DrillController,
     public Controller,
@@ -66,7 +67,7 @@ class DrillMicro :
   void handleLeftClick();
 
 public:
-  explicit DrillMicro(const std::string &args);
+  explicit DrillMicro(const json &args);
 
   void pause() override;
 

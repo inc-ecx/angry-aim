@@ -15,7 +15,7 @@ ScreenPause::ScreenPause(std::weak_ptr<SceneDrill>&& scene) {
     Cell::rel(1),
     Cell::abs(Column::make({
       Cell::rel(1),
-      Cell::abs(Label::make(std::format("{}", s->getDrill().name)), 30),
+      Cell::abs(Label::make(std::format("{}", s->getDrill().title)), 30),
       Cell::abs(30),
       Cell::abs(Row::make({
         Cell::rel(1),

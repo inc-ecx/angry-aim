@@ -6,7 +6,7 @@
 
 class StateDrill : public ManagerState {
 public:
-  Drill currentDrill = ManagerDrill::inst.def;
+  Drill currentDrill = ManagerDrill::inst.getDefault();
 
   void load(json &j) override;
 

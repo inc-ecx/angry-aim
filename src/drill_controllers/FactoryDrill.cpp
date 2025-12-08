@@ -9,32 +9,20 @@
 #include "DrillTrackPattern.h"
 
 std::map<std::string, Entry> FactoryDrill::entries{
-  {"strafe", {.creator = [](auto s) { return std::make_shared<DrillStrafe>(); }}},
-  {"simple", {.creator = [](auto s) { return std::make_shared<DrillSimple>(); }}},
-  {"micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
-  {"ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(s); }}},
-  {"flick", {.creator = [](auto s) { return std::make_shared<DrillFlick>(); }}},
-  {"track_line", {.creator = [](auto s) { return std::make_shared<DrillTrackLine>(s); }}},
-  {"track_pattern", {.creator = [](auto s) { return std::make_shared<DrillTrackPattern>(s); }}},
+  {"angry_aim:strafe", {.creator = [](auto s) { return std::make_shared<DrillStrafe>(); }}},
+  {"angry_aim:simple", {.creator = [](auto s) { return std::make_shared<DrillSimple>(); }}},
+  {"angry_aim:micro", {.creator = [](auto s) { return std::make_shared<DrillMicro>(s); }}},
+  {"angry_aim:ace", {.creator = [](auto s) { return std::make_shared<DrillAce>(); }}},
+  {"angry_aim:flick", {.creator = [](auto s) { return std::make_shared<DrillFlick>(); }}},
+  {"angry_aim:track_line", {.creator = [](auto s) { return std::make_shared<DrillTrackLine>(s); }}},
+  {"angry_aim:track_pattern", {.creator = [](auto s) { return std::make_shared<DrillTrackPattern>(s); }}},
 };
 
 std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {
-  std::string id;
-  std::string args;
+  std::string controllerId = std::format("{}:{}", drill.controllerPackage, drill.controllerName);
+  json args = drill.controllerConfig;
 
-  // parse link
-  {
-    auto sep = drill.link.find(':');
-    if (sep == std::string::npos) {
-      id = drill.link;
-      args = "";
-    } else {
-      id = drill.link.substr(0, sep);
-      args = drill.link.substr(sep+1);
-    }
-  }
-
-  auto it = entries.find(id);
+  auto it = entries.find(controllerId);
   if (it == entries.end()) return nullptr;
   // throw std::runtime_error(
   //   std::format("could not find drill controller for drill {} with id {}", drill.name, id));

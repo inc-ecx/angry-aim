@@ -37,10 +37,14 @@ void SceneDrill::setup() {
   drillController = FactoryDrill::create(drill);
 
   if (!drillController) {
-    Log::error(std::format("Failed to create drill \"{}\" from \"{}\"", drill.name, drill.link));
-    app.later([] {
-      Application::app.updateScene(nullptr);
-    });
+    Log::error(
+      std::format(
+        "Failed to create drill controller \"{}:{}\" specified in drill \"{}/{}\"",
+        drill.controllerName, drill.controllerPackage, drill.package, drill.name
+      )
+    );
+    app.later([] { Application::app.updateScene(nullptr); });
+    return;
   }
 
   // create world
@@ -54,12 +58,14 @@ void SceneDrill::setup() {
   ui->layout();
 
   // setup controller
-  drillController->setup(DrillControllerSetupArgs{
-    .world = world,
-    .player = player,
-    .screen = ui,
-    .resources = resources
-  });
+  drillController->setup(
+    DrillControllerSetupArgs{
+      .world = world,
+      .player = player,
+      .screen = ui,
+      .resources = resources
+    }
+  );
 }
 
 //
@@ -128,6 +134,8 @@ void SceneDrill::close() {
 }
 
 void SceneDrill::handle(const UiEvent &event) {
+  if (!world || !ui) return;
+
   if (isInGame()) {
     world->handle(event);
 
@@ -143,6 +151,8 @@ void SceneDrill::handle(const UiEvent &event) {
 }
 
 void SceneDrill::resize(int width, int height) {
+  if (!world || !ui) return;
+
   ui->setBounds(0, 0, width, height);
   ui->layout();
 }
@@ -152,6 +162,8 @@ void SceneDrill::resize(int width, int height) {
 //
 
 void SceneDrill::render(double dt) {
+  if (!world || !ui) return;
+
   world->update(dt);
 
   drawWorld();
@@ -196,8 +208,8 @@ void SceneDrill::drawWorld() {
     player->pos,
     static_cast<float>(camPitch),
     static_cast<float>(camYaw),
-    glm::vec2(100,100)
-    );
+    glm::vec2(100, 100)
+  );
 
   // renderScene.updateModel(glm::vec3(0, 0, 0), 1.0);
   // renderScene.color(0xffffffff);
@@ -273,7 +285,7 @@ void SceneDrill::drawWorld() {
     player->pos,
     static_cast<float>(camPitch),
     static_cast<float>(camYaw),
-    glm::vec2(100,100)
+    glm::vec2(100, 100)
   );
   for (auto e: world->world.entities) {
     auto target = std::dynamic_pointer_cast<Miss>(e);

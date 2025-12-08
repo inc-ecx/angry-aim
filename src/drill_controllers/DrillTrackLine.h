@@ -49,7 +49,7 @@ class DrillTrackLine :
   DrillRandom rnd;
 
 public:
-  explicit DrillTrackLine(const std::string &args);
+  explicit DrillTrackLine(const json &args);
 
   // Own events
 

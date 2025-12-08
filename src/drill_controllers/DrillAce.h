@@ -38,7 +38,7 @@ class DrillAce :
   int living = 5;
 
 public:
-  explicit DrillAce(const std::string &args);
+  explicit DrillAce();
 
   // Own events
 

@@ -9,15 +9,15 @@
 #include "world_controllers/CameraController.h"
 #include "world_controllers/MoveController.h"
 
-DrillMicro::DrillMicro(const std::string &args) :
+DrillMicro::DrillMicro(const json &args) :
   DrillController("micro") {
-  float size;
-  auto [ptr,ec] = std::from_chars(args.data(), args.data() + args.size(), size);
-  if (ec == std::errc()) {
+
+  if (args.is_object() && args.contains("area") && args["area"].is_number()) {
+    float size = args["area"];
     params.targetSpawnWidth = size;
     params.targetMinHeight = 1.5f - size * 0.5f;
     params.targetMaxHeight = 1.5f + size * 0.5f;
-  } // else error
+  }
 
   rngEngine.seed(static_cast<uint32_t>(msCurrent()));
 }

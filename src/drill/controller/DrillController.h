@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "drill/model/Drill.h"
 #include "entities/MainPlayer.h"
 #include "scenes/SceneDrillResources.h"
 #include "scenes/UiDrill.h"
