@@ -5,9 +5,17 @@
 #include "drill/model/Drill.h"
 
 class ScreenMain : public Ui {
+  std::shared_ptr<Ui> drillSelectorContainer;
   std::shared_ptr<Ui> drillListContainer;
   std::shared_ptr<TranslucentButton> sceneButton;
   std::shared_ptr<Field> searchField;
+
+  // displayed drills state
+  std::vector<Drill> drills;
+
+  // search state
+  bool searchUpdated = false;
+  uint64_t msLastSearchUpdate = 0;
 
   std::shared_ptr<Ui> constructDrillList();
 
@@ -19,6 +27,10 @@ class ScreenMain : public Ui {
 
   bool isSearchCharAllowed(char c);
 
+  void updateSearchResults();
+
+  void checkUpdateSearchResults();
+
   void actionSelectDrill();
 
   void actionPlay();
@@ -29,6 +41,8 @@ class ScreenMain : public Ui {
 
 public:
   ScreenMain();
+
+  void render(double dt, const UiRenderParams &params) override;
 
   void handle(UiEvent &event) override;
 };

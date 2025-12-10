@@ -10,7 +10,7 @@ void TranslucentButton::render(double dt, const UiRenderParams &params) {
   Application &app = Application::app;
   RenderFont &fr = app.renderFont;
 
-  double transitionDuration = 0.2;
+  double transitionDuration = 0.12;
 
   bool isHovered = hovered();
   hoverDuration = std::clamp(hoverDuration + (isHovered ? dt : -dt), 0.0, transitionDuration);
@@ -23,9 +23,19 @@ void TranslucentButton::render(double dt, const UiRenderParams &params) {
   if (params.toBuffer)
     glBlendFunc(GL_ONE, GL_ZERO);
 
+  float tw = static_cast<float>(fr.width(text));
+  float tx;
+  if (align == TranslucentButtonAlign::LEFT) {
+    tx = static_cast<float>(x);
+  } else if (align == TranslucentButtonAlign::RIGHT) {
+    tx = x + width - tw;
+  } else {
+    tx = round(x + (width - tw) / 2 + 0.5f);
+  }
+
   fr.renderText(
     text,
-    round(x + (width - fr.width(text)) / 2 + 0.5f),
+    tx,
     round(y + (height - fr.height()) / 2 + 0.5f),
     rgba
   );

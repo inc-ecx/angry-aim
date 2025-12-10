@@ -4,6 +4,7 @@
 
 #include "ScreenSettings.h"
 #include "ScreenTest.h"
+#include "drill/DrillFormat.h"
 #include "drill/model/Drill.h"
 #include "drill/model/ManagerDrill.h"
 
@@ -22,21 +23,24 @@ static std::string _sceneButtonText() {
 // @formatter:off
 std::shared_ptr<Ui> ScreenMain::constructDrillList() {
   std::vector<std::shared_ptr<ItemY> > items;
-  for (auto &drill: ManagerDrill::inst.drills) {
+  for (auto &drill: drills) {
     items.push_back(ItemY::make(Row::make({
       Cell::abs(8/*scrollbar width*/ + 5),
-      Cell::rel(TranslucentButton::make(drill.title, [this, drill] {
-        State::state.drill.currentDrill = drill;
-        sceneButton->setText(_sceneButtonText());
-        drillListContainer->clear();
-        searchField = nullptr;
-      })),
+      Cell::rel(TranslucentButton::make(
+        drill.title,
+        [this, drill] {
+          State::state.drill.currentDrill = drill;
+          sceneButton->setText(_sceneButtonText());
+          drillSelectorContainer->clear();
+          searchField = nullptr;
+          drillListContainer = nullptr;
+        },
+        TranslucentButtonAlign::LEFT
+      )),
       Cell::abs(5)
     }), 20));
     items.push_back(ItemY::make(10));
   }
-  // items.push_back(ItemY::make(Label::make("Scene selector panel"), 25));
-  // items.push_back(ItemY::make(10));
   return PanelY::make(items);
 }
 // @formatter:on
@@ -50,8 +54,9 @@ std::shared_ptr<Ui> ScreenMain::constructDrillSelector() {
       std::bind(&ScreenMain::isSearchCharAllowed, this, std::placeholders::_1)
     ), 24),
     Cell::abs(8),
-    Cell::rel(constructDrillList())
+    Cell::rel(drillListContainer = std::make_shared<Ui>())
   });
+  updateSearchResults();
   searchField->focus();
   return res;
 }
@@ -65,16 +70,19 @@ ScreenMain::ScreenMain() {
     Cell::rel(1),
     Cell::abs(Row::make({
       Cell::rel(),
-      Cell::abs(drillListContainer = std::make_shared<Ui>(), 400),
+      Cell::abs(drillSelectorContainer = std::make_shared<Ui>(), 400),
       Cell::rel()
     }), 160),
-    Cell::abs(10),
+    Cell::abs(20),
     Cell::abs(Row::make({
       Cell::rel(1),
-      Cell::abs(sceneButton = TranslucentButton::make(_sceneButtonText(), std::bind(&ScreenMain::actionSelectDrill, this)), 400),
+      Cell::abs(sceneButton = TranslucentButton::make(
+        _sceneButtonText(),
+        std::bind(&ScreenMain::actionSelectDrill, this)
+      ), 400),
       Cell::rel(1)
     }), 30),
-    Cell::abs(30),
+    Cell::abs(40),
     Cell::abs(Row::make({
       Cell::rel(1),
       Cell::abs(Button::make("Play", std::bind(&ScreenMain::actionPlay, this)), 150),
@@ -112,12 +120,69 @@ ScreenMain::ScreenMain() {
 // search field events
 //
 
-void ScreenMain::onSearchChanged() {}
+void ScreenMain::onSearchChanged() {
+  searchUpdated = true;
+}
 
-void ScreenMain::onSearchSubmit() {}
+void ScreenMain::onSearchSubmit() {
+  if (searchUpdated) return;
+  if (searchField->text().empty()) return;
+  if (drills.empty()) return;
+
+  State::state.drill.currentDrill = drills.front();
+  actionPlay();
+}
 
 bool ScreenMain::isSearchCharAllowed(char c) {
   return true;
+}
+
+void ScreenMain::updateSearchResults() {
+  drills.clear();
+
+  // apply search filter
+  std::string search = searchField->text();
+  std::ranges::transform(search, search.begin(), [](unsigned char c){ return std::tolower(c); });
+
+  if (search != "") {
+    for (auto drill : ManagerDrill::inst.drills) {
+      std::string searchValue = DrillFormat::formatSearchValue(drill);
+      std::ranges::transform(searchValue, searchValue.begin(), [](unsigned char c){ return std::tolower(c); });
+      if (searchValue.find(search) != std::string::npos) {
+        drills.push_back(drill);
+      }
+    }
+  } else {
+    drills = ManagerDrill::inst.drills;
+  }
+
+  drillListContainer->clear();
+  drillListContainer->add(constructDrillList());
+  drillListContainer->layout();
+}
+
+void ScreenMain::checkUpdateSearchResults() {
+  if (!searchUpdated) return;
+
+  int intervalMs = 200;
+
+  uint64_t msNow = msCurrent();
+  uint64_t timeSinceLastUpdateMs = msNow - msLastSearchUpdate;
+  if (timeSinceLastUpdateMs < intervalMs) return;
+  msLastSearchUpdate = msNow;
+
+  updateSearchResults();
+
+  searchUpdated = false;
+}
+
+//
+// render
+//
+
+void ScreenMain::render(double dt, const UiRenderParams &params) {
+  Ui::render(dt, params);
+  checkUpdateSearchResults();
 }
 
 //
@@ -125,9 +190,9 @@ bool ScreenMain::isSearchCharAllowed(char c) {
 //
 
 void ScreenMain::actionSelectDrill() {
-  if (drillListContainer->children.empty()) {
-    drillListContainer->add(constructDrillSelector());
-    drillListContainer->layout();
+  if (drillSelectorContainer->children.empty()) {
+    drillSelectorContainer->add(constructDrillSelector());
+    drillSelectorContainer->layout();
   }
 }
 
