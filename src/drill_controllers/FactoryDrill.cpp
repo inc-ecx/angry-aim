@@ -1,6 +1,7 @@
 #include "FactoryDrill.h"
 
 #include "DrillAce.h"
+#include "DrillDemo.h"
 #include "DrillStrafe.h"
 #include "DrillMicro.h"
 #include "DrillSimple.h"
@@ -16,6 +17,7 @@ std::map<std::string, Entry> FactoryDrill::entries{
   {"angry_aim:flick", {.creator = [](auto r) { return std::make_shared<DrillFlick>(r); }}},
   {"angry_aim:track_line", {.creator = [](auto r) { return std::make_shared<DrillTrackLine>(r); }}},
   {"angry_aim:track_pattern", {.creator = [](auto r) { return std::make_shared<DrillTrackPattern>(r); }}},
+  {"angry_aim:demo", {.creator = [](auto r) { return std::make_shared<DrillDemo>(r); }}},
 };
 
 std::shared_ptr<DrillController> FactoryDrill::create(const Drill &drill) {

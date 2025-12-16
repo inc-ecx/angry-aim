@@ -1,5 +1,5 @@
-#ifndef DRILL_TRACK_PATTERN_H
-#define DRILL_TRACK_PATTERN_H
+#ifndef DRILL_DEMO_H
+#define DRILL_DEMO_H
 
 #include "UtilDrill.h"
 #include "drill/controller/DrillController.h"
@@ -7,7 +7,7 @@
 #include "shared/TimeController.h"
 #include "world_controllers/CameraController.h"
 
-struct DrillTrackPatternParams {
+struct DrillDemoParams {
   int duration = 60;
   float yaw = 60;
   float pitch = 30;
@@ -29,12 +29,12 @@ struct DrillTrackPatternParams {
   float targetSize = 0.2f;
 };
 
-class DrillTrackPattern :
+class DrillDemo :
     public DrillController,
     public Controller,
-    public std::enable_shared_from_this<DrillTrackPattern> {
+    public std::enable_shared_from_this<DrillDemo> {
   // params
-  DrillTrackPatternParams params;
+  DrillDemoParams params;
 
   // args
   DrillControllerSetupArgs args;
@@ -49,7 +49,7 @@ class DrillTrackPattern :
   DrillRandom rnd;
 
 public:
-  explicit DrillTrackPattern(const Drill &drill);
+  explicit DrillDemo(const Drill &drill);
 
   // Own events
 
@@ -86,4 +86,4 @@ private:
   void spawn();
 };
 
-#endif //DRILL_TRACK_PATTERN_H
+#endif //DRILL_DEMO_H

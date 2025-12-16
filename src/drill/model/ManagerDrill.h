@@ -17,6 +17,7 @@ public:
     Drill("angry_aim", "track_line", "Track Line", "Track straight-moving targets.", "angry_aim", "track_line", json{}),
     Drill("angry_aim", "track_run", "Track Run", "Track running targets.", "angry_aim", "track_line", json{{"speed", 5.4}}),
     Drill("angry_aim", "track_pattern", "Track Pattern", "Track predictable pattern.", "angry_aim", "track_pattern", {}),
+    Drill("angry_aim", "demo", "Demo", "Demo drill.", "angry_aim", "demo", {}),
   };
   Drill getDefault() {
     return Drill("angry_aim", "strafe", "Strafe", "Valorant based shooting.", "angry_aim", "strafe", json{});

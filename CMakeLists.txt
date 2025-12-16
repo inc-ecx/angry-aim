@@ -217,6 +217,8 @@ set(angry-aim-src
         src/drill_controllers/shared/PatternStrafeController.h
         src/ui/TranslucentButton.cpp
         src/ui/TranslucentButton.h
+        src/drill_controllers/DrillDemo.cpp
+        src/drill_controllers/DrillDemo.h
 )
 
 # add executable
