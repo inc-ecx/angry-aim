@@ -1,7 +1,6 @@
 #include "UtilDrill.h"
 
 #include "Application.h"
-#include "Log.h"
 #include "screens/ScreenResult.h"
 
 //
@@ -19,8 +18,8 @@ void UtilDrill::showResults(const Drill& drill, const std::shared_ptr<TrackContr
         {"drill", DrillFormat::formatDrillId(drill)}
       },
       .mainStats = {
-        {"tracked", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.hoverMs) / std::max(1ull, ctrlTrack->stats.hoverMs + ctrlTrack->stats.missMs) * 100)},
-        {"steadiness", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.reachedHoverMs) / std::max(1ull, ctrlTrack->stats.reachedHoverMs + ctrlTrack->stats.reachedMissMs) * 100)},
+        {"tracked", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.hoverMs) / std::max(UINT64_C(1), ctrlTrack->stats.hoverMs + ctrlTrack->stats.missMs) * 100)},
+        {"steadiness", std::format("{:0.1f}%", static_cast<double>(ctrlTrack->stats.reachedHoverMs) / std::max(UINT64_C(1), ctrlTrack->stats.reachedHoverMs + ctrlTrack->stats.reachedMissMs) * 100)},
         {"ttr", std::format("{}", static_cast<int>(ctrlTrack->stats.timeToReachSumMs / ctrlTrack->stats.reachedCount))}
       }
    }));

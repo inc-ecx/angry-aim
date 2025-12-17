@@ -5,6 +5,7 @@
 #include "../inc/inc_glm.h"
 
 #include <string>
+#include <memory>
 #include <vector>
 
 struct Vertex {

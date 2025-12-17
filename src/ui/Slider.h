@@ -1,8 +1,10 @@
 #ifndef SLIDER_H
 #define SLIDER_H
+
 #include <algorithm>
 #include <functional>
 
+#include "inc/inc_glm.h"
 #include "Ui.h"
 
 class Slider : public Ui {

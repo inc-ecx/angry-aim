@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "inc/inc_glfw.h"
+#include <memory>
 
 class Texture {
 public:

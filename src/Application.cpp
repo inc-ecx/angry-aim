@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <chrono>
+#include <thread>
 #include <algorithm>
 
 #include "Log.h"

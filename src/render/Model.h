@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include "Mesh.h"
+
 #include "assimp/scene.h"
 
 class Model
